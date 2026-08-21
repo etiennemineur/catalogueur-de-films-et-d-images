@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Catalogue photo · Banc de plans</title>
+<style>
+:root{--encre:#151412;--encre-2:#1f1b17;--encre-3:#0d0c0b;--papier:#eee7dc;--papier-2:#b8afa2;--papier-3:#7d756b;--trait:#3a332b;--crayon:#c8321e;--ok:#86a85d;--warn:#d9a02b;--info:#5b86d6;--mono:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace;--sans:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;background:var(--encre);color:var(--papier);font:400 14px/1.45 var(--sans);display:grid;grid-template-columns:280px 1fr}a{color:inherit}.champ,textarea{width:100%;background:var(--encre-3);border:1px solid var(--trait);color:var(--papier);padding:9px 10px;border-radius:3px;font:400 13px var(--sans)}textarea{min-height:105px;resize:vertical}.champ:focus,textarea:focus{outline:none;border-color:var(--crayon)}button,.btn{border:1px solid var(--trait);background:#211d19;color:var(--papier);padding:9px 12px;border-radius:3px;font:500 12px var(--sans);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}button:hover,.btn:hover{filter:brightness(1.12)}.fort{background:var(--crayon);border-color:var(--crayon);color:#fff}.stop{border-color:#7f3026;color:#ffd8d1}.mono{font-family:var(--mono);font-size:11px;color:var(--papier-3)}.note{color:var(--papier-3);font-size:12px;line-height:1.45}
+#rail{background:var(--encre-2);border-right:1px solid var(--trait);height:100vh;position:sticky;top:0;overflow:auto;padding:18px 16px 120px}#rail h1{font:650 13px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 5px}#rail h1 small{display:block;letter-spacing:0;text-transform:none;color:var(--papier-3);font:400 11px var(--mono);margin-top:5px}.retour{display:block;margin-bottom:9px;border:1px solid var(--trait);color:var(--papier-2);text-decoration:none;padding:8px 10px;border-radius:2px;font:400 11px/1 var(--mono)}.retour:hover{border-color:var(--crayon);color:var(--papier)}.groupe{margin:12px 0}.groupe>summary{cursor:pointer;list-style:none;font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--papier-3);padding:5px 0}.groupe>summary::-webkit-details-marker{display:none}.groupe>summary::after{content:"+";float:right}.groupe[open]>summary::after{content:"−"}.groupe label{display:flex;gap:7px;align-items:baseline;padding:2px 0;color:#cfc8bb;font-size:13px;cursor:pointer}.groupe input[type=checkbox]{accent-color:var(--crayon);position:relative;top:1px}.n{margin-left:auto;color:#5d584f;font:400 10px var(--mono)}label.vide:not(:has(input:checked)){opacity:.38}#raz{width:100%;margin-top:12px;background:none;color:var(--papier-3)}
+#page{padding:20px 24px 140px}.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:1px solid var(--trait);padding-bottom:18px;margin-bottom:18px}.top h2{font-size:34px;letter-spacing:-.035em;line-height:1}.actions{display:flex;gap:9px;flex-wrap:wrap}.panneau{background:linear-gradient(135deg,rgba(31,27,23,.97),rgba(39,33,25,.94));border:1px solid var(--trait);border-radius:6px;padding:16px;margin-bottom:18px}.panneau h3{font-size:18px;margin-bottom:8px}.formgrid{display:grid;grid-template-columns:minmax(260px,1fr) minmax(260px,1fr);gap:14px}.champ-ligne{display:flex;gap:8px;align-items:stretch}.champ-ligne .champ{flex:1 1 auto}.btn-secondaire{white-space:nowrap;background:#17130f;color:#d9d2c6}.btn-secondaire:hover{border-color:var(--info);color:#fff}.criteres{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px 12px;margin-top:8px}.criteres label{font-size:13px;color:#d7cfc4;display:flex;gap:8px}.criteres input{accent-color:var(--crayon)}.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}.stat{background:#1a1714;border:1px solid var(--trait);border-radius:5px;padding:13px}.stat b{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--papier-3);margin-bottom:8px}.stat .val{font-size:28px;line-height:1;font-weight:650}.message{color:#d8d0c4;margin-top:10px}.barre{height:10px;background:#0d0c0b;border:1px solid var(--trait);border-radius:20px;overflow:hidden;margin-top:10px}.barre span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5b8f44,var(--ok))}.suivi-photo{display:grid;grid-template-columns:minmax(180px,1fr) minmax(220px,2fr) auto;gap:12px;align-items:center;margin-top:14px;padding:12px;background:#12100e;border:1px solid var(--trait);border-radius:5px}.suivi-photo b{display:block;font:650 11px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--ok);margin-bottom:4px}.suivi-photo .photo-actuelle{color:#eee7dc;word-break:break-word}.pastille-active{width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(134,168,93,.14);display:inline-block}.progression-card{height:6px;background:#0d0c0b;border:1px solid #302a24;border-radius:99px;overflow:hidden;margin-top:7px}.progression-card span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5b8f44,var(--ok))}.photo.en-cours .cadre{border-color:var(--ok);box-shadow:0 0 0 2px rgba(134,168,93,.25)}
+#barre-catalogue{position:sticky;top:0;background:var(--encre);z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--trait);padding:11px 0;margin-bottom:15px}#compte{font:400 11px var(--mono);color:var(--papier-3)}#barre-catalogue .droite{margin-left:auto;display:flex;align-items:center;gap:10px}select{width:auto;min-width:180px}.grille{display:grid;gap:14px}.photo{cursor:pointer}.cadre{aspect-ratio:4/3;background:#0d0c0b;border:1px solid transparent;overflow:hidden}.cadre img{width:100%;height:100%;object-fit:cover;display:block}.photo:hover .cadre{border-color:var(--crayon)}.photo h3{font-size:13px;line-height:1.25;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font:400 10px/1.45 var(--mono);color:#756e64;margin-top:2px}.desc{font-size:12px;color:#aaa196;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}.tag{display:inline-block;border:1px solid var(--trait);border-radius:99px;padding:2px 7px;color:#cfc8bb;font:400 10px var(--mono);margin:5px 4px 0 0}.avertir .cadre{border-color:var(--warn)}
+#fiche{position:fixed;inset:0;background:rgba(9,8,7,.94);z-index:20;display:none;align-items:center;justify-content:center;padding:24px}#fiche.on{display:flex}.modal{max-width:1040px;width:100%;max-height:92vh;overflow:auto;background:#181512;border:1px solid var(--trait);border-radius:6px;padding:18px}.modal-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}.modal h2{font-size:25px;letter-spacing:-.02em}.modal img{width:100%;max-height:62vh;object-fit:contain;background:#0d0c0b;border:1px solid var(--trait)}.infos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:15px 0}.info{background:#0f0d0b;border:1px solid #2d2822;border-radius:4px;padding:9px}.info b{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#756e64;margin-bottom:4px}.modal p{max-width:80ch;color:#d8d0c4}.liste-tags{margin:8px 0 14px}.vide{padding:36px;border:1px dashed var(--trait);color:var(--papier-3);text-align:center}
+@media(max-width:900px){body{grid-template-columns:1fr}#rail{position:static;height:auto}.top,.formgrid{display:block}.actions{margin-top:12px}#barre-catalogue .droite{margin-left:0}}
+</style>
+<link rel="stylesheet" href="minimal-theme.css">
+</head>
+<body>
+<aside id="rail">
+  <a class="retour" href="accueil.html">← Accueil</a>
+  <a class="retour" href="index.html">Catalogue films</a>
+  <h1>Catalogue photo<small id="sous">chargement…</small></h1>
+  <details class="groupe" open>
+    <summary>Recherche</summary>
+    <input id="recherche" class="champ" autocomplete="off" placeholder="portrait, rouge, affiche…">
+    <p class="note">Recherche en ET : plusieurs mots doivent tous être présents.</p>
+  </details>
+  <details class="groupe" id="f-type" open></details>
+  <details class="groupe" id="f-orientation"></details>
+  <details class="groupe" id="f-sujets"></details>
+  <details class="groupe" id="f-lieux"></details>
+  <details class="groupe" id="f-objets"></details>
+  <details class="groupe" id="f-lumiere"></details>
+  <details class="groupe" id="f-composition"></details>
+  <details class="groupe" id="f-ambiance"></details>
+  <details class="groupe" id="f-personnes"></details>
+  <details class="groupe" id="f-certitude"></details>
+  <details class="groupe" id="f-verifier"></details>
+  <button id="raz">Tout réinitialiser</button>
+</aside>
+<main id="page">
+  <section class="top">
+    <div>
+      <p class="mono">Banc de plans · branche photographie</p>
+      <h2>Analyse des photos</h2>
+      <p class="note">Choisissez le dossier, le contexte et les critères, puis lancez l’analyse locale. Le catalogue ci-dessous se met à jour depuis <code>photos/index.json</code>.</p>
+    </div>
+    <nav class="actions">
+      <a class="btn" href="index.html">Plans de films</a>
+      <button class="fort" id="btn-lancer">Enregistrer et lancer l’analyse</button>
+      <button id="btn-reindexer">Mettre à jour le catalogue photo</button>
+      <button class="stop" id="btn-arreter">Arrêter photo</button>
+    </nav>
+  </section>
+
+  <section class="panneau">
+    <h3>Dossier, contexte et critères</h3>
+    <div class="formgrid">
+      <div>
+        <label class="mono" for="dossier">Dossier de photos</label>
+        <div class="champ-ligne">
+          <input id="dossier" class="champ" placeholder="/chemin/vers/vos/photos">
+          <button id="btn-choisir-dossier" class="btn btn-secondaire" type="button">Choisir…</button>
+        </div>
+        <p class="note">Vous pouvez coller un chemin, ou ouvrir le sélecteur Finder pour choisir un dossier d’images sur votre disque.</p>
+        <label style="display:flex;gap:8px;margin-top:10px;color:#d8d0c4"><input id="refaire" type="checkbox"> Ré-analyser les photos déjà traitées</label>
+        <label class="mono" for="modele-photo" style="display:block;margin-top:12px">Modèle IA photo</label>
+        <select id="modele-photo" class="champ">
+          <option value="">Modèles locaux…</option>
+        </select>
+        <p class="note">Au lancement d’une analyse photo, l’analyse film active est arrêtée pour libérer le modèle IA.</p>
+      </div>
+      <div>
+        <label class="mono" for="contexte">Contexte général de ces photos</label>
+        <textarea id="contexte" placeholder="Exemple : photos d’atelier, prototypes papier, exposition, archives personnelles, objets à classer…"></textarea>
+      </div>
+    </div>
+    <div class="criteres" id="criteres"></div>
+    <div class="actions" style="margin-top:13px">
+      <button id="btn-enregistrer">Enregistrer les réglages</button>
+      <button class="fort" id="btn-lancer-2">Lancer l’analyse photo</button>
+    </div>
+    <p class="message" id="message">Lecture de l’état photo…</p>
+    <div class="barre"><span id="barre-progression"></span></div>
+    <div class="suivi-photo" id="suivi-photo">
+      <div><b>Progression photo</b><span id="progression-photo-texte" class="mono">en attente</span></div>
+      <div><b>Photo en cours</b><span id="photo-actuelle" class="photo-actuelle">aucune</span></div>
+      <span class="pastille-active" id="photo-active-dot" hidden></span>
+    </div>
+  </section>
+
+  <section class="status">
+    <div class="stat"><b>Photos source</b><div class="val" id="nb-source">…</div></div>
+    <div class="stat"><b>Photos indexées</b><div class="val" id="nb-index">…</div></div>
+    <div class="stat"><b>À analyser</b><div class="val" id="nb-restantes">…</div></div>
+    <div class="stat"><b>À vérifier</b><div class="val" id="nb-verifier">…</div></div>
+    <div class="stat"><b>Index</b><div class="val" id="date-index" style="font-size:18px">…</div></div>
+  </section>
+
+  <div id="barre-catalogue">
+    <div id="compte">aucune photo chargée</div>
+    <div class="droite">
+      <label class="mono" for="tri">Trier</label>
+      <select id="tri" class="champ">
+        <option value="fichier">Nom du fichier</option>
+        <option value="date">Date photo</option>
+        <option value="type">Type d’image</option>
+        <option value="certitude">Certitude</option>
+        <option value="verifier">À vérifier d’abord</option>
+      </select>
+      <input id="taille" type="range" min="130" max="360" value="220" title="Taille des vignettes">
+    </div>
+  </div>
+  <section id="grille" class="grille"></section>
+</main>
+
+<section id="fiche" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-top">
+      <div><h2 id="m-titre"></h2><p class="mono" id="m-source"></p></div>
+      <button id="m-fermer">Fermer</button>
+    </div>
+    <img id="m-image" alt="">
+    <div class="infos" id="m-infos"></div>
+    <p id="m-desc"></p>
+    <div class="liste-tags" id="m-tags"></div>
+    <div class="actions" id="m-actions" style="margin:12px 0">
+      <label class="mono" for="m-modele">Relancer avec</label>
+      <select id="m-modele" class="champ" style="max-width:260px"></select>
+      <button class="fort" id="m-relancer" type="button">Relancer cette photo</button>
+    </div>
+    <details open><summary>Analyse complète</summary><pre id="m-json" class="mono" style="white-space:pre-wrap;margin-top:10px"></pre></details>
+  </div>
+</section>
+
+<script>
+'use strict';
+const API='http://127.0.0.1:8765';
+const $=s=>document.querySelector(s);
+const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const liste=v=>Array.isArray(v)?v.filter(Boolean).join(', '):(v||'');
+const DEFAULT_CRITERES=['sujets et objets visibles','composition et cadrage','lumière et couleur','lieu ou décor','personnes sans identification nominative','texte visible dans l’image','qualité technique','usage possible dans un catalogue'];
+const FACETS=[
+  ['#f-type','Type','type_image'],['#f-orientation','Orientation','orientation'],['#f-sujets','Sujets','sujets'],['#f-lieux','Lieux','lieux'],['#f-objets','Objets','objets'],['#f-lumiere','Lumière','lumiere'],['#f-composition','Composition','composition'],['#f-ambiance','Ambiance','ambiance'],['#f-personnes','Personnes','personnes'],['#f-certitude','Certitude','certitude'],['#f-verifier','À vérifier','a_verifier']
+];
+let PHOTOS=[], ACTIFS={}, INDEX=null, ETAT=null, CONFIG_INIT=false, PHOTO_DETAIL=null;
+function valeurs(p,k){const v=p[k]; if(k==='a_verifier') return [v?'oui':'non']; return Array.isArray(v)?v.filter(Boolean):(v?[v]:[])}
+function textePhoto(p){return [p.titre,p.fichier,p.chemin_relatif,p.description,p.type_image,liste(p.sujets),liste(p.personnes),liste(p.objets),liste(p.lieux),p.texte_visible,p.lumiere,p.composition,liste(p.couleurs),liste(p.ambiance),p.qualite_technique,liste(p.usage_catalogue),liste(p.mots_cles),p.certitude,p.note,p.contexte_utilise].join(' ').toLowerCase()}
+function criteresChoisis(){return [...document.querySelectorAll('#criteres input:checked')].map(i=>i.value)}
+function remplirCriteres(criteres){const set=new Set(criteres&&criteres.length?criteres:DEFAULT_CRITERES);$('#criteres').innerHTML=DEFAULT_CRITERES.map(c=>`<label><input type="checkbox" value="${h(c)}" ${set.has(c)?'checked':''}>${h(c)}</label>`).join('')}
+function optionsModelesPhoto(data,courant){const liste=(data.modeles_photos&&data.modeles_photos.length?data.modeles_photos:Object.values(data.modeles_analyse||{}).filter(m=>(m.moteur||'ollama')==='ollama').map(m=>m.nom).filter(Boolean));const base=liste.length?liste:[];if(!base.length)return '<option value="">Aucun modèle local détecté</option>';const valeur=base.includes(courant)?courant:base[0];return base.map(m=>`<option value="${h(m)}" ${m===valeur?'selected':''}>${h((Object.values(data.modeles_analyse||{}).find(x=>x&&x.nom===m)||{}).label||m)}</option>`).join('')}
+function rafraichirModelePhoto(data){const sel=$('#modele-photo');if(!sel)return;const courant=data.photos_modele_analyse||sel.value||'';const options=optionsModelesPhoto(data,courant);sel.innerHTML=options;sel.value=(data.modeles_photos||[]).includes(courant)?courant:sel.value;const msel=$('#m-modele');if(msel){const detail=PHOTO_DETAIL&&PHOTO_DETAIL.modele;msel.innerHTML=optionsModelesPhoto(data,detail||sel.value);if(detail&&(data.modeles_photos||[]).includes(detail))msel.value=detail}}
+function configPayload(){const modele=$('#modele-photo')?$('#modele-photo').value:'';return {dossier_photos:$('#dossier').value.trim(), photos_contexte:$('#contexte').value.trim(), photos_criteres:criteresChoisis(), photos_modele_analyse:modele, modele, refaire:$('#refaire').checked}}
+function postJSON(path,payload){$('#message').textContent='Demande envoyée…';return fetch(`${API}/${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload||{})}).then(r=>r.json()).then(data=>{$('#message').textContent=data.message||'Action envoyée.';setTimeout(()=>{chargerEtat();chargerIndex();},1000);return data}).catch(()=>{$('#message').textContent='Serveur de contrôle absent. Double-cliquez sur ouvrir_site.command.'})}
+function choisirDossier(){const bouton=$('#btn-choisir-dossier'); const ancien=bouton.textContent; bouton.disabled=true; bouton.textContent='Ouverture…'; return fetch(`${API}/photos-choisir-dossier`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(r=>r.json()).then(data=>{if(data&&data.dossier_photos)$('#dossier').value=data.dossier_photos; $('#message').textContent=data.message||'Choix du dossier terminé.'; return data}).catch(()=>{$('#message').textContent='Impossible d’ouvrir le sélecteur de dossier.'}).finally(()=>{bouton.disabled=false; bouton.textContent=ancien})}
+function enregistrer(){return postJSON('photos-config',configPayload())}
+function lancer(){return postJSON('photos-analyser',configPayload())}
+function reindexer(){return postJSON('photos-reindexer',configPayload())}
+function arreter(){return postJSON('photos-arreter',{})}
+function relancerPhotoIndividuelle(){if(!PHOTO_DETAIL)return;const modele=$('#m-modele')?$('#m-modele').value:($('#modele-photo')?$('#modele-photo').value:'');$('#message').textContent=`Relance de ${PHOTO_DETAIL.fichier||PHOTO_DETAIL.id}…`;return postJSON('photos-analyser-photo',{...configPayload(),photo_id:PHOTO_DETAIL.id,modele,photos_modele_analyse:modele})}
+function passeFiltres(p){const mots=$('#recherche').value.trim().toLowerCase().split(/\s+/).filter(Boolean); if(mots.length&&!mots.every(m=>p._texte.includes(m)))return false; for(const [, ,k] of FACETS){const sel=ACTIFS[k]; if(sel&&sel.size){const vals=valeurs(p,k).map(x=>String(x).toLowerCase()); for(const s of sel){if(!vals.includes(String(s).toLowerCase()))return false}}} return true}
+function compterAvec(k,val){let n=0; const ancien=ACTIFS[k]; const temp=new Set(ancien||[]); temp.add(val); ACTIFS[k]=temp; for(const p of PHOTOS){if(passeFiltres(p))n++} if(ancien)ACTIFS[k]=ancien; else delete ACTIFS[k]; return n}
+function construireFacettes(){for(const [sel,label,k] of FACETS){const valeursU=[...new Set(PHOTOS.flatMap(p=>valeurs(p,k)).map(String).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr')); const el=$(sel); if(!valeursU.length){el.innerHTML='';continue} el.innerHTML=`<summary>${label}</summary>`+valeursU.slice(0,80).map(v=>`<label><input type="checkbox" data-facet="${h(k)}" value="${h(v)}"><span>${h(v)}</span><span class="n">0</span></label>`).join('')}}
+function lireActifs(){ACTIFS={};document.querySelectorAll('input[data-facet]:checked').forEach(i=>{const k=i.dataset.facet;(ACTIFS[k]||(ACTIFS[k]=new Set())).add(i.value)})}
+function majComptes(){document.querySelectorAll('input[data-facet]').forEach(i=>{const n=compterAvec(i.dataset.facet,i.value);const lab=i.closest('label');lab.querySelector('.n').textContent=n;lab.classList.toggle('vide',n===0&&!i.checked)})}
+function trier(photos){const tri=$('#tri').value; return photos.sort((a,b)=>{if(tri==='date')return String(b.date_photo||b.mtime||'').localeCompare(String(a.date_photo||a.mtime||'')); if(tri==='type')return String(a.type_image||'').localeCompare(String(b.type_image||''),'fr')||String(a.fichier).localeCompare(String(b.fichier),'fr'); if(tri==='certitude')return String(a.certitude||'').localeCompare(String(b.certitude||''),'fr'); if(tri==='verifier')return (b.a_verifier?1:0)-(a.a_verifier?1:0)||String(a.fichier).localeCompare(String(b.fichier),'fr'); return String(a.fichier).localeCompare(String(b.fichier),'fr')})}
+function progressionPhoto(p){const prog=(ETAT&&ETAT.photos_progression)||{};if(p.description)return 100;if(prog.photo_id&&prog.photo_id===p.id)return Math.max(1,Math.min(99,Number(prog.pourcentage||0)));return 0}
+function statutPhoto(p){const n=progressionPhoto(p);if(n>=100)return 'analysée';if(n>0)return 'en cours';return p.vignette?'aperçu prêt':'en attente'}
+function appliquer(){lireActifs();let photos=trier(PHOTOS.filter(passeFiltres));const taille=Number($('#taille').value||220);$('#grille').style.gridTemplateColumns=`repeat(auto-fill,minmax(${taille}px,1fr))`;$('#compte').textContent=`${photos.length} photo${photos.length>1?'s':''} affichée${photos.length>1?'s':''} sur ${PHOTOS.length}`;$('#grille').innerHTML=photos.map(p=>{const pr=progressionPhoto(p);const encours=(ETAT&&ETAT.photos_progression&&ETAT.photos_progression.photo_id===p.id&&ETAT.photos_progression.actif);return `<article class="photo ${p.a_verifier?'avertir':''} ${encours?'en-cours':''}" data-id="${h(p.id)}" tabindex="0"><div class="cadre"><img loading="lazy" src="${h(p.vignette)}?maj=${h(p.mtime||'')}" alt=""></div><h3>${h(p.titre||p.fichier)}</h3><div class="meta">${h(p.type_image||'photo')} · ${h(p.orientation||'')} · ${h(p.certitude||statutPhoto(p))}</div><div class="progression-card" title="${h(statutPhoto(p))}"><span style="width:${pr}%"></span></div><p class="desc">${h(p.description||'Aperçu prêt, analyse IA à lancer.')}</p>${(p.mots_cles||[]).slice(0,4).map(x=>`<span class="tag">${h(x)}</span>`).join('')}</article>`}).join('')||'<div class="vide">Aucune photo ne correspond aux filtres.</div>';majComptes()}
+function afficherModal(p){PHOTO_DETAIL=p;$('#m-titre').textContent=p.titre||p.fichier;$('#m-source').textContent=p.chemin_relatif||p.fichier;$('#m-image').src=(p.vignette||'')+'?maj='+(p.mtime||Date.now());$('#m-desc').textContent=p.description||'Photo non analysée.';const infos=[['Modèle IA',p.modele],['Analyse le',p.analyse_le],['Temps analyse',p.temps_analyse_secondes?`${p.temps_analyse_secondes} s`:''],['Type',p.type_image],['Date',p.date_photo],['Dimensions',`${p.largeur||'?'}×${p.hauteur||'?'}`],['Orientation',p.orientation],['Lumière',p.lumiere],['Composition',p.composition],['Certitude',p.certitude],['Appareil',p.appareil],['Objectif',p.objectif],['ISO',p.iso],['Ouverture',p.ouverture],['Vitesse',p.vitesse],['Focale',p.focale],['À vérifier',p.a_verifier?'oui':'non']];$('#m-infos').innerHTML=infos.filter(([,v])=>v).map(([k,v])=>`<div class="info"><b>${h(k)}</b>${h(v)}</div>`).join('');const tags=[...(p.sujets||[]),...(p.objets||[]),...(p.lieux||[]),...(p.ambiance||[]),...(p.mots_cles||[])];$('#m-tags').innerHTML=[...new Set(tags)].slice(0,60).map(x=>`<span class="tag">${h(x)}</span>`).join('');$('#m-json').textContent=JSON.stringify({modele_ia:p.modele,analyse_le:p.analyse_le,analyse:p.analyse||{}},null,2);rafraichirModelePhoto(ETAT||{});$('#fiche').classList.add('on');$('#fiche').setAttribute('aria-hidden','false')}
+function chargerIndex(){return fetch('photos/index.json?maj='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():{photos:[]}).then(index=>{INDEX=index;PHOTOS=(index.photos||[]).map(p=>({...p,_texte:textePhoto(p)}));$('#sous').textContent=`${PHOTOS.length} photo${PHOTOS.length>1?'s':''}`;$('#nb-index').textContent=PHOTOS.length;$('#date-index').textContent=index.genere||'absent';construireFacettes();appliquer();return index}).catch(()=>{PHOTOS=[];$('#grille').innerHTML='<div class="vide">Aucun catalogue photo pour l’instant. Choisissez un dossier puis lancez l’analyse.</div>';$('#sous').textContent='aucun index';$('#nb-index').textContent='0'})}
+function chargerEtat(){return fetch(`${API}/etat?maj=${Date.now()}`,{cache:'no-store'}).then(r=>r.json()).then(data=>{ETAT=data;rafraichirModelePhoto(data);if(!CONFIG_INIT){$('#dossier').value=data.dossier_photos||$('#dossier').value||'';$('#contexte').value=data.photos_contexte??$('#contexte').value;remplirCriteres(data.photos_criteres||DEFAULT_CRITERES);CONFIG_INIT=true}const source=data.photos_source||0,indexed=(data.photos_index||{}).photos||0,rest=(data.photos_sans_analyse||[]).length,prog=data.photos_progression||{};$('#nb-source').textContent=source;$('#nb-index').textContent=indexed;$('#nb-restantes').textContent=rest;$('#nb-verifier').textContent=(data.photos_index||{}).a_verifier||0;$('#date-index').textContent=(data.photos_index||{}).genere||'absent';const pct=Number(prog.pourcentage||(source?Math.round((source-rest)/source*100):0));$('#barre-progression').style.width=Math.max(0,Math.min(100,pct))+'%';$('#progression-photo-texte').textContent=`${prog.phase||'photo'} · ${prog.courant||0}/${prog.total||source||0} · ${Math.round(pct)}% · ${prog.modele||data.photos_modele_analyse||''}`;$('#photo-actuelle').textContent=prog.photo||'aucune photo en cours';$('#photo-active-dot').hidden=!prog.actif;$('#message').textContent=[data.dernier_photos_message,data.photo_analyse_active?'analyse photo active':'analyse photo arrêtée'].filter(Boolean).join(' · ');appliquer();return data}).catch(()=>{$('#message').textContent='Serveur de contrôle absent. Double-cliquez sur ouvrir_site.command.';if(!CONFIG_INIT){remplirCriteres(DEFAULT_CRITERES);CONFIG_INIT=true}})}
+$('#btn-enregistrer').onclick=enregistrer;$('#btn-lancer').onclick=lancer;$('#btn-lancer-2').onclick=lancer;$('#btn-reindexer').onclick=reindexer;$('#btn-arreter').onclick=arreter;$('#btn-choisir-dossier').onclick=choisirDossier;$('#m-relancer').onclick=relancerPhotoIndividuelle;$('#recherche').oninput=appliquer;$('#tri').onchange=appliquer;$('#taille').oninput=appliquer;$('#raz').onclick=()=>{document.querySelectorAll('input[data-facet]').forEach(i=>i.checked=false);$('#recherche').value='';appliquer()};document.addEventListener('change',e=>{if(e.target.matches('input[data-facet]'))appliquer()});$('#grille').addEventListener('click',e=>{const card=e.target.closest('.photo');if(card){const p=PHOTOS.find(x=>x.id===card.dataset.id);if(p)afficherModal(p)}});$('#grille').addEventListener('keydown',e=>{if(e.key==='Enter'){const card=e.target.closest('.photo');if(card){const p=PHOTOS.find(x=>x.id===card.dataset.id);if(p)afficherModal(p)}}});$('#m-fermer').onclick=()=>{$('#fiche').classList.remove('on');$('#fiche').setAttribute('aria-hidden','true')};$('#fiche').addEventListener('click',e=>{if(e.target.id==='fiche')$('#m-fermer').click()});Promise.allSettled([chargerEtat(),chargerIndex()]);setInterval(()=>{chargerEtat();chargerIndex()},15000);
+</script>
+</body>
+</html>

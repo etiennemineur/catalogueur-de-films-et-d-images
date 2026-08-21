@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lecteur film</title>
+<style>
+:root{--bg:#06101f;--bg2:#0d1c39;--fg:#eef4ff;--muted:#9ab0d3;--line:rgba(120,150,220,.22);--accent:#8eb1ff}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:linear-gradient(180deg,#081326,#050b16);color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+body{min-height:100vh}
+.wrap{max-width:1500px;margin:0 auto;padding:18px}
+.shell{border:1px solid var(--line);background:linear-gradient(180deg,rgba(13,28,57,.98),rgba(8,18,34,.98));box-shadow:0 20px 70px rgba(0,0,0,.45)}
+.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid var(--line)}
+.head h1{margin:0;font-size:34px;line-height:1.05;letter-spacing:-.03em}.head p{margin:8px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{appearance:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--fg);padding:10px 14px;border-radius:14px;text-decoration:none;cursor:pointer;font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.btn:hover{border-color:var(--accent)}
+.video{padding:18px}.video video{display:block;width:100%;max-height:72vh;background:#000;border:1px solid rgba(255,255,255,.08)}
+.note{padding:0 18px 18px;color:var(--muted);font-size:14px;line-height:1.55}.err{color:#ffb4b4}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="shell">
+    <header class="head">
+      <div>
+        <h1 id="titre">Film</h1>
+        <p id="meta">Chargement…</p>
+      </div>
+      <div class="actions">
+        <a class="btn" id="btn-plans" href="index.html">Voir les plans</a>
+        <a class="btn" id="btn-fiche" href="fiches.html">Fiche du film</a>
+        <button class="btn" id="btn-fermer" type="button">Fermer</button>
+      </div>
+    </header>
+    <div class="video">
+      <video id="video" controls playsinline preload="metadata"></video>
+    </div>
+    <p class="note" id="note">Lecteur du film source dans une fenêtre dédiée.</p>
+  </section>
+</div>
+<script>
+'use strict';
+const params = new URLSearchParams(location.search);
+const filmId = params.get('film') || '';
+const API = 'http://127.0.0.1:8765';
+const $ = s => document.querySelector(s);
+function h(t){return String(t ?? '');}
+function majLiens(id){
+  $('#btn-plans').href = `index.html?film=${encodeURIComponent(id)}&vue=plans`;
+  $('#btn-fiche').href = `fiches.html?film=${encodeURIComponent(id)}`;
+}
+function chargerFilm(){
+  if(!filmId){
+    $('#meta').textContent = 'Film non précisé.';
+    $('#note').innerHTML = '<span class="err">Paramètre film manquant.</span>';
+    return;
+  }
+  majLiens(filmId);
+  const src = `${API}/film-video?film=${encodeURIComponent(filmId)}`;
+  const video = $('#video');
+  video.src = src;
+  fetch('films.json', {cache:'default'}).then(r => r.ok ? r.json() : {films:[]}).then(data => {
+    const films = Array.isArray(data) ? data : (data.films || []);
+    const film = films.find(f => (f && f.id) === filmId) || {};
+    $('#titre').textContent = film.titre_original || film.titre || filmId;
+    $('#meta').textContent = [film.titre && film.titre !== film.titre_original ? film.titre : '', film.date_sortie || film.annee || '', film.realisateur || ''].filter(Boolean).join(' · ') || filmId;
+    const note = [];
+    if (film.pitch) note.push(film.pitch);
+    note.push('Source lue via le serveur local de contrôle.');
+    $('#note').textContent = note.join(' ');
+    video.setAttribute('aria-label', `Lecture du film ${$('#titre').textContent}`);
+  }).catch(() => {
+    $('#titre').textContent = filmId;
+    $('#meta').textContent = filmId;
+  });
+  video.addEventListener('error', () => {
+    $('#note').innerHTML = '<span class="err">Lecture vidéo impossible pour ce film dans le navigateur local. Si le format source n’est pas directement lisible, le serveur tente une conversion locale à la demande.</span>';
+  });
+}
+$('#btn-fermer').onclick = () => window.close();
+chargerFilm();
+</script>
+</body>
+</html>

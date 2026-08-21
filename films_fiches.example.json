@@ -1,0 +1,10 @@
+[
+  {
+    "id": "exemple-film-1970",
+    "titre": "Exemple Film",
+    "titre_original": "Exemple Film",
+    "annee": 1970,
+    "pitch": "Fiche d’exemple. Remplacez ce fichier par votre propre catalogue local si nécessaire.",
+    "synopsis": "Ce fichier ne contient pas les données locales du projet original."
+  }
+]

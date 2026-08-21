@@ -1,0 +1,2432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Banc de plans</title>
+<style>
+:root{
+  --encre:#151412; --encre-2:#1c1a17; --encre-3:#0d0c0b;
+  --papier:#e8e3d9; --papier-2:#b3ada1; --papier-3:#7d786e;
+  --trait:#332f2a; --crayon:#c8321e; --crayon-2:#d9a02b;
+  --texte:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--encre);color:var(--papier);
+  font:400 14px/1.45 var(--texte);
+  display:grid;grid-template-columns:256px 1fr;min-height:100vh}
+
+/* ── Rail ─────────────────────────────────────────────── */
+#rail{background:var(--encre-2);border-right:1px solid var(--trait);
+  padding:20px 18px 130px;overflow-y:auto;height:100vh;position:sticky;top:0}
+#rail h1{font:600 12px/1.2 var(--texte);letter-spacing:.16em;
+  text-transform:uppercase;padding-bottom:13px;
+  border-bottom:1px solid var(--trait);margin-bottom:18px}
+#rail h1 small{display:block;font:400 11px/1.7 var(--mono);letter-spacing:0;
+  text-transform:none;color:var(--papier-3);margin-top:5px}
+.retour{display:block;margin-bottom:14px;border:1px solid var(--trait);
+  color:var(--papier-2);text-decoration:none;padding:8px 10px;border-radius:2px;
+  font:400 11px/1 var(--mono);letter-spacing:.06em}
+.retour:hover{border-color:var(--crayon);color:var(--papier)}
+.groupe{margin-bottom:9px;border:1px solid transparent}
+.groupe > summary{display:block;font:500 10px/1 var(--mono);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--papier-3);margin-bottom:8px;cursor:pointer;
+  list-style:none;padding:5px 0}
+.groupe > summary::-webkit-details-marker{display:none}
+.groupe > summary::after{content:"+";float:right;color:#5d584f}
+.groupe[open] > summary::after{content:"−"}
+.groupe[open]{margin-bottom:17px}
+.groupe label{display:flex;align-items:baseline;gap:7px;padding:2px 0;
+  cursor:pointer;font-size:13px;color:#c4beb2}
+.groupe label:hover{color:var(--papier)}
+.groupe label input[type=checkbox]{accent-color:var(--crayon);margin:0;
+  flex:none;position:relative;top:1px}
+.groupe label .n{margin-left:auto;font:400 10px var(--mono);color:#5d584f}
+.groupe label.vide:not(:has(input:checked)),.mot.vide:not(.actif){opacity:.38}
+.controle-films{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:2px 0 9px;
+  padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.045)}
+.controle-films button,.controle-films .choix-tous-films{background:none;border:1px solid var(--trait);color:var(--papier-2);
+  font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 7px;border-radius:2px;cursor:pointer}
+.controle-films .choix-tous-films{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.controle-films .choix-tous-films.actif{background:var(--crayon);border-color:var(--crayon);color:#fff}
+.controle-films .choix-tous-films input{accent-color:var(--crayon);margin:0}
+.controle-films button:hover,.controle-films .choix-tous-films:hover{border-color:var(--crayon);color:var(--papier)}
+.controle-films .etat-films{margin-left:auto;color:var(--papier-3);font:400 10px var(--mono)}
+.famille-filtres{margin:0 0 10px;border:1px solid var(--trait);
+  background:rgba(255,255,255,.015);border-radius:3px;padding:0 9px 2px}
+.famille-filtres > summary{display:block;font:600 10px/1 var(--mono);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--papier-2);cursor:pointer;list-style:none;
+  padding:10px 0}
+.famille-filtres > summary::-webkit-details-marker{display:none}
+.famille-filtres > summary::after{content:"+";float:right;color:#5d584f}
+.famille-filtres[open] > summary{color:var(--papier)}
+.famille-filtres[open] > summary::after{content:"−";color:var(--crayon)}
+.famille-filtres .groupe{margin-left:2px;margin-bottom:7px;border-top:1px solid rgba(255,255,255,.035)}
+.famille-filtres .groupe:first-of-type{border-top:0}
+.famille-filtres .groupe > summary{letter-spacing:.12em;padding-top:8px}
+.champ{width:100%;background:var(--encre-3);border:1px solid var(--trait);
+  color:var(--papier);padding:8px 10px;font:400 13px var(--texte);
+  border-radius:2px}
+.champ:focus{outline:none;border-color:var(--crayon)}
+.etiquette-champ{display:block;margin:10px 0 5px;color:var(--papier-2);
+  font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.aide{font-size:11px;color:var(--papier-3);line-height:1.35;margin-top:7px}
+select.champ{font:400 12px var(--mono);cursor:pointer}
+#annees{display:flex;gap:8px;align-items:center}
+#annees input{width:100%;text-align:center;font:400 12px var(--mono)}
+#annees span{color:var(--papier-3);font:400 11px var(--mono)}
+#f-mots .nuage{display:flex;flex-wrap:wrap;gap:5px}
+.mot{background:none;border:1px solid var(--trait);color:#b3ada1;
+  font:400 11px var(--texte);padding:3px 8px;border-radius:11px;cursor:pointer}
+.mot:hover{border-color:var(--papier-3);color:var(--papier)}
+.mot.actif{background:var(--crayon);border-color:var(--crayon);color:#fff}
+.etat-vide-resultats{padding:18px 16px;border:1px solid var(--trait);border-radius:8px;
+  background:rgba(255,255,255,.03);color:var(--papier);display:grid;gap:8px}
+.etat-vide-resultats b{font:600 13px/1.35 var(--mono);letter-spacing:.02em}
+.etat-vide-resultats p{margin:0;color:var(--papier-2);font:400 12px/1.5 var(--texte)}
+.etat-vide-resultats ul{margin:0;padding-left:18px;color:var(--papier-2);font:400 12px/1.5 var(--texte)}
+#raz{background:none;border:1px solid var(--trait);color:var(--papier-3);
+  font:400 11px/1 var(--mono);padding:8px 10px;cursor:pointer;width:100%;
+  border-radius:2px;letter-spacing:.06em}
+#raz:hover{border-color:var(--crayon);color:var(--papier)}
+
+/* ── Planche ──────────────────────────────────────────── */
+#planche{padding:18px 22px 170px}
+#barre{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-bottom:15px;margin-bottom:16px;border-bottom:1px solid var(--trait);
+  position:sticky;top:0;background:var(--encre);z-index:5}
+#compte{font:400 11px/1 var(--mono);color:var(--papier-3);letter-spacing:.06em}
+#compte b{color:var(--papier);font-weight:500}
+#barre .droite{margin-left:auto;display:flex;align-items:center;gap:10px}
+#barre .droite label{font:400 10px var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--papier-3)}
+#tri{padding:6px 8px;min-width:172px;width:auto}
+#sens{background:none;border:1px solid var(--trait);color:var(--papier-2);
+  font:400 13px var(--mono);width:30px;height:30px;cursor:pointer;
+  border-radius:2px;line-height:1}
+#sens:hover{border-color:var(--crayon);color:var(--papier)}
+#taille{accent-color:var(--crayon);width:80px}
+#vue{padding:6px 8px;min-width:118px;width:auto}
+#vue[hidden]{display:none}
+.bascule-vue{display:inline-flex;border:1px solid var(--trait);border-radius:3px;overflow:hidden;background:var(--encre-2)}
+.bascule-vue button{background:transparent;border:0;border-right:1px solid var(--trait);
+  color:var(--papier-3);font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 11px;cursor:pointer}
+.bascule-vue button:last-child{border-right:0}
+.bascule-vue button.actif{background:var(--crayon);color:#17130d}
+.bascule-vue button:hover:not(.actif){color:var(--papier);background:#252119}
+#granularite{accent-color:var(--crayon);width:96px}
+#scene-focus{font:400 10px var(--mono);letter-spacing:.04em;color:var(--papier-2);
+  border:1px solid var(--trait);padding:6px 8px;border-radius:2px;display:none;gap:8px;align-items:center}
+#scene-focus.on{display:inline-flex}
+#scene-focus button{background:none;border:0;color:var(--crayon);cursor:pointer;font:600 11px var(--mono)}
+
+#grille{display:grid;gap:14px}
+.plan{cursor:pointer;position:relative}
+.cadre{position:relative;aspect-ratio:2.35/1;background:var(--encre-3);
+  overflow:hidden;border:1px solid transparent;cursor:zoom-in}
+.cadre img{width:100%;height:100%;object-fit:cover;display:block}
+.cadre video{width:100%;height:100%;object-fit:cover;display:block;background:var(--encre-3)}
+.bouton-panier{appearance:none;background:none;border:1px solid var(--trait);color:var(--papier-3);
+  font:600 9px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 7px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;
+  margin-left:auto;flex:none}
+.bouton-panier::before{content:"+";font:700 11px/1 var(--mono);color:var(--crayon)}
+.bouton-panier:hover{border-color:var(--crayon);color:var(--crayon);background:rgba(255,255,255,.03)}
+.plan.pris .bouton-panier{border-color:var(--crayon);color:var(--crayon)}
+.plan.pris .bouton-panier::before{content:"✓";color:var(--crayon)}
+.cadre .anim{position:absolute;inset:0;opacity:0;transition:opacity .12s}
+.cadre .animvideo{position:absolute;inset:0;opacity:0;transition:opacity .12s;pointer-events:none}
+.plan.preview-video .cadre .animvideo{opacity:1}
+.plan:hover .cadre .anim,.plan:focus-visible .cadre .anim{opacity:1}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--crayon);
+  width:0;transition:width .1s linear}
+.meta{font:400 10px/1.5 var(--mono);color:#6b665d;padding-top:5px;
+  display:flex;gap:9px;align-items:center;justify-content:space-between}
+.meta .tc{color:#a29b8e}
+.film{font:500 11px/1.3 var(--texte);color:#cfc8bb;padding-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scene{display:none}
+.desc{display:none}
+.carte-scene{cursor:pointer;position:relative;border:1px solid transparent;padding-bottom:4px}
+.carte-scene:hover{border-color:var(--trait)}
+.carte-scene .cadre{cursor:pointer}
+.carte-scene .scene-vignettes{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:3px}
+.carte-scene .scene-vignettes img{width:100%;aspect-ratio:2.35/1;object-fit:cover;display:block;opacity:.82;background:var(--encre-3)}
+.carte-scene .scene-entete{font:600 10px/1.4 var(--mono);letter-spacing:.08em;
+  color:var(--crayon);text-transform:uppercase;padding-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+.carte-scene .scene-plans{color:#cfc8bb;text-transform:none;letter-spacing:.02em}
+.carte-scene .resume-scene{font-size:12px;line-height:1.35;color:#aaa196;padding-top:4px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.carte-scene .action-scene{font:400 10px/1.35 var(--mono);color:#8f887d;padding-top:3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.carte-scene .ouvrir-scene-plans{display:inline-flex;margin-top:8px;border:1px solid var(--trait);
+  color:var(--papier-2);padding:6px 8px;font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.carte-scene:hover .ouvrir-scene-plans{border-color:var(--crayon);color:var(--crayon)}
+.plan.m .cadre::after{content:"";position:absolute;top:7px;left:7px;
+  width:7px;height:7px;border-radius:50%;background:var(--crayon);
+  box-shadow:0 0 0 2px rgba(0,0,0,.6);z-index:2}
+.plan.m.doute .cadre::after{background:var(--crayon-2)}
+.plan.pris .cadre{border-color:var(--crayon)}
+.plan.pris::before{content:"";position:absolute;inset:-5px -5px auto auto;
+  width:26px;height:26px;border:2px solid var(--crayon);
+  border-radius:60% 40% 55% 45%;transform:rotate(-14deg);opacity:.9;
+  pointer-events:none;z-index:3}
+.plan:focus-visible .cadre{outline:2px solid var(--papier);outline-offset:2px}
+#plus{margin:26px auto 0;display:block;background:none;color:var(--papier-3);
+  border:1px solid var(--trait);padding:9px 22px;cursor:pointer;
+  font:400 11px var(--mono);letter-spacing:.08em;border-radius:2px}
+#plus:hover{border-color:var(--crayon);color:var(--papier)}
+
+/* ── Banc ─────────────────────────────────────────────── */
+#banc{position:fixed;bottom:0;left:256px;right:0;
+  background:rgba(21,20,18,.96);backdrop-filter:blur(8px);
+  border-top:1px solid var(--crayon);padding:11px 22px;display:none;
+  align-items:center;gap:14px;z-index:9;flex-wrap:wrap}
+#banc.on{display:flex}
+#banc .txt{font:400 11px var(--mono);letter-spacing:.05em;flex:1}
+#banc .txt b{color:var(--crayon);font-weight:500}
+#banc button{background:none;border:1px solid var(--trait);color:var(--papier);
+  font:400 11px var(--mono);padding:8px 14px;cursor:pointer;border-radius:2px}
+#banc button.fort{border-color:var(--crayon);color:var(--crayon)}
+#banc button:hover{background:#252119}
+
+/* ── Fiche ────────────────────────────────────────────── */
+#fiche{position:fixed;inset:0;background:rgba(9,8,7,.94);z-index:20;
+  display:none;align-items:center;justify-content:center;padding:24px}
+#fiche.on{display:flex}
+#fiche .carte{max-width:940px;width:100%;max-height:92vh;overflow-y:auto}
+#fiche .visuel{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+#fiche .visuel img{width:100%;display:block;background:var(--encre-3)}
+#fiche .visuel img.grand{grid-column:1 / -1}
+#fiche .infos{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:13px;padding:18px 2px;font:400 12px var(--mono)}
+#fiche .infos i{display:block;font-style:normal;font:400 10px var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;color:#5d584f;margin-bottom:3px}
+#fiche p{font-size:15px;line-height:1.5;max-width:64ch}
+#fiche .bande{display:flex;margin-top:14px;height:6px;width:210px}
+#fiche .bande span{flex:1}
+
+/* ── Lecteur agrandi ───────────────────────────────────── */
+#lecteur-plan{position:fixed;inset:0;background:rgba(6,5,4,.95);z-index:22;
+  display:none;align-items:center;justify-content:center;padding:24px}
+#lecteur-plan.on{display:flex}
+#lecteur-plan .fenetre{width:min(92vw,1560px);max-height:92vh;overflow:auto;
+  background:linear-gradient(180deg,var(--encre-2),var(--encre-3));
+  border:1px solid var(--trait);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+#lecteur-plan .haut{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;
+  padding:16px 18px 10px;border-bottom:1px solid var(--trait)}
+#lecteur-plan .haut h2{font:500 16px/1.3 var(--texte);margin:0}
+#lecteur-plan .haut p{font:400 11px/1.55 var(--mono);color:var(--papier-3);margin-top:6px}
+#lecteur-plan .fermer{background:none;border:1px solid var(--trait);color:var(--papier);
+  font:400 11px var(--mono);padding:9px 12px;cursor:pointer;border-radius:2px;white-space:nowrap}
+#lecteur-plan .fermer:hover{border-color:var(--crayon);color:var(--crayon)}
+#lecteur-plan .video{padding:14px 18px 10px}
+#lecteur-plan video{display:block;width:100%;max-height:72vh;background:#000}
+#lecteur-plan .note{padding:0 18px 18px;font-size:13px;color:var(--papier-2)}
+#lecteur-plan .navigation{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 18px 18px}
+#lecteur-plan .navigation button{appearance:none;background:none;border:1px solid var(--trait);color:var(--papier);
+  font:400 11px var(--mono);padding:10px 12px;cursor:pointer;border-radius:2px;letter-spacing:.08em;
+  text-transform:uppercase}
+#lecteur-plan .navigation button:first-child{text-align:left}
+#lecteur-plan .navigation button:last-child{text-align:right}
+#lecteur-plan .navigation button:hover:not(:disabled){border-color:var(--crayon);color:var(--crayon)}
+#lecteur-plan .navigation button:disabled{opacity:.38;cursor:default}
+#lecteur-plan .volets{display:grid;gap:12px;padding:0 18px 24px}
+#lecteur-plan .volet{border:1px solid var(--trait);background:rgba(255,255,255,.02)}
+#lecteur-plan .volet > summary{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  list-style:none;cursor:pointer;padding:13px 15px;font:600 11px/1.35 var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--papier);background:rgba(255,255,255,.015)}
+#lecteur-plan .volet > summary::-webkit-details-marker{display:none}
+#lecteur-plan .volet > summary::after{content:"+";color:var(--papier-3);font:500 16px/1 var(--mono)}
+#lecteur-plan .volet[open] > summary{border-bottom:1px solid rgba(255,255,255,.06);color:var(--crayon)}
+#lecteur-plan .volet[open] > summary::after{content:"−";color:var(--crayon)}
+#lecteur-plan .volet-contenu{padding:16px 0 0}
+#lecteur-plan .description{padding:0 18px 22px}
+#lecteur-plan .description h3{margin:0 0 8px;font:500 11px var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--papier-3)}
+#lecteur-plan .description p{margin:0;font-size:15px;line-height:1.6;color:var(--papier);max-width:72ch}
+#lecteur-plan .technique{padding:0 18px 24px}
+#lecteur-plan .technique h3{margin:0 0 10px;font:500 11px var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--papier-3)}
+#lecteur-plan .technique-grille{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+#lecteur-plan .technique-item{border:1px solid var(--trait);background:rgba(255,255,255,.02);
+  padding:10px 11px 11px}
+#lecteur-plan .technique-item i{display:block;font-style:normal;font:400 10px var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;color:#7f796f;margin-bottom:7px}
+#lecteur-plan .technique-item .valeur{font-size:13px;line-height:1.55;color:var(--papier)}
+#lecteur-plan .puces-techniques{display:flex;flex-wrap:wrap;gap:6px}
+#lecteur-plan .puce-technique{display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--trait);padding:4px 8px;border-radius:999px;
+  font:400 11px/1.35 var(--mono);color:#d2cbc0;background:rgba(255,255,255,.02)}
+#lecteur-plan .palette-technique{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+#lecteur-plan .couleur-technique{display:flex;align-items:center;gap:6px;
+  border:1px solid var(--trait);padding:4px 7px;border-radius:999px;
+  font:400 11px var(--mono);color:#d2cbc0}
+#lecteur-plan .couleur-technique .pastille{width:13px;height:13px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.26);background:transparent;display:inline-block}
+
+#etat{padding:56px 22px;max-width:58ch}
+#etat h2{font:500 17px var(--texte);margin-bottom:10px}
+#etat p{color:var(--papier-3);font-size:13px;line-height:1.6;margin-bottom:11px}
+#etat code{font:400 12px var(--mono);color:var(--papier);
+  background:var(--encre-2);padding:2px 6px;border-radius:2px}
+
+@media (max-width:820px){
+  body{grid-template-columns:1fr}
+  #rail{position:static;height:auto;padding-bottom:22px}
+  #banc{left:0}
+  #fiche .visuel{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  .cadre .anim{display:none}
+}
+</style>
+<link rel="stylesheet" href="minimal-theme.css">
+</head>
+<body>
+
+<aside id="rail">
+  <a class="retour" href="accueil.html">← Accueil des films</a>
+  <a class="retour" href="fiches.html">Fiches des films</a>
+  <h1>Banc de plans<small id="sous">chargement…</small></h1>
+
+  <details class="famille-filtres famille-film" open>
+    <summary>Film</summary>
+    <details class="groupe" id="f-film" open></details>
+  </details>
+
+  <details class="groupe" open>
+    <summary>Recherche</summary>
+    <label class="etiquette-champ" for="recherche">recherche images</label>
+    <input id="recherche" class="champ" autocomplete="off"
+           placeholder="écran, laboratoire, néon…">
+    <label class="etiquette-champ" for="recherche-libre">recherche libre des plans</label>
+    <input id="recherche-libre" class="champ" autocomplete="off"
+           placeholder="les plans les plus longs, les plus rouges, avec des enfants en gros plan…">
+    <label class="etiquette-champ" for="recherche-dialogues">recherche dialogue</label>
+    <input id="recherche-dialogues" class="champ" autocomplete="off"
+           placeholder="mot ou expression exacte dans les dialogues…">
+    <p class="aide">La recherche libre combine des filtres et un tri dynamique. Exemples : « les plans les plus longs », « les plus rouges », « avec des enfants en gros plan ».</p>
+    <p class="aide">Règle de recherche : les films cochés définissent le périmètre ; tous les autres critères cochés se croisent et affinent les résultats.</p>
+  </details>
+
+  <details class="famille-filtres" open>
+    <summary>Image et composition</summary>
+    <details class="groupe" id="f-mots"></details>
+    <details class="groupe" id="f-certitude"></details>
+    <details class="groupe" id="f-echelle"></details>
+    <details class="groupe" id="f-angle"></details>
+    <details class="groupe" id="f-profondeur-champ"></details>
+    <details class="groupe" id="f-composition-cadre"></details>
+    <details class="groupe" id="f-lumiere"></details>
+    <details class="groupe" id="f-presence-categorie"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Scènes et lieux</summary>
+    <details class="groupe" id="f-scene-titre"></details>
+    <details class="groupe" id="f-scene-lieu"></details>
+    <details class="groupe" id="f-scene-temporalite"></details>
+    <details class="groupe" id="f-scene-confiance"></details>
+    <details class="groupe" id="f-lieu"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Personnes, animaux</summary>
+    <details class="groupe" id="f-presence-personnes"></details>
+    <details class="groupe" id="f-personne"></details>
+    <details class="groupe" id="f-personnage-recurrent"></details>
+    <details class="groupe" id="f-genre-personne"></details>
+    <details class="groupe" id="f-age-personne"></details>
+    <details class="groupe" id="f-animal"></details>
+    <details class="groupe" id="f-animal-type"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Machines, interfaces</summary>
+    <details class="groupe" id="f-machine"></details>
+    <details class="groupe" id="f-types"></details>
+    <details class="groupe" id="f-interface"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Texte, typographie</summary>
+    <details class="groupe" id="f-texte"></details>
+    <details class="groupe" id="f-generique"></details>
+    <details class="groupe" id="f-texte-role"></details>
+    <details class="groupe" id="f-typo-categorie"></details>
+    <details class="groupe" id="f-typo-style"></details>
+    <details class="groupe" id="f-presence-texte-type"></details>
+    <details class="groupe" id="f-classification-typo"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Caméra, mouvement</summary>
+    <details class="groupe" id="f-mouvement-camera"></details>
+    <details class="groupe" id="f-mouvement-final"></details>
+    <details class="groupe" id="f-mouvement-video"></details>
+    <details class="groupe" id="f-mouvement-conflit"></details>
+  </details>
+
+  <details class="famille-filtres" open>
+    <summary>Son</summary>
+    <details class="groupe" id="f-dialogue"></details>
+    <details class="groupe" id="f-audio-source"></details>
+    <details class="groupe" id="f-dialogue-type"></details>
+    <details class="groupe" id="f-musique"></details>
+    <details class="groupe" id="f-musique-famille"></details>
+    <details class="groupe" id="f-musique-sous-genre"></details>
+    <details class="groupe" id="f-design-sonore"></details>
+    <details class="groupe" id="f-ambiance"></details>
+  </details>
+
+  <details class="famille-filtres">
+    <summary>Films, dates, crédits</summary>
+    <details class="groupe">
+      <summary>Années</summary>
+      <div id="annees">
+        <input id="an-de" class="champ" type="number" placeholder="1895">
+        <span>→</span>
+        <input id="an-a" class="champ" type="number" placeholder="2026">
+      </div>
+    </details>
+    <details class="groupe" id="f-decennie"></details>
+    <details class="groupe" id="f-realisateur"></details>
+    <details class="groupe" id="f-photo"></details>
+    <details class="groupe" id="f-scenariste"></details>
+    <details class="groupe" id="f-acteur"></details>
+    <details class="groupe" id="f-credit"></details>
+  </details>
+  <button id="raz">Tout réinitialiser</button>
+</aside>
+
+<main id="planche">
+  <div id="etat">
+    <h2>Chargement du catalogue…</h2>
+    <p>Le catalogue attend son index local.</p>
+    <p>Si ce message reste affiché, lancez <code>ouvrir_site.command</code> (ou <code>bash ouvrir_site.command</code>)
+       depuis le dossier du projet, puis rouvrez <code>http://127.0.0.1:8002/accueil.html</code>.</p>
+    <p>Ouvrir ce fichier depuis le Finder ne fonctionne pas : le navigateur interdit la lecture de
+       <code>index.json</code> en <code>file://</code>.</p>
+  </div>
+
+  <div id="barre" hidden>
+    <span id="compte"></span>
+    <span class="droite">
+      <span id="scene-focus"><span id="scene-focus-texte"></span><button id="scene-focus-fermer" type="button">×</button></span>
+      <label>Vue</label>
+      <span class="bascule-vue" role="group" aria-label="Vue du catalogue">
+        <button id="vue-scenes" type="button" class="actif">Scènes</button>
+        <button id="vue-plans" type="button">Plans</button>
+      </span>
+      <select id="vue" class="champ" hidden>
+        <option value="scenes" selected>Scènes</option>
+        <option value="plans">Plans</option>
+      </select>
+      <label for="granularite">Détail</label>
+      <input id="granularite" type="range" min="0" max="2" step="1" value="0"
+             title="0 = scènes, 1 = scènes avec vignettes, 2 = plans">
+      <label for="tri">Trier par</label>
+      <select id="tri" class="champ">
+        <option value="ordre">Film, puis timecode</option>
+        <option value="annee">Année du film</option>
+        <option value="duree">Longueur du plan (temps)</option>
+        <option value="titre">Titre du film</option>
+        <option value="realisateur">Réalisateur</option>
+        <option value="echelle">Échelle de plan</option>
+        <option value="appareils">Nombre d'appareils</option>
+        <option value="incertitude">Relecture prioritaire</option>
+      </select>
+      <button id="sens" title="Inverser le sens">&#8593;</button>
+      <input id="taille" type="range" min="150" max="440" value="212"
+             title="Taille des vignettes">
+    </span>
+  </div>
+
+  <div id="grille"></div>
+  <button id="plus" hidden>Afficher la suite</button>
+</main>
+
+<div id="banc">
+  <span class="txt"><b id="nsel">0</b> plans retenus &middot; <span id="dsel">0 s</span></span>
+  <button id="vider">Vider</button>
+  <button id="tout">Retenir tout le résultat</button>
+  <button id="exporter" class="fort">Exporter la sélection</button>
+</div>
+
+<div id="fiche"><div class="carte"></div></div>
+
+<div id="lecteur-plan" aria-hidden="true">
+  <div class="fenetre" role="dialog" aria-modal="true" aria-label="Lecture agrandie du plan">
+    <div class="haut">
+      <div>
+        <h2 id="lecteur-titre">Lecture du plan</h2>
+        <p id="lecteur-meta"></p>
+      </div>
+      <button id="fermer-lecteur" class="fermer" type="button">Fermer</button>
+    </div>
+    <div class="video">
+      <video id="lecteur-video" controls playsinline loop preload="none"></video>
+    </div>
+    <p id="lecteur-note" class="note"></p>
+    <div id="lecteur-navigation" class="navigation" hidden>
+      <button id="lecteur-plan-precedent" type="button">← Plan précédent</button>
+      <button id="lecteur-plan-suivant" type="button">Plan suivant →</button>
+    </div>
+    <div class="volets">
+      <details id="lecteur-plan-volet" class="volet" open hidden>
+        <summary>Description du plan</summary>
+        <div class="volet-contenu">
+          <div id="lecteur-description-bloc" class="description" hidden>
+            <p id="lecteur-description"></p>
+          </div>
+          <div id="lecteur-technique-bloc" class="technique" hidden>
+            <h3>Points clés et analyse technique</h3>
+            <div id="lecteur-technique" class="technique-grille"></div>
+          </div>
+        </div>
+      </details>
+      <details id="lecteur-scene-volet" class="volet" hidden>
+        <summary>Contexte de la scène</summary>
+        <div class="volet-contenu">
+          <div id="lecteur-scene-navigation" class="navigation" hidden>
+            <button id="lecteur-scene-precedente" type="button">← Scène précédente</button>
+            <button id="lecteur-scene-suivante" type="button">Scène suivante →</button>
+          </div>
+          <div id="lecteur-scene-technique-bloc" class="technique" hidden>
+            <div id="lecteur-scene-technique" class="technique-grille"></div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const API_CONTROLE = 'http://127.0.0.1:8765';
+const CHAMP = { types:'machine_types', mots:'mots_cles',
+                presence_personnes:'presence_personnes', genre_personne:'genres_personnes',
+                age_personne:'ages_personnes',
+                animal:'animal_visible', animal_type:'animaux_visibles',
+                presence_categorie:'categories_presence', personnage_recurrent:'personnages_recurrents_labels',
+                texte:'texte_visible', generique:'generique',
+                texte_role:'texte_role', typo_categorie:'typographie_categorie', typo_style:'typographie_styles',
+                presence_texte_type:'presence_texte_types', classification_typo:'classification_typographique',
+                dialogue:'dialogue_indexe', audio_source:'audio_source', dialogue_type:'dialogue_types',
+                musique:'musique_types', ambiance:'ambiance_types',
+                musique_famille:'musique_familles', musique_sous_genre:'musique_sous_genres',
+                design_sonore:'design_sonore_types',
+                photo:'directeur_photo', scenariste:'scenaristes',
+                acteur:'acteurs', personne:'personnes_visibles', credit:'credits' };
+const PAS = 240;
+const INDEX_MAX_ESSAIS = 12;
+const INDEX_ATTENTE_MS = 500;
+
+let INDEX = null, RESULTAT = [], montre = PAS, sens = 1, sceneFocus = null, lecteurPlanCourant = null;
+const choix = { mots:new Set(), presence_personnes:new Set(), genre_personne:new Set(),
+                age_personne:new Set(), animal:new Set(), animal_type:new Set(),
+                presence_categorie:new Set(), personnage_recurrent:new Set(), machine:new Set(), types:new Set(),
+                texte:new Set(), generique:new Set(), texte_role:new Set(), typo_categorie:new Set(), typo_style:new Set(),
+                presence_texte_type:new Set(), classification_typo:new Set(),
+                dialogue:new Set(), audio_source:new Set(), dialogue_type:new Set(),
+                musique:new Set(), musique_famille:new Set(), musique_sous_genre:new Set(),
+                design_sonore:new Set(), ambiance:new Set(), certitude:new Set(), echelle:new Set(),
+                angle:new Set(), profondeur_champ:new Set(), composition_cadre:new Set(),
+                mouvement_camera:new Set(), lumiere:new Set(),
+                mouvement_camera_final:new Set(), mouvement_video_camera:new Set(),
+                mouvement_camera_conflit:new Set(),
+                scene_titre:new Set(), scene_lieu:new Set(),
+                scene_temporalite:new Set(), scene_confiance:new Set(),
+                lieu:new Set(), interface:new Set(),
+                decennie:new Set(), realisateur:new Set(), photo:new Set(),
+                scenariste:new Set(), acteur:new Set(), personne:new Set(), credit:new Set(),
+                film:new Set() };
+const pris = new Set();
+
+chargerIndex();
+
+function attendre(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function htmlEtat(titre, lignes){
+  return '<h2>' + titre + '</h2>' + lignes.map(l => '<p>' + l + '</p>').join('');
+}
+
+function afficherEtatChargement(message){
+  const bloc = $('#etat');
+  if (!bloc) return;
+  bloc.innerHTML = htmlEtat('Chargement du catalogue…', [message]);
+}
+
+function afficherEtatEchec(){
+  const bloc = $('#etat');
+  if (!bloc) return;
+  bloc.innerHTML = htmlEtat('Aucun index chargé', [
+    'Le catalogue local ne répond pas encore.',
+    'Lancez <code>ouvrir_site.command</code> (ou <code>bash ouvrir_site.command</code>) depuis le dossier du projet.',
+    'Puis rechargez <code>http://127.0.0.1:8002/accueil.html</code> et ouvrez de nouveau le catalogue.',
+    'Ouvrir ce fichier directement depuis le Finder ne fonctionne pas : le navigateur bloque <code>index.json</code> en <code>file://</code>.',
+  ]);
+}
+
+async function chargerIndex(){
+  afficherEtatChargement('Attente de l’index local…');
+  const params = new URLSearchParams(location.search);
+  const filmCible = params.get('film');
+  const revision = params.get('maj') || String(Date.now());
+  const ressourceFraiche = chemin => chemin + (chemin.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(revision);
+  for (let essai = 1; essai <= INDEX_MAX_ESSAIS; essai += 1){
+    try {
+      const [rFilms, rIndex] = await Promise.all([
+        fetch(ressourceFraiche('films.json'), {cache:'no-store'}),
+        fetch(ressourceFraiche('index.json'), {cache:'no-store'}),
+      ]);
+      if (!rFilms.ok) throw new Error('films http ' + rFilms.status);
+      if (!rIndex.ok) throw new Error('index http ' + rIndex.status);
+      const [filmsData, indexData] = await Promise.all([rFilms.json(), rIndex.json()]);
+      const data = {
+        ...indexData,
+        films: filmsData.films || indexData.films || [],
+      };
+      if (filmCible){
+        try {
+          const rFilm = await fetch(ressourceFraiche(encodeURIComponent(filmCible) + '/index-plans.json'), {cache:'no-store'});
+          if (rFilm.ok){
+            const filmData = await rFilm.json();
+            const plansFilm = Array.isArray(filmData.plans) ? filmData.plans : [];
+            const autresPlans = (data.plans || []).filter(p => p.film !== filmCible);
+            data.plans = autresPlans.concat(plansFilm);
+          }
+        } catch {}
+      }
+      demarrer(data);
+      return;
+    } catch (err) {
+      if (essai < INDEX_MAX_ESSAIS){
+        afficherEtatChargement('Attente de l’index local (essai ' + essai + '/' + INDEX_MAX_ESSAIS + ')…');
+        await attendre(INDEX_ATTENTE_MS);
+      }
+    }
+  }
+  afficherEtatEchec();
+}
+
+function demarrer(data){
+  INDEX = data;
+  preparerIndex();
+  const etat = $('#etat'); if (etat) etat.remove();
+  $('#barre').hidden = false;
+  const totalPlans = (data.films || []).reduce((s, f) => s + Number(f.plans || 0), 0);
+  $('#sous').textContent = totalPlans + ' plans · ' +
+    data.films.length + ' film' + (data.films.length > 1 ? 's' : '');
+  const ans = data.plans.map(p => p.annee).filter(Boolean);
+  if (ans.length){
+    $('#an-de').placeholder = Math.min.apply(null, ans);
+    $('#an-a').placeholder  = Math.max.apply(null, ans);
+  }
+  batirFiltres();
+  appliquerParametresURL();
+  appliquer();
+}
+
+function normaliserTexteRecherche(texte){
+  return String(texte || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[’']/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normaliserTokenRecherche(token){
+  const exceptions = {
+    hommes:'homme', femmes:'femme', animaux:'animal', chevaux:'cheval',
+    enfants:'enfant', filles:'fille', garcons:'garcon', chiens:'chien',
+    chats:'chat', oiseaux:'oiseau', serpents:'serpent', insectes:'insecte',
+    poissons:'poisson', rats:'rat'
+  };
+  let t = String(token || '').trim();
+  if (!t) return '';
+  if (exceptions[t]) return exceptions[t];
+  if (t.length > 4 && /s$/.test(t)) t = t.slice(0, -1);
+  return t;
+}
+
+function preparerTermesRecherche(texte){
+  return normaliserTexteRecherche(texte).split(/\s+/)
+    .filter(Boolean).map(normaliserTokenRecherche).filter(Boolean);
+}
+
+const MOTS_VIDES_RECHERCHE_LIBRE = new Set([
+  'le','la','les','de','des','du','d','un','une','et','ou','a','au','aux','avec','sans',
+  'dans','sur','sous','pour','par','vers','entre','chez','plus','moins','tres','plan','plans'
+]);
+
+let rechercheLibreCourante = null;
+
+function texteNormaliseValeur(valeur){
+  return normaliserTexteRecherche(Array.isArray(valeur) ? valeur.join(' ') : valeur);
+}
+
+function scoreProximiteCadre(p){
+  const echelle = texteNormaliseValeur(p.echelle);
+  if (!echelle) return 0;
+  if (echelle.includes('tres gros plan')) return 5;
+  if (echelle.includes('gros plan')) return 4;
+  if (echelle.includes('plan rapproche')) return 3;
+  if (echelle.includes('plan poitrine')) return 2.5;
+  if (echelle.includes('plan taille')) return 2;
+  if (echelle.includes('plan americain')) return 1.5;
+  if (echelle.includes('plan moyen')) return 1;
+  if (echelle.includes('plan d ensemble') || echelle.includes('plan large') || echelle.includes('plan general')) return 0.25;
+  return 0.5;
+}
+
+function couleurVersRgb(valeur){
+  const texte = String(valeur || '').trim().toLowerCase();
+  if (!texte) return null;
+  const hex = texte.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hex){
+    let brut = hex[1];
+    if (brut.length === 3) brut = brut.split('').map(x => x + x).join('');
+    return {
+      r: parseInt(brut.slice(0, 2), 16),
+      g: parseInt(brut.slice(2, 4), 16),
+      b: parseInt(brut.slice(4, 6), 16),
+    };
+  }
+  const rgb = texte.match(/^rgba?\(([^)]+)\)$/i);
+  if (rgb){
+    const morceaux = rgb[1].split(',').map(x => Number.parseFloat(x.trim()));
+    if (morceaux.length >= 3 && morceaux.slice(0, 3).every(Number.isFinite)){
+      return {r:morceaux[0], g:morceaux[1], b:morceaux[2]};
+    }
+  }
+  return null;
+}
+
+function scoreCanalCouleurPlan(p, canal){
+  const poidsTexte = {
+    rouge:['rouge','rouges','roux','bordeaux','ecarlate','vermillon','cramoisi'],
+    bleu:['bleu','bleus','azur','cyan','marine'],
+    vert:['vert','verts','emeraude','olive'],
+  };
+  const indexCanal = {rouge:'r', bleu:'b', vert:'g'}[canal] || 'r';
+  const autres = ['r','g','b'].filter(c => c !== indexCanal);
+  const sources = [
+    ...(Array.isArray(p.couleurs) ? p.couleurs : []),
+    ...(Array.isArray(p.palette_colorimetrique) ? p.palette_colorimetrique : []),
+    ...(Array.isArray(p.lumiere_etalonnage) ? p.lumiere_etalonnage : []),
+  ].filter(Boolean);
+  let score = 0;
+  for (const source of sources){
+    const texte = texteNormaliseValeur(source);
+    for (const mot of (poidsTexte[canal] || [])){
+      if (texte.includes(mot)) score += 1.4;
+    }
+    const rgb = couleurVersRgb(source);
+    if (!rgb) continue;
+    const principal = Number(rgb[indexCanal] || 0);
+    const secondaire = (Number(rgb[autres[0]] || 0) + Number(rgb[autres[1]] || 0)) / 2;
+    score += Math.max(0, (principal - secondaire) / 255);
+  }
+  return score;
+}
+
+function normaliserTermesRechercheLibre(texte){
+  return preparerTermesRecherche(texte)
+    .filter(token => token && !MOTS_VIDES_RECHERCHE_LIBRE.has(token));
+}
+
+function analyserRechercheLibre(texte){
+  const brut = String(texte || '').trim();
+  const normalise = normaliserTexteRecherche(brut);
+  const bruteTokens = normalise.split(/\s+/).filter(Boolean);
+  const termes = normaliserTermesRechercheLibre(brut);
+  const analyse = {
+    active: !!normalise,
+    brut,
+    normalise,
+    tokens: bruteTokens,
+    termes,
+    tri: null,
+    sens: -1,
+    exigerGrosPlan: /gros\s+plan|tres\s+gros\s+plan|plan\s+rapproche/.test(normalise),
+    exigerPlanLarge: /plan\s+large|plan\s+general|plan\s+d ensemble/.test(normalise),
+  };
+  if (!analyse.active) return analyse;
+  if (/plus\s+long|plus\s+lent|longs?|longues?/.test(normalise)) analyse.tri = 'duree';
+  if (/plus\s+court|courts?|courtes?/.test(normalise)){
+    analyse.tri = 'duree';
+    analyse.sens = 1;
+  }
+  if (/plus\s+roug|rouges?/.test(normalise)) analyse.tri = 'rouge';
+  else if (/plus\s+bleu|bleus?/.test(normalise)) analyse.tri = 'bleu';
+  else if (/plus\s+vert|verts?/.test(normalise)) analyse.tri = 'vert';
+  else if (/gros\s+plan|tres\s+gros\s+plan|plan\s+rapproche/.test(normalise)) analyse.tri = 'proximite';
+  analyse.termes = analyse.termes.filter(token => ![
+    'plus','long','longue','court','courte','rouge','bleu','vert','gros','plan','rapproche','tres'
+  ].includes(token));
+  return analyse;
+}
+
+function valeurTriRechercheLibre(p, analyse){
+  if (!analyse?.tri) return null;
+  if (analyse.tri === 'duree') return Number(p.duree || 0);
+  if (analyse.tri === 'rouge') return scoreCanalCouleurPlan(p, 'rouge');
+  if (analyse.tri === 'bleu') return scoreCanalCouleurPlan(p, 'bleu');
+  if (analyse.tri === 'vert') return scoreCanalCouleurPlan(p, 'vert');
+  if (analyse.tri === 'proximite') return scoreProximiteCadre(p);
+  return null;
+}
+
+function planPasseRechercheLibre(p, analyse){
+  if (!analyse?.active) return true;
+  if (analyse.exigerGrosPlan && scoreProximiteCadre(p) < 3) return false;
+  if (analyse.exigerPlanLarge && scoreProximiteCadre(p) > 1) return false;
+  if (!analyse.termes.length) return true;
+  const tokens = p._tokensRecherche || new Set();
+  return analyse.termes.every(m => {
+    const structurel = planPasseTermeStructurel(p, m);
+    if (structurel !== null) return structurel;
+    return tokens.has(m);
+  });
+}
+
+function planAvecDialogueIndexe(plan){
+  if (!plan || typeof plan !== 'object') return false;
+  if (plan.dialogue === true) return true;
+  if (String(plan.dialogue_texte || '').trim()) return true;
+  return Array.isArray(plan.dialogue_types) && plan.dialogue_types.length > 0;
+}
+
+function contientValeur(p, cle, valeur){
+  const v = p[cle];
+  if (Array.isArray(v)) return v.includes(valeur);
+  return v === valeur;
+}
+
+function planPasseTermeStructurel(p, terme){
+  if (terme === 'homme' || terme === 'masculin'){
+    return contientValeur(p, 'genres_personnes', 'homme');
+  }
+  if (terme === 'femme' || terme === 'feminin'){
+    return contientValeur(p, 'genres_personnes', 'femme');
+  }
+  if (terme === 'enfant' || terme === 'fille' || terme === 'garcon'){
+    return contientValeur(p, 'ages_personnes', 'enfant');
+  }
+  if (terme === 'adolescent' || terme === 'adolescente'){
+    return contientValeur(p, 'ages_personnes', 'adolescent');
+  }
+  if (terme === 'adulte'){
+    return contientValeur(p, 'ages_personnes', 'adulte');
+  }
+  if (terme === 'animal'){
+    return !!p.animal_visible || !!(p.animaux_visibles || []).length;
+  }
+  const especes = new Set(['chien','chat','cheval','oiseau','rat','souris','serpent','insecte','poisson']);
+  if (especes.has(terme)){
+    return contientValeur(p, 'animaux_visibles', terme);
+  }
+  return null;
+}
+
+function preparerIndex(){
+  const filmsParId = new Map((INDEX.films || []).map(f => [f.id, f]));
+  for (const p of INDEX.plans){
+    const film = filmsParId.get(p.film) || {};
+    p.titre = p.titre || film.titre || p.film || '';
+    p.annee = p.annee || film.annee || '';
+    p.realisateur = p.realisateur || film.realisateur || '';
+    p.directeur_photo = p.directeur_photo || film.directeur_photo || '';
+    p.scenaristes = p.scenaristes || film.scenaristes || [];
+    p.acteurs = p.acteurs || film.acteurs || [];
+    p._id = p.film + '#' + p.n;
+    p.dialogue_indexe = planAvecDialogueIndexe(p);
+    p._dialogueRecherche = normaliserTexteDialogue(p.dialogue_texte || '');
+    const texteRecherche = [p.description, (p.mots_cles || []).join(' '),
+      p.presence_personnes ? 'personne visible' : 'aucune personne visible',
+      (p.genres_personnes || []).join(' '),
+      (p.ages_personnes || []).join(' '),
+      (p.personnages_recurrents_ids || []).join(' '),
+      (p.personnages_recurrents_labels || []).join(' '),
+      (p.personnages_recurrents || []).map(x => [x.label, x.profil_resume, x.personnage_id].filter(Boolean).join(' ')).join(' '),
+      p.animal_visible ? 'animal visible animaux' : 'aucun animal visible',
+      (p.animaux_visibles || []).join(' '),
+      (p.categories_presence || []).join(' '), nettoyerNotePresences(p.presences_note),
+      p.scene_id, p.scene_titre, p.scene_resume, p.scene_lieu, p.scene_temporalite,
+      p.scene_action_principale, p.scene_ambiance, p.scene_enjeu_narratif,
+      p.scene_ambiance_visuelle, p.scene_palette, p.scene_lumiere, p.scene_decors,
+      (p.scene_objets_significatifs || []).join(' '),
+      (p.scene_motifs_structurants || []).join(' '),
+      (p.objets_cles || []).join(' '), (p.lieu_decors || []).join(' '),
+      (p.personnages_sujets || []).join(' '), (p.attitudes_expressions || []).join(' '),
+      (p.machine_types || []).join(' '), p.titre, film.musiques_connues_texte,
+      p.realisateur, p.directeur_photo,
+      (p.scenaristes || []).join(' '), (p.acteurs || []).join(' '),
+      (p.credits || []).join(' '), (p.personnes_visibles || []).join(' '),
+      p.texte_role, p.typographie_categorie, p.typographie_description,
+      (p.typographie_styles || []).join(' '),
+      (p.presence_texte_types || []).join(' '),
+      (p.classification_typographique || []).join(' '), p.composition_graphique,
+      p.texte_visible ? 'texte visible' : '', p.generique ? 'generique' : '',
+      p.audio_source,
+      p.dialogue_texte,
+      (p.dialogue_types || []).join(' '),
+      (p.musique_types || []).join(' '),
+      (p.musique_familles || []).join(' '),
+      (p.musique_sous_genres || []).join(' '),
+      (p.design_sonore_types || []).join(' '),
+      p.musique_titre, p.musique_artiste, p.musique_auteur,
+      p.musique_methode, p.audio_global_ref, p.audio_global_mode, p.audio_notes,
+      (p.ambiance_types || []).join(' '),
+      p.mouvement_camera, p.mouvement_direction,
+      p.mouvement_camera_final, p.mouvement_video_camera,
+      (p.mouvement_video_labels || []).map(x => x.label_fr || x.label || '').join(' '),
+      p.mouvement_camera_notes,
+      p.echelle, p.angle, p.profondeur_champ,
+      (p.composition_cadre || []).join(' '),
+      (p.palette_colorimetrique || []).join(' '),
+      (p.lumiere_etalonnage || []).join(' '),
+      p.direction_lumiere_principale,
+      (p.matiere_texture || []).join(' '),
+      p.details_profondeur_champ,
+      p.lumiere, p.lieu, p.interface]
+      .join(' ');
+    p._texteRecherche = normaliserTexteRecherche(texteRecherche);
+    p._tokensRecherche = new Set(preparerTermesRecherche(texteRecherche));
+  }
+}
+
+function appliquerParametresURL(){
+  const params = new URLSearchParams(location.search);
+  const vue = params.get('vue');
+  if (vue === 'plans'){
+    if ($('#vue')) $('#vue').value = 'plans';
+    if ($('#granularite')) $('#granularite').value = '2';
+  } else if (vue === 'scenes'){
+    if ($('#vue')) $('#vue').value = 'scenes';
+    if ($('#granularite')) $('#granularite').value = '0';
+  }
+  if (params.get('films') === 'tous'){
+    idsFilmsDisponibles().forEach(id => choix.film.add(id));
+    cocherFilmsDepuisChoix();
+    mettreAJourControleTousFilms();
+    return;
+  }
+  if (params.get('films') === 'aucun'){
+    choix.film.clear();
+    cocherFilmsDepuisChoix();
+    mettreAJourControleTousFilms();
+    return;
+  }
+  const film = params.get('film');
+  if (!film) return;
+  choix.film.add(film);
+  document.querySelectorAll('input[data-facet="film"]').forEach(input => {
+    try { input.checked = JSON.parse(input.dataset.valeur) === film; }
+    catch { input.checked = false; }
+  });
+  mettreAJourControleTousFilms();
+}
+
+/* ── Facettes ─────────────────────────────────────────── */
+function compter(cle, valeurs){
+  if (cle === 'film'){
+    const c = {};
+    const filmsParId = new Map((INDEX.films || []).map(f => [f.id, Number(f.plans || 0)]));
+    for (const v of valeurs) c[v] = filmsParId.get(v) || 0;
+    return c;
+  }
+  const c = {};
+  for (const v of valeurs) c[v] = 0;
+  for (const p of INDEX.plans){
+    const v = p[cle];
+    if (Array.isArray(v)) v.forEach(x => { if (x in c) c[x]++; });
+    else if (v in c) c[v]++;
+  }
+  return c;
+}
+
+function valeursDe(cle){
+  if (cle === 'film'){
+    return (INDEX.films || [])
+      .map(f => f.id)
+      .filter(Boolean)
+      .sort((a, b) => String(a).localeCompare(String(b), 'fr'));
+  }
+  const s = new Set();
+  for (const p of INDEX.plans){
+    const v = p[cle];
+    if (Array.isArray(v)) v.forEach(x => x && s.add(x));
+    else if (v) s.add(v);
+  }
+  return [...s].sort((a, b) => String(a).localeCompare(String(b), 'fr'));
+}
+
+function bloc(id, titre, cle, valeurs, etiquettes){
+  const utiles = (valeurs || []).filter(v => v !== '' && v !== undefined);
+  const el = $(id);
+  if (!utiles.length){
+    if (el) el.hidden = true;
+    return;
+  }
+  const n = compter(CHAMP[cle] || cle, utiles);
+  el.innerHTML = '<summary>' + titre + '</summary>';
+  el.hidden = false;
+  if (cle === 'film') ajouterControleTousFilms(el, utiles);
+  let ajoutes = 0;
+  utiles.forEach(v => {
+    if (!n[v]) return;
+    ajoutes++;
+    const lab = document.createElement('label');
+    lab.innerHTML = '<input type="checkbox">' +
+      '<span>' + ((etiquettes || {})[v] || v) + '</span>' +
+      '<span class="n">' + n[v] + '</span>';
+    const input = lab.querySelector('input');
+    input.dataset.facet = cle;
+    input.dataset.valeur = JSON.stringify(v);
+    input.onchange = e => {
+      e.target.checked ? choix[cle].add(v) : choix[cle].delete(v);
+      if (cle === 'film') mettreAJourControleTousFilms();
+      appliquer();
+    };
+    el.appendChild(lab);
+  });
+  el.hidden = ajoutes === 0;
+  if (cle === 'film') mettreAJourControleTousFilms();
+}
+
+function idsFilmsDisponibles(){
+  return (INDEX.films || []).map(f => f.id).filter(Boolean);
+}
+
+function cocherFilmsDepuisChoix(){
+  document.querySelectorAll('input[data-facet="film"]').forEach(input => {
+    try { input.checked = choix.film.has(JSON.parse(input.dataset.valeur)); }
+    catch { input.checked = false; }
+  });
+}
+
+function garderMenuFilmsOuvert(){
+  document.querySelector('.famille-film')?.setAttribute('open', '');
+  document.querySelector('#f-film')?.setAttribute('open', '');
+}
+
+function mettreAJourControleTousFilms(){
+  const total = idsFilmsDisponibles().length;
+  const selection = choix.film.size;
+  const etat = document.querySelector('#f-film .etat-films');
+  if (etat) etat.textContent = selection ? (selection + '/' + total + ' cochés') : 'aucun filtre film';
+  const tous = document.querySelector('#f-film [data-action="films-tous"]');
+  const aucun = document.querySelector('#f-film [data-action="films-aucun"]');
+  if (tous) tous.classList.toggle('actif', total > 0 && selection === total);
+  if (aucun) aucun.classList.toggle('actif', selection === 0);
+}
+
+function selectionnerTousFilmsInterface(){
+  choix.film.clear();
+  idsFilmsDisponibles().forEach(v => choix.film.add(v));
+  cocherFilmsDepuisChoix();
+  garderMenuFilmsOuvert();
+  mettreAJourControleTousFilms();
+  appliquer();
+}
+
+function deselectionnerTousFilmsInterface(){
+  choix.film.clear();
+  cocherFilmsDepuisChoix();
+  garderMenuFilmsOuvert();
+  mettreAJourControleTousFilms();
+  appliquer();
+}
+
+function ajouterControleTousFilms(el, valeurs){
+  const barre = document.createElement('div');
+  barre.className = 'controle-films';
+  barre.innerHTML =
+    '<button type="button" class="choix-tous-films" data-action="films-tous">Tous les films</button>' +
+    '<button type="button" class="choix-tous-films" data-action="films-aucun">Tout décocher</button>' +
+    '<span class="etat-films"></span>';
+  barre.querySelector('[data-action="films-tous"]').onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectionnerTousFilmsInterface();
+  };
+  barre.querySelector('[data-action="films-aucun"]').onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    deselectionnerTousFilmsInterface();
+  };
+  el.appendChild(barre);
+}
+
+/* les mots-clés en nuage cliquable : plus lisible qu'une liste de cases */
+function blocMots(){
+  const n = compter('mots_cles', valeursDe('mots_cles'));
+  const tries = Object.entries(n).sort((a, b) => b[1] - a[1]).slice(0, 60);
+  const el = $('#f-mots');
+  if (!tries.length){
+    el.hidden = true;
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = '<summary>Mots-clés</summary><div class="nuage"></div>';
+  const nuage = el.querySelector('.nuage');
+  tries.forEach(([mot, c]) => {
+    const b = document.createElement('button');
+    b.className = 'mot';
+    b.dataset.facet = 'mots';
+    b.dataset.valeur = JSON.stringify(mot);
+    b.innerHTML = '<span>' + mot + '</span> <span class="n">' + c + '</span>';
+    b.onclick = () => {
+      choix.mots.has(mot) ? choix.mots.delete(mot) : choix.mots.add(mot);
+      b.classList.toggle('actif');
+      appliquer();
+    };
+    nuage.appendChild(b);
+  });
+}
+
+function mettreAJourFamillesFiltres(){
+  document.querySelectorAll('.famille-filtres').forEach(famille => {
+    const visibles = [...famille.children].some(enfant =>
+      enfant.classList?.contains('groupe') && !enfant.hidden
+    );
+    famille.hidden = !visibles;
+  });
+}
+
+function batirFiltres(){
+  const V = INDEX.vocabulaire || {};
+  blocMots();
+  bloc('#f-presence-personnes', 'Personnes visibles', 'presence_personnes', [true, false],
+       {true:'Avec personne visible', false:'Sans personne visible'});
+  bloc('#f-genre-personne', 'Genre perçu', 'genre_personne',
+       V.genres_personnes || valeursDe('genres_personnes'));
+  bloc('#f-age-personne', 'Âge perçu', 'age_personne',
+       V.ages_personnes || valeursDe('ages_personnes'));
+  bloc('#f-animal', 'Animal visible', 'animal', [true, false],
+       {true:'Avec animal visible', false:'Sans animal visible'});
+  bloc('#f-animal-type', 'Type d’animal', 'animal_type',
+       V.animaux_visibles || valeursDe('animaux_visibles'));
+  bloc('#f-presence-categorie', 'Présences', 'presence_categorie',
+       V.categories_presence || valeursDe('categories_presence'));
+  bloc('#f-personnage-recurrent', 'Personnage récurrent probable', 'personnage_recurrent',
+       valeursDe('personnages_recurrents_labels'));
+  bloc('#f-machine', 'Machine visible', 'machine', [true, false],
+       {true:'Oui', false:'Non'});
+  bloc('#f-types', "Type d'appareil", 'types',
+       (V.machines || []).filter(t => valeursDe('machine_types').includes(t)));
+  bloc('#f-interface', "Typologie d'affichage", 'interface',
+       (V.interfaces || []).filter(t => valeursDe('interface').includes(t)));
+  bloc('#f-texte', 'Texte visible', 'texte', [true, false],
+       {true:'Avec typographie visible', false:'Sans typographie visible'});
+  bloc('#f-generique', 'Plan de générique', 'generique', [true, false],
+       {true:'Lié au générique / titre', false:'Hors générique'});
+  bloc('#f-texte-role', 'Rôle du texte', 'texte_role',
+       V.texte_roles || valeursDe('texte_role'));
+  bloc('#f-typo-categorie', 'Famille typographique', 'typo_categorie',
+       V.typographies_categories || valeursDe('typographie_categorie'));
+  bloc('#f-typo-style', 'Sous-genre typographique', 'typo_style',
+       V.typographies_styles || valeursDe('typographie_styles'));
+  bloc('#f-dialogue', 'Dialogue transcrit', 'dialogue', [true, false],
+       {true:'Avec texte de dialogue indexé', false:'Sans texte de dialogue indexé'});
+  bloc('#f-audio-source', 'Source audio', 'audio_source',
+       V.audio_sources || valeursDe('audio_source'));
+  bloc('#f-dialogue-type', 'Type de dialogue détecté', 'dialogue_type',
+       V.dialogue_types || valeursDe('dialogue_types'));
+  bloc('#f-musique', 'Type de musique détecté', 'musique',
+       V.musique_types || valeursDe('musique_types'));
+  bloc('#f-musique-famille', 'Famille musicale', 'musique_famille',
+       V.musique_familles || valeursDe('musique_familles'));
+  bloc('#f-musique-sous-genre', 'Sous-genre musical', 'musique_sous_genre',
+       V.musique_sous_genres || valeursDe('musique_sous_genres'));
+  bloc('#f-design-sonore', 'Design sonore', 'design_sonore',
+       V.design_sonore_types || valeursDe('design_sonore_types'));
+  bloc('#f-ambiance', 'Ambiance sonore', 'ambiance',
+       V.ambiance_types || valeursDe('ambiance_types'));
+  bloc('#f-certitude', 'Certitude', 'certitude', ['sûr', 'probable', 'douteux']);
+  bloc('#f-echelle', 'Échelle', 'echelle', V.echelles || valeursDe('echelle'));
+  bloc('#f-angle', 'Angle', 'angle', V.angles || valeursDe('angle'));
+  bloc('#f-profondeur-champ', 'Profondeur de champ', 'profondeur_champ',
+       V.profondeurs_champ || valeursDe('profondeur_champ'));
+  bloc('#f-composition-cadre', 'Composition du cadre', 'composition_cadre',
+       V.compositions_cadre || valeursDe('composition_cadre'));
+  bloc('#f-mouvement-camera', 'Mouvement caméra', 'mouvement_camera',
+       V.mouvements_camera || valeursDe('mouvement_camera'));
+  bloc('#f-mouvement-final', 'Mouvement caméra final', 'mouvement_camera_final',
+       V.mouvements_camera_final || valeursDe('mouvement_camera_final'));
+  bloc('#f-mouvement-video', 'Classification vidéo', 'mouvement_video_camera',
+       V.mouvements_camera_video || valeursDe('mouvement_video_camera'));
+  bloc('#f-mouvement-conflit', 'Conflit mouvement', 'mouvement_camera_conflit', [true, false],
+       {true:'Conflit mécanique / VideoMAE', false:'Pas de conflit'});
+  bloc('#f-lumiere', 'Lumière', 'lumiere', valeursDe('lumiere'));
+  bloc('#f-presence-texte-type', 'Type de texte visible', 'presence_texte_type',
+       V.presence_texte_types || valeursDe('presence_texte_types'));
+  bloc('#f-classification-typo', 'Classification typographique', 'classification_typo',
+       V.classifications_typographiques || valeursDe('classification_typographique'));
+  bloc('#f-scene-titre', 'Scène', 'scene_titre', valeursDe('scene_titre'));
+  bloc('#f-scene-lieu', 'Lieu de scène', 'scene_lieu', valeursDe('scene_lieu'));
+  bloc('#f-scene-temporalite', 'Temporalité de scène', 'scene_temporalite', valeursDe('scene_temporalite'));
+  bloc('#f-scene-confiance', 'Confiance scène', 'scene_confiance', valeursDe('scene_confiance'));
+  bloc('#f-lieu', 'Lieu', 'lieu', valeursDe('lieu'));
+  bloc('#f-decennie', 'Décennie', 'decennie', valeursDe('decennie'));
+  bloc('#f-realisateur', 'Réalisateur', 'realisateur', valeursDe('realisateur'));
+  bloc('#f-photo', 'Chef opérateur', 'photo', valeursDe('directeur_photo'));
+  bloc('#f-scenariste', 'Scénariste', 'scenariste', valeursDe('scenaristes'));
+  bloc('#f-acteur', 'Acteur', 'acteur', valeursDe('acteurs'));
+  bloc('#f-personne', 'Personne visible', 'personne', valeursDe('personnes_visibles'));
+  bloc('#f-credit', 'Crédits', 'credit', valeursDe('credits'));
+  bloc('#f-film', 'Liste des films', 'film', INDEX.films.map(f => f.id),
+       Object.fromEntries(INDEX.films.map(f => [f.id, f.titre])));
+  mettreAJourFamillesFiltres();
+}
+
+/* ── Filtrer, puis trier ──────────────────────────────── */
+const CLES_TRI = {
+  ordre:       p => [p.titre, p.debut],
+  annee:       p => [p.annee || 0, p.titre, p.debut],
+  duree:       p => [p.duree],
+  titre:       p => [p.titre, p.debut],
+  realisateur: p => [p.realisateur || 'zzz', p.annee || 0, p.debut],
+  echelle:     p => [((INDEX.vocabulaire || {}).echelles || []).indexOf(p.echelle), p.debut],
+  appareils:   p => [(p.machine_types || []).length, p.duree],
+  incertitude: p => [-scoreIncertitude(p), p.titre, p.debut]
+};
+
+function scoreIncertitude(p){
+  let s = 0;
+  if (p.certitude === 'douteux') s += 5;
+  if (p.certitude === 'probable') s += 3;
+  if (p.machine && !(p.machine_types || []).length) s += 4;
+  if (p.machine && !p.interface) s += 2;
+  if (!p.description) s += 2;
+  if (!(p.mots_cles || []).length) s += 2;
+  if (!p.echelle || !p.lieu) s += 1;
+  if (p.mouvement_camera_conflit) s += 3;
+  if (p.mouvement_camera && !p.mouvement_video_camera) s += 1;
+  return s;
+}
+
+function comparer(a, b){
+  if (rechercheLibreCourante?.active && rechercheLibreCourante?.tri){
+    const scoreA = valeurTriRechercheLibre(a, rechercheLibreCourante);
+    const scoreB = valeurTriRechercheLibre(b, rechercheLibreCourante);
+    if (scoreA !== scoreB){
+      return (scoreA - scoreB) * (rechercheLibreCourante.sens || -1);
+    }
+  }
+  const f = CLES_TRI[$('#tri').value] || CLES_TRI.ordre;
+  const x = f(a), y = f(b);
+  for (let i = 0; i < x.length; i++){
+    if (x[i] === y[i]) continue;
+    const d = (typeof x[i] === 'string')
+      ? x[i].localeCompare(y[i], 'fr') : (x[i] - y[i]);
+    return d * sens;
+  }
+  return 0;
+}
+
+function normaliserFacetTexte(valeur){
+  return String(valeur || '').trim().toLowerCase();
+}
+
+function correspondValeurFacet(cleFacet, valeurPlan, valeurSelection){
+  if (valeurPlan === valeurSelection) return true;
+  const planTexte = normaliserFacetTexte(valeurPlan);
+  const selectionTexte = normaliserFacetTexte(valeurSelection);
+  if (!planTexte || !selectionTexte) return false;
+  if (planTexte === selectionTexte) return true;
+  if ((cleFacet === 'scene_lieu' || cleFacet === 'lieu') &&
+      (planTexte.startsWith(selectionTexte + ' —') || planTexte.startsWith(selectionTexte + ' -'))){
+    return true;
+  }
+  return false;
+}
+
+function facettePerimetreOu(cleFacet){
+  return cleFacet === 'film';
+}
+
+function contientToutesValeurs(cleFacet, valeurPlan, selections){
+  const valeurs = [...selections];
+  if (!valeurs.length) return true;
+  if (facettePerimetreOu(cleFacet)){
+    return valeurs.some(v => correspondValeurFacet(cleFacet, valeurPlan, v));
+  }
+  if (Array.isArray(valeurPlan)){
+    return valeurs.every(v => valeurPlan.some(x => correspondValeurFacet(cleFacet, x, v)));
+  }
+  return valeurs.every(v => correspondValeurFacet(cleFacet, valeurPlan, v));
+}
+
+function planPasseFacettes(p, cleCandidate=null, valeurCandidate=undefined){
+  for (const cle in choix){
+    const sel = new Set(choix[cle]);
+    if (cle === cleCandidate && !sel.has(valeurCandidate)) sel.add(valeurCandidate);
+    if (!sel.size) continue;
+    const champ = CHAMP[cle] || cle;
+    if (!contientToutesValeurs(cle, p[champ], sel)) return false;
+  }
+  return true;
+}
+
+function planPasseRechercheAnnees(p, termes, de, a){
+  if (!isNaN(de) && (!p.annee || p.annee < de)) return false;
+  if (!isNaN(a)  && (!p.annee || p.annee > a))  return false;
+  if (!termes.length) return true;
+  const tokens = p._tokensRecherche || new Set();
+  return termes.every(m => {
+    const structurel = planPasseTermeStructurel(p, m);
+    if (structurel !== null) return structurel;
+    return tokens.has(m);
+  });
+}
+
+function normaliserTexteDialogue(texte){
+  return String(texte || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function contientExpressionDialogue(foin, expression){
+  if (!expression) return true;
+  return (' ' + (foin || '') + ' ').includes(' ' + expression + ' ');
+}
+
+function planPasseRechercheDialogues(p, requeteDialogue){
+  if (!requeteDialogue) return true;
+  const foin = p._dialogueRecherche || '';
+  return contientExpressionDialogue(foin, requeteDialogue);
+}
+
+function compterCroise(cle, valeur, termes, requeteLibre, requeteDialogue, de, a){
+  let total = 0;
+  for (const p of INDEX.plans){
+    if (planPasseFocusScene(p) &&
+        planPasseFacettes(p, cle, valeur) &&
+        planPasseRechercheAnnees(p, termes, de, a) &&
+        planPasseRechercheLibre(p, requeteLibre) &&
+        planPasseRechercheDialogues(p, requeteDialogue)) total++;
+  }
+  return total;
+}
+
+let generationComptes = 0;
+function mettreAJourNuageMots(termes, requeteLibre, requeteDialogue, de, a){
+  document.querySelectorAll('.mot[data-facet="mots"]').forEach(bouton => {
+    const valeur = JSON.parse(bouton.dataset.valeur);
+    const n = compterCroise('mots', valeur, termes, requeteLibre, requeteDialogue, de, a);
+    const badge = bouton.querySelector('.n');
+    if (badge) badge.textContent = n;
+    bouton.classList.toggle('vide', n === 0);
+  });
+}
+
+function mettreAJourComptes(termes, requeteLibre, requeteDialogue, de, a){
+  const generation = ++generationComptes;
+  const plansParFilm = new Map((INDEX.films || []).map(f => [f.id, Number(f.plans || 0)]));
+  mettreAJourNuageMots(termes, requeteLibre, requeteDialogue, de, a);
+  const elements = [
+    ...document.querySelectorAll('input[data-facet]'),
+    ...document.querySelectorAll('.mot[data-facet]:not([data-facet="mots"])')
+  ];
+  let i = 0;
+  const lot = () => {
+    const debut = performance.now();
+    while (i < elements.length && performance.now() - debut < 18){
+      if (generation !== generationComptes) return;
+      const el = elements[i++];
+      const valeur = JSON.parse(el.dataset.valeur);
+      const n = el.dataset.facet === 'film'
+        ? (plansParFilm.get(valeur) || 0)
+        : compterCroise(el.dataset.facet, valeur, termes, requeteLibre, requeteDialogue, de, a);
+      const cible = el.matches('input') ? el.closest('label') : el;
+      cible.querySelector('.n').textContent = n;
+      cible.classList.toggle('vide', n === 0);
+    }
+    if (i < elements.length) setTimeout(lot, 0);
+  };
+  setTimeout(lot, 0);
+}
+
+function resumeFiltresActifs(){
+  const morceaux = [];
+  if (choix.film.size){
+    const titres = [...choix.film].map(id => {
+      const film = (INDEX.films || []).find(f => f.id === id);
+      return film?.titre || id;
+    }).filter(Boolean);
+    if (titres.length) morceaux.push('Film : ' + titres.join(', '));
+  }
+  if (choix.mots.size) morceaux.push('Mots-clés : ' + [...choix.mots].join(', '));
+  const q = $('#recherche')?.value.trim();
+  if (q) morceaux.push('Recherche images : ' + q);
+  const libre = $('#recherche-libre')?.value.trim();
+  if (libre) morceaux.push('Recherche libre : ' + libre);
+  const dialogue = $('#recherche-dialogues')?.value.trim();
+  if (dialogue) morceaux.push('Dialogue : ' + dialogue);
+  return morceaux;
+}
+
+function htmlEtatVide(type='plan'){
+  const libelle = type === 'scene' ? 'Aucune scène visible' : 'Aucun plan visible';
+  const details = resumeFiltresActifs();
+  return '<div class="etat-vide-resultats">' +
+    '<b>' + libelle + ' pour cette combinaison de filtres.</b>' +
+    '<p>Le film sélectionné ne contient probablement pas ce mot-clé exact, ou bien la combinaison actuelle de filtres est trop restrictive.</p>' +
+    (details.length ? '<ul>' + details.map(item => '<li>' + echapperHtml(item) + '</li>').join('') + '</ul>' : '') +
+    '<p>Conseil : essayez un autre mot-clé visible en gris non vide, ou cliquez sur « Tout réinitialiser ».</p>' +
+  '</div>';
+}
+
+function rechercheFineActive(termes, requeteLibre, requeteDialogue){
+  if ((termes || []).length) return true;
+  if (requeteLibre?.active) return true;
+  if (requeteDialogue) return true;
+  return Object.keys(choix).some(cle => cle !== 'film' && choix[cle].size > 0);
+}
+
+function selectionFilmsPreciseActive(){
+  const total = idsFilmsDisponibles().length;
+  return choix.film.size > 0 && choix.film.size < total;
+}
+
+function appliquer(){
+  const q  = $('#recherche').value.trim().toLowerCase();
+  const termes = preparerTermesRecherche(q);
+  const requeteLibre = analyserRechercheLibre($('#recherche-libre').value);
+  const requeteDialogue = normaliserTexteDialogue($('#recherche-dialogues').value);
+  const de = parseInt($('#an-de').value, 10);
+  const a  = parseInt($('#an-a').value, 10);
+  rechercheLibreCourante = requeteLibre;
+
+  if (!sceneFocus && selectionFilmsPreciseActive() && rechercheFineActive(termes, requeteLibre, requeteDialogue)){
+    if ($('#vue')) $('#vue').value = 'plans';
+    if ($('#granularite')) $('#granularite').value = '2';
+  }
+
+  RESULTAT = INDEX.plans.filter(p => {
+    if (!planPasseFocusScene(p)) return false;
+    if (!planPasseFacettes(p)) return false;
+    if (!planPasseRechercheAnnees(p, termes, de, a)) return false;
+    if (!planPasseRechercheLibre(p, requeteLibre)) return false;
+    return planPasseRechercheDialogues(p, requeteDialogue);
+  }).sort(comparer);
+
+  montre = PAS;
+  rendre();
+  mettreAJourComptes(termes, requeteLibre, requeteDialogue, de, a);
+}
+
+function formaterSecondes(secondes, decimales = 1){
+  const n = Number(secondes || 0);
+  if (!Number.isFinite(n)) return '';
+  return n.toFixed(decimales).replace('.', ',') + ' s';
+}
+
+function formaterTimecode(tc){
+  return String(tc || '').replace('.', ',');
+}
+
+function urlApercuVideo(p){
+  return API_CONTROLE + '/apercu-video?film=' +
+    encodeURIComponent(p.film) + '&plan=' + encodeURIComponent(p.n);
+}
+
+function urlLecturePlan(p){
+  return API_CONTROLE + '/apercu-video?film=' +
+    encodeURIComponent(p.film) + '&plan=' + encodeURIComponent(p.n) + '&mode=zoom&v=lecteur_v3';
+}
+
+function timecodeDepuisSecondes(secondes){
+  const n = Number(secondes);
+  if (!Number.isFinite(n)) return '';
+  const totalMs = Math.max(0, Math.round(n * 1000));
+  const heures = Math.floor(totalMs / 3600000);
+  const minutes = Math.floor((totalMs % 3600000) / 60000);
+  const secondesEntieres = Math.floor((totalMs % 60000) / 1000);
+  const ms = totalMs % 1000;
+  return [heures, minutes, secondesEntieres].map(v => String(v).padStart(2, '0')).join(':') + ',' + String(ms).padStart(3, '0');
+}
+
+function echapperHtml(valeur){
+  return String(valeur ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function echapperRegExp(valeur){
+  return String(valeur || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function nettoyerDescriptionCatalogue(texte, titreFilm = ''){
+  let sortie = String(texte || '').trim();
+  if (!sortie) return '';
+
+  const titre = String(titreFilm || '').trim();
+  if (titre){
+    const titreEchappe = echapperRegExp(titre);
+    [
+      new RegExp('^dans\\s+(?:le|la)\\s+film\\s+[«"“]?' + titreEchappe + '[»"”]?\\s*[,.:;-]?\\s*', 'i'),
+      new RegExp('^pour\\s+(?:le|la)\\s+film\\s+[«"“]?' + titreEchappe + '[»"”]?\\s*[,.:;-]?\\s*', 'i'),
+      new RegExp('^' + titreEchappe + '\\s*[,.:;-]\\s*', 'i')
+    ].forEach(motif => {
+      sortie = sortie.replace(motif, '');
+    });
+  }
+
+  sortie = sortie.replace(/^(19|20)\d{2}\s*[,.:;-]\s*/i, '');
+  sortie = sortie.replace(/^dans\s+(?:ce|cette)\s+(?:plan|scène)\s*[,.:;-]?\s*/i, '');
+  sortie = sortie.replace(/^on\s+voit\s+/i, '');
+  sortie = sortie.replace(/^on\s+distingue\s+/i, '');
+
+  return sortie ? sortie.charAt(0).toUpperCase() + sortie.slice(1) : '';
+}
+
+function nettoyerNotePresences(note){
+  const texte = String(note || '').trim();
+  if (!texte) return '';
+  const normalise = texte.toLowerCase();
+  if (
+    normalise.includes('carnation apparente') ||
+    normalise.includes('apparence ethnique') ||
+    normalise.includes('origine ethnique')
+  ) return '';
+  return texte;
+}
+
+function normaliserValeursDetail(valeur){
+  if (Array.isArray(valeur)) return valeur.flat().filter(v => v !== null && v !== undefined && String(v).trim() !== '');
+  if (valeur === null || valeur === undefined) return [];
+  const texte = String(valeur).trim();
+  return texte ? [texte] : [];
+}
+
+function rendrePucesTechniques(valeur){
+  const valeurs = normaliserValeursDetail(valeur);
+  if (!valeurs.length) return '';
+  return '<div class="puces-techniques">' + valeurs.map(v =>
+    '<span class="puce-technique">' + echapperHtml(v) + '</span>'
+  ).join('') + '</div>';
+}
+
+function estCouleurCssSimple(valeur){
+  const texte = String(valeur || '').trim();
+  return /^#([0-9a-f]{3,8})$/i.test(texte) || /^(rgb|hsl)a?\(/i.test(texte);
+}
+
+function rendreItemTechniqueLecteur(titre, valeur, mode = 'texte'){
+  const valeurs = normaliserValeursDetail(valeur);
+  if (!valeurs.length) return '';
+  const contenu = mode === 'puces'
+    ? rendrePucesTechniques(valeurs)
+    : '<div class="valeur">' + echapperHtml(valeurs.join(' · ')) + '</div>';
+  return '<div class="technique-item"><i>' + echapperHtml(titre) + '</i>' + contenu + '</div>';
+}
+
+function rendreItemPaletteLecteur(p){
+  const palette = normaliserValeursDetail(p.palette_colorimetrique);
+  const couleurs = normaliserValeursDetail(p.couleurs);
+  if (!palette.length && !couleurs.length) return '';
+  const echantillons = couleurs.length
+    ? '<div class="palette-technique">' + couleurs.map(c => {
+        const fond = estCouleurCssSimple(c) ? ' style="background:' + echapperHtml(c) + '"' : '';
+        return '<span class="couleur-technique"><span class="pastille"' + fond + '></span>' + echapperHtml(c) + '</span>';
+      }).join('') + '</div>'
+    : '';
+  return '<div class="technique-item"><i>Couleurs</i>' +
+    (palette.length ? rendrePucesTechniques(palette) : '') +
+    echantillons + '</div>';
+}
+
+function resumeContexteUtilise(ctx){
+  if (!ctx || typeof ctx !== 'object') return '';
+  const morceaux = [];
+  const film = String(ctx.film || '').trim() || [ctx.titre || '', ctx.annee ? `(${ctx.annee})` : ''].filter(Boolean).join(' ').trim();
+  const pitchExtrait = String(ctx.pitch_extrait || '').trim();
+  if (film) morceaux.push('film : ' + film);
+  if (pitchExtrait) morceaux.push('pitch : ' + pitchExtrait);
+  else if (ctx.pitch) morceaux.push('pitch');
+  if (ctx.synopsis) morceaux.push('synopsis');
+  if (ctx.scenario) morceaux.push('résumé narratif');
+  if ((ctx.sources || []).length) morceaux.push('sources : ' + ctx.sources.join(' · '));
+  return morceaux.join(' · ');
+}
+
+function resumeAudioGlobalPlan(p){
+  if (!p.audio_global_ref) return '';
+  const plage = Number.isFinite(Number(p.audio_global_debut)) && Number.isFinite(Number(p.audio_global_fin))
+    ? timecodeDepuisSecondes(p.audio_global_debut) + ' → ' + timecodeDepuisSecondes(p.audio_global_fin)
+    : '';
+  const plans = (p.audio_global_plans || []).length
+    ? 'plans ' + p.audio_global_plans[0] + ' → ' + p.audio_global_plans[p.audio_global_plans.length - 1]
+    : '';
+  return [p.audio_global_ref, plage, plans, p.audio_global_mode].filter(Boolean).join(' · ');
+}
+
+function htmlTechniqueLecteurPlan(p, film = {}){
+  const lignes = [
+    rendreItemTechniqueLecteur('Musique du film', film.musique),
+    rendreItemTechniqueLecteur('Musiques connues (sources publiques)', film.musiques_connues_texte),
+    rendreItemTechniqueLecteur('Contexte film utilisé', resumeContexteUtilise(p.contexte_film_utilise)),
+    rendreItemTechniqueLecteur('Séquence sonore globale', resumeAudioGlobalPlan(p)),
+    rendreItemTechniqueLecteur('Source audio', p.audio_source),
+    rendreItemTechniqueLecteur('Texte du dialogue', p.dialogue_texte),
+    rendreItemTechniqueLecteur('Type de dialogue détecté', p.dialogue_types, 'puces'),
+    rendreItemTechniqueLecteur('Type de musique détecté', p.musique_types, 'puces'),
+    rendreItemTechniqueLecteur('Famille musicale', p.musique_familles, 'puces'),
+    rendreItemTechniqueLecteur('Sous-genres musicaux', p.musique_sous_genres, 'puces'),
+    rendreItemTechniqueLecteur('Design sonore', p.design_sonore_types, 'puces'),
+    rendreItemTechniqueLecteur('Titre du morceau', p.musique_titre),
+    rendreItemTechniqueLecteur('Artiste', p.musique_artiste),
+    rendreItemTechniqueLecteur('Auteur ou autrice', p.musique_auteur),
+    rendreItemTechniqueLecteur('Identification musicale', [p.musique_methode, p.musique_confiance,
+      p.musique_a_verifier ? 'à vérifier' : ''].filter(Boolean)),
+    rendreItemTechniqueLecteur('Note audio', p.audio_notes),
+    rendreItemPaletteLecteur(p),
+    rendreItemTechniqueLecteur('Type de plan', p.echelle),
+    rendreItemTechniqueLecteur('Angle de prise de vue', p.angle),
+    rendreItemTechniqueLecteur('Composition du cadre', p.composition_cadre, 'puces'),
+    rendreItemTechniqueLecteur('Profondeur de champ',
+      [p.profondeur_champ, p.details_profondeur_champ].filter(Boolean)),
+    rendreItemTechniqueLecteur('Mouvement du plan', p.mouvement),
+    rendreItemTechniqueLecteur('Mouvement caméra final',
+      [p.mouvement_camera_final,
+       p.mouvement_camera_conflit ? 'conflit à vérifier' : '',
+       (p.mouvement_camera_sources || []).join(' + ')].filter(Boolean)),
+    rendreItemTechniqueLecteur('Mouvement caméra mesuré',
+      [p.mouvement_camera, p.mouvement_direction, p.mouvement_intensite,
+       p.mouvement_confiance].filter(Boolean)),
+    rendreItemTechniqueLecteur('Classification vidéo',
+      [p.mouvement_video_camera, p.mouvement_video_confiance,
+       p.mouvement_video_modele].filter(Boolean)),
+    rendreItemTechniqueLecteur('Lumière', p.lumiere, Array.isArray(p.lumiere) ? 'puces' : 'texte'),
+    rendreItemTechniqueLecteur('Lumière et étalonnage', p.lumiere_etalonnage, 'puces'),
+    rendreItemTechniqueLecteur('Direction de la lumière', p.direction_lumiere_principale),
+    rendreItemTechniqueLecteur('Matière et texture', p.matiere_texture, 'puces'),
+    rendreItemTechniqueLecteur('Lieu', p.lieu),
+    rendreItemTechniqueLecteur('Lieu et décors', p.lieu_decors, 'puces'),
+    rendreItemTechniqueLecteur('Présences', p.categories_presence, 'puces'),
+    rendreItemTechniqueLecteur('Personnes visibles', p.presence_personnes ? 'oui' : 'non'),
+    rendreItemTechniqueLecteur('Nombre de personnes', Number.isFinite(Number(p.nombre_personnes)) ? String(p.nombre_personnes) : ''),
+    rendreItemTechniqueLecteur('Genre perçu', p.genres_personnes, 'puces'),
+    rendreItemTechniqueLecteur('Âge perçu', p.ages_personnes, 'puces'),
+    rendreItemTechniqueLecteur('Personnages récurrents probables', p.personnages_recurrents_labels, 'puces'),
+    rendreItemTechniqueLecteur('Animal visible', p.animal_visible ? 'oui' : 'non'),
+    rendreItemTechniqueLecteur('Animaux', p.animaux_visibles, 'puces'),
+    rendreItemTechniqueLecteur('Note présences', nettoyerNotePresences(p.presences_note)),
+    rendreItemTechniqueLecteur('Personnages', (p.personnages_sujets || []).length ? p.personnages_sujets : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Attitudes et expressions', (p.attitudes_expressions || []).length ? p.attitudes_expressions : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Objets clés', (p.objets_cles || []).length ? p.objets_cles : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Mots-clés', p.mots_cles, 'puces'),
+    rendreItemTechniqueLecteur('Appareils visibles', (p.machine_types || []).length ? p.machine_types : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Rôle des appareils', p.machine_role),
+    rendreItemTechniqueLecteur('Affichage / interface', p.interface),
+    rendreItemTechniqueLecteur('Texte visible', p.texte_visible ? 'oui' : 'non'),
+    rendreItemTechniqueLecteur('Plan de générique', p.generique ? 'oui' : 'non'),
+    rendreItemTechniqueLecteur('Types de texte visible', (p.presence_texte_types || []).length ? p.presence_texte_types : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Rôle du texte', p.texte_role),
+    rendreItemTechniqueLecteur('Classification typographique', (p.classification_typographique || []).length ? p.classification_typographique : 'Aucun', 'puces'),
+    rendreItemTechniqueLecteur('Famille typographique', p.typographie_categorie),
+    rendreItemTechniqueLecteur('Sous-genres typographiques', p.typographie_styles, 'puces'),
+    rendreItemTechniqueLecteur('Composition graphique', p.composition_graphique),
+    rendreItemTechniqueLecteur('Note typographique', p.typographie_description),
+    rendreItemTechniqueLecteur('Certitude de l’analyse', p.certitude),
+  ].filter(Boolean);
+  return lignes.join('');
+}
+
+function htmlSceneLecteurPlan(p){
+  const lignes = [
+    rendreItemTechniqueLecteur('Scène', p.scene_titre),
+    rendreItemTechniqueLecteur('Type de scène', p.scene_type),
+    rendreItemTechniqueLecteur('Résumé de scène', p.scene_resume),
+    rendreItemTechniqueLecteur('Lieu de scène', p.scene_lieu),
+    rendreItemTechniqueLecteur('Temporalité de scène', p.scene_temporalite),
+    rendreItemTechniqueLecteur('Action dominante de scène', p.scene_action_principale),
+    rendreItemTechniqueLecteur('Ambiance de scène', p.scene_ambiance),
+    rendreItemTechniqueLecteur('Enjeu narratif', p.scene_enjeu_narratif),
+    rendreItemTechniqueLecteur('Contexte de scène', p.scene_contexte),
+    rendreItemTechniqueLecteur('Personnages de scène', p.scene_personnages_visibles, 'puces'),
+    rendreItemTechniqueLecteur('Objets de scène', p.scene_objets_significatifs, 'puces'),
+    rendreItemTechniqueLecteur('Motifs structurants de scène', p.scene_motifs_structurants, 'puces'),
+    rendreItemTechniqueLecteur('Confiance scène', [p.scene_confiance, p.scene_a_verifier ? 'à vérifier' : ''].filter(Boolean)),
+  ].filter(Boolean);
+  return lignes.join('');
+}
+
+function clePlan(p){
+  return [p?.film || '', String(p?.n || '')].join('#');
+}
+
+function etatBoutonPanier(bouton, actif, plan){
+  if (!bouton) return;
+  const libelle = actif ? 'Retiré' : 'Panier';
+  bouton.textContent = libelle;
+  bouton.setAttribute('aria-pressed', actif ? 'true' : 'false');
+  if (plan){
+    bouton.setAttribute('aria-label',
+      (actif ? 'Retirer du panier' : 'Ajouter au panier') + ' ' + plan.titre + ', plan ' + plan.n);
+    bouton.title = actif
+      ? 'Retirer du panier'
+      : 'Ajouter au panier (Shift+clic sur la vignette aussi)';
+  }
+}
+
+function plansDuFilmLecteur(plan){
+  if (!plan || !INDEX?.plans) return [];
+  return INDEX.plans
+    .filter(p => p.film === plan.film)
+    .slice()
+    .sort((a, b) =>
+      (Number(a.n || 0) - Number(b.n || 0)) ||
+      (Number(a.debut || 0) - Number(b.debut || 0)) ||
+      clePlan(a).localeCompare(clePlan(b), 'fr')
+    );
+}
+
+function voisinageLecteurPlan(plan){
+  const plans = plansDuFilmLecteur(plan);
+  const index = plans.findIndex(p => clePlan(p) === clePlan(plan));
+  return {
+    plans,
+    index,
+    precedent: index > 0 ? plans[index - 1] : null,
+    suivant: index >= 0 && index < plans.length - 1 ? plans[index + 1] : null,
+  };
+}
+
+function scenesDuFilmLecteur(plan){
+  const plans = plansDuFilmLecteur(plan);
+  const scenes = [];
+  for (const p of plans){
+    const cle = cleScene(p);
+    const scene = scenes[scenes.length - 1];
+    if (!scene || scene.cle !== cle){
+      scenes.push({
+        cle,
+        label: p.scene_titre || p.scene_id || ('Plan ' + p.n),
+        plans: [p],
+      });
+      continue;
+    }
+    scene.plans.push(p);
+  }
+  return scenes;
+}
+
+function voisinageLecteurScene(plan){
+  const scenes = scenesDuFilmLecteur(plan);
+  const index = scenes.findIndex(scene => scene.cle === cleScene(plan));
+  return {
+    scenes,
+    index,
+    precedente: index > 0 ? scenes[index - 1] : null,
+    suivante: index >= 0 && index < scenes.length - 1 ? scenes[index + 1] : null,
+  };
+}
+
+function mettreAJourNavigationLecteurPlan(plan){
+  const navigation = $('#lecteur-navigation');
+  const precedentBouton = $('#lecteur-plan-precedent');
+  const suivantBouton = $('#lecteur-plan-suivant');
+  if (!navigation || !precedentBouton || !suivantBouton) return;
+  const { plans, index, precedent, suivant } = voisinageLecteurPlan(plan);
+  const visible = index >= 0 && plans.length > 0;
+  navigation.hidden = !visible;
+  precedentBouton.disabled = !precedent;
+  suivantBouton.disabled = !suivant;
+}
+
+function mettreAJourNavigationLecteurScene(plan){
+  const navigation = $('#lecteur-scene-navigation');
+  const precedenteBouton = $('#lecteur-scene-precedente');
+  const suivanteBouton = $('#lecteur-scene-suivante');
+  if (!navigation || !precedenteBouton || !suivanteBouton) return;
+  const { scenes, index, precedente, suivante } = voisinageLecteurScene(plan);
+  const visible = index >= 0 && scenes.length > 0;
+  navigation.hidden = !visible;
+  precedenteBouton.disabled = !precedente;
+  suivanteBouton.disabled = !suivante;
+}
+
+function fermerLecteurPlan(){
+  const panneau = $('#lecteur-plan');
+  const video = $('#lecteur-video');
+  lecteurPlanCourant = null;
+  try { video.pause(); } catch {}
+  try { video.currentTime = 0; } catch {}
+  video.removeAttribute('src');
+  video.removeAttribute('poster');
+  try { video.load(); } catch {}
+  panneau.classList.remove('on');
+  panneau.setAttribute('aria-hidden', 'true');
+}
+
+function ouvrirLecteurPlan(p, options = {}){
+  const { ouvrirSceneVolet = false } = options;
+  const film = INDEX.films.find(f => f.id === p.film) || {};
+  const panneau = $('#lecteur-plan');
+  const video = $('#lecteur-video');
+  const titre = $('#lecteur-titre');
+  const meta = $('#lecteur-meta');
+  const note = $('#lecteur-note');
+  const planVolet = $('#lecteur-plan-volet');
+  const sceneVolet = $('#lecteur-scene-volet');
+  const descriptionBloc = $('#lecteur-description-bloc');
+  const description = $('#lecteur-description');
+  const techniqueBloc = $('#lecteur-technique-bloc');
+  const technique = $('#lecteur-technique');
+  const sceneTechniqueBloc = $('#lecteur-scene-technique-bloc');
+  const sceneTechnique = $('#lecteur-scene-technique');
+  const debut = timecodeDepuisSecondes(p.debut);
+  const fin = timecodeDepuisSecondes(p.fin);
+  const texteDescription = nettoyerDescriptionCatalogue(p.description, p.titre);
+  const htmlTechnique = htmlTechniqueLecteurPlan(p, film);
+  const htmlScene = htmlSceneLecteurPlan(p);
+  lecteurPlanCourant = p;
+  titre.textContent = p.titre + ' · plan ' + p.n;
+  meta.textContent = [
+    'Timecode ' + formaterTimecode(p.tc),
+    formaterSecondes(p.duree, 2),
+    p.scene_titre || '',
+    p.echelle || '',
+  ].filter(Boolean).join(' · ');
+  note.textContent = [
+    debut && fin ? 'Lecture en boucle depuis le fichier source : ' + debut + ' → ' + fin : 'Lecture en boucle depuis le fichier source.',
+    'La fin du clip lecteur est recoupée de quelques images pour éviter d’apercevoir le plan suivant.',
+    'Version agrandie, avec meilleure largeur que le simple survol.',
+  ].join(' ');
+  description.textContent = texteDescription;
+  descriptionBloc.hidden = !texteDescription;
+  technique.innerHTML = htmlTechnique;
+  techniqueBloc.hidden = !htmlTechnique;
+  sceneTechnique.innerHTML = htmlScene;
+  sceneTechniqueBloc.hidden = !htmlScene;
+  planVolet.hidden = !texteDescription && !htmlTechnique;
+  planVolet.open = true;
+  sceneVolet.hidden = !htmlScene;
+  sceneVolet.open = !!ouvrirSceneVolet && !sceneVolet.hidden;
+  mettreAJourNavigationLecteurPlan(p);
+  if (sceneVolet.hidden) $('#lecteur-scene-navigation').hidden = true;
+  else mettreAJourNavigationLecteurScene(p);
+  video.poster = p.vignette;
+  video.loop = true;
+  video.muted = false;
+  video.src = urlLecturePlan(p);
+  panneau.classList.add('on');
+  panneau.setAttribute('aria-hidden', 'false');
+  video.load();
+  const tentative = video.play();
+  if (tentative && typeof tentative.catch === 'function'){
+    tentative.catch(() => {
+      video.muted = true;
+      return video.play().catch(() => {});
+    });
+  }
+}
+
+let minuteurPrechargementVoisinage = null;
+let dernierPlanPrecharge = null;
+
+function prechargerVoisinagePlan(plan){
+  if (!plan) return;
+  const grille = $('#grille');
+  const i = parseInt(plan.dataset.indexPlan || '-1', 10);
+  if (!grille || !Number.isInteger(i) || i < 0) return;
+  [i, i - 1, i + 1].forEach(n => {
+    const voisin = grille.children[n];
+    voisin?.prechargerApercuVideo?.();
+  });
+}
+
+function brancherPrechargementVoisinage(grille){
+  if (!grille) return;
+  grille.onpointermove = e => {
+    const plan = e.target.closest?.('.plan');
+    if (!plan || plan === dernierPlanPrecharge) return;
+    dernierPlanPrecharge = plan;
+    clearTimeout(minuteurPrechargementVoisinage);
+    minuteurPrechargementVoisinage = setTimeout(() => {
+      prechargerVoisinagePlan(plan);
+    }, 80);
+  };
+  grille.onpointerleave = () => {
+    clearTimeout(minuteurPrechargementVoisinage);
+    minuteurPrechargementVoisinage = null;
+    dernierPlanPrecharge = null;
+  };
+}
+
+function brancherSurvolPlan(el, p){
+  const img = el.querySelector('img.principal');
+  const video = el.querySelector('video.animvideo');
+  const jauge = el.querySelector('.jauge');
+  const vignettes = p.vignettes || [];
+  let minuteur = null, k = 0, survole = false, tentative = false, pret = false, erreur = false;
+
+  const chargerVideo = (mode = 'metadata') => {
+    if (!video || erreur) return;
+    if (!tentative){
+      tentative = true;
+      video.preload = mode;
+      video.src = urlApercuVideo(p);
+      video.load();
+      return;
+    }
+    if (mode === 'auto' && video.preload !== 'auto'){
+      video.preload = 'auto';
+      if (video.readyState < 2) video.load();
+    }
+  };
+
+  const demarrerVignettes = () => {
+    if (minuteur || vignettes.length <= 1) return;
+    minuteur = setInterval(() => {
+      k = (k + 1) % vignettes.length;
+      img.src = vignettes[k];
+      jauge.style.width = ((k + 1) / vignettes.length * 100) + '%';
+    }, 450);
+  };
+
+  const arreterVignettes = () => {
+    clearInterval(minuteur);
+    minuteur = null;
+    k = 0;
+    img.src = p.vignette;
+  };
+
+  const arreterVideo = () => {
+    if (!video) return;
+    try { video.pause(); video.currentTime = 0; } catch {}
+    el.classList.remove('preview-video');
+  };
+
+  if (video){
+    video.addEventListener('loadeddata', () => {
+      pret = true;
+      if (!survole) return;
+      arreterVignettes();
+      el.classList.add('preview-video');
+      jauge.style.width = '100%';
+      video.play().catch(() => {});
+    });
+    video.addEventListener('error', () => {
+      erreur = true;
+      pret = false;
+      arreterVideo();
+      try { video.removeAttribute('src'); video.load(); } catch {}
+      if (survole) demarrerVignettes();
+    });
+  }
+
+  el.prechargerApercuVideo = () => chargerVideo('metadata');
+
+  el.onmouseenter = () => {
+    survole = true;
+    chargerVideo('auto');
+    if (pret && video){
+      arreterVignettes();
+      el.classList.add('preview-video');
+      jauge.style.width = '100%';
+      video.play().catch(() => {});
+      return;
+    }
+    demarrerVignettes();
+  };
+
+  el.onmouseleave = () => {
+    survole = false;
+    arreterVignettes();
+    arreterVideo();
+    jauge.style.width = 0;
+  };
+}
+
+/* ── Rendu ────────────────────────────────────────────── */
+function modePlansActif(){
+  const granularite = Number($('#granularite')?.value || 2);
+  return $('#vue')?.value === 'plans' && granularite >= 2;
+}
+
+function cleScene(p){
+  return [p.film || '', p.scene_id || ('plan_' + p.n)].join('::');
+}
+
+function groupesScenes(plans){
+  const groupes = new Map();
+  for (const p of plans){
+    const cle = cleScene(p);
+    if (!groupes.has(cle)){
+      groupes.set(cle, {
+        cle,
+        film:p.film,
+        titre:p.titre,
+        annee:p.annee,
+        scene_id:p.scene_id || '',
+        scene_titre:p.scene_titre || ('Autour du plan ' + p.n),
+        scene_resume:p.scene_resume || p.description || '',
+        scene_lieu:p.scene_lieu || '',
+        scene_temporalite:p.scene_temporalite || '',
+        scene_action_principale:p.scene_action_principale || '',
+        debut:Number(p.debut || 0),
+        fin:Number(p.fin || p.debut || 0),
+        duree:0,
+        plans:[],
+        vignettes:[],
+      });
+    }
+    const g = groupes.get(cle);
+    g.plans.push(p);
+    g.debut = Math.min(g.debut, Number(p.debut || 0));
+    g.fin = Math.max(g.fin, Number(p.fin || p.debut || 0));
+    if (p.vignette && g.vignettes.length < 8) g.vignettes.push(p.vignette);
+  }
+  const sorties = [...groupes.values()].map(g => {
+    g.duree = g.plans.reduce((s, p) => s + Number(p.duree || 0), 0);
+    g.plan_debut = Math.min(...g.plans.map(p => Number(p.n || 0)));
+    g.plan_fin = Math.max(...g.plans.map(p => Number(p.n || 0)));
+    g.vignette = g.vignettes[0] || '';
+    return g;
+  });
+  sorties.sort((a,b) => (a.titre || '').localeCompare(b.titre || '', 'fr') || (a.debut - b.debut));
+  return sorties;
+}
+
+function afficherFocusScene(){
+  const bloc = $('#scene-focus');
+  if (!bloc) return;
+  bloc.classList.toggle('on', !!sceneFocus);
+  $('#scene-focus-texte').textContent = sceneFocus ? 'Scène ouverte : ' + sceneFocus.label : '';
+}
+
+function mettreAJourBoutonsVue(){
+  const plans = modePlansActif();
+  $('#vue-scenes')?.classList.toggle('actif', !plans);
+  $('#vue-plans')?.classList.toggle('actif', plans);
+}
+
+function ouvrirSceneEnPlans(scene){
+  sceneFocus = {film:scene.film, scene_id:scene.scene_id, label:scene.scene_titre || scene.scene_id};
+  $('#vue').value = 'plans';
+  $('#granularite').value = '2';
+  appliquer();
+}
+
+function planPasseFocusScene(p){
+  if (!sceneFocus) return true;
+  return p.film === sceneFocus.film && (p.scene_id || '') === (sceneFocus.scene_id || '');
+}
+
+function rendreScenes(){
+  const g = $('#grille');
+  const granularite = Number($('#granularite')?.value || 0);
+  const scenes = groupesScenes(RESULTAT);
+  g.style.gridTemplateColumns =
+    'repeat(auto-fill,minmax(' + $('#taille').value + 'px,1fr))';
+  g.innerHTML = '';
+  const d = RESULTAT.reduce((s, p) => s + p.duree, 0);
+  $('#compte').innerHTML = '<b>' + scenes.length + '</b> scènes · ' +
+    RESULTAT.length + ' plans · ' + (d / 60).toFixed(1).replace('.', ',') + ' min' +
+    (scenes.length > montre ? ' · ' + montre + ' affichées' : '');
+  if (!scenes.length){
+    g.innerHTML = htmlEtatVide('scene');
+    $('#plus').hidden = true;
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  scenes.slice(0, montre).forEach(scene => {
+    const el = document.createElement('div');
+    el.className = 'carte-scene';
+    el.tabIndex = 0;
+    const vignettes = granularite >= 1
+      ? '<div class="scene-vignettes">' + scene.vignettes.slice(0,4).map(v => '<img loading="lazy" decoding="async" src="' + echapperHtml(v) + '" alt="">').join('') + '</div>'
+      : '';
+    const libellePlans = scene.plan_debut === scene.plan_fin
+      ? 'plan ' + scene.plan_debut
+      : 'plans ' + scene.plan_debut + ' → ' + scene.plan_fin;
+    el.innerHTML =
+      '<div class="cadre">' +
+        '<img class="principal" loading="lazy" decoding="async" src="' + echapperHtml(scene.vignette) + '" alt="' + echapperHtml(scene.scene_titre) + '">' +
+      '</div>' +
+      vignettes +
+      '<div class="scene-entete"><span>Scène</span><span class="scene-plans">' + libellePlans + '</span></div>' +
+      '<div class="meta"><span class="tc">' + timecodeDepuisSecondes(scene.debut) + ' → ' + timecodeDepuisSecondes(scene.fin) + '</span>' +
+        '<span>' + scene.plans.length + ' plans</span>' +
+        '<span>' + formaterSecondes(scene.duree, 1) + '</span></div>' +
+      '<div class="film">' + echapperHtml(scene.titre) + (scene.annee ? ' · ' + scene.annee : '') + '</div>' +
+      '<div class="scene">' + echapperHtml(scene.scene_titre) + '</div>' +
+      '<div class="action-scene">' + echapperHtml([scene.scene_lieu, scene.scene_temporalite, nettoyerDescriptionCatalogue(scene.scene_action_principale, scene.titre)].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="resume-scene">' + echapperHtml(nettoyerDescriptionCatalogue(scene.scene_resume, scene.titre)) + '</div>' +
+      '<span class="ouvrir-scene-plans">Voir les plans de cette scène</span>';
+    el.onclick = () => ouvrirSceneEnPlans(scene);
+    el.onkeydown = e => {
+      if (e.key === 'Enter' || e.key === ' '){ ouvrirSceneEnPlans(scene); e.preventDefault(); }
+    };
+    frag.appendChild(el);
+  });
+  g.appendChild(frag);
+  $('#plus').hidden = scenes.length <= montre;
+}
+
+function rendre(){
+  afficherFocusScene();
+  mettreAJourBoutonsVue();
+  if (!modePlansActif()){
+    rendreScenes();
+    return;
+  }
+  const g = $('#grille');
+  g.style.gridTemplateColumns =
+    'repeat(auto-fill,minmax(' + $('#taille').value + 'px,1fr))';
+  g.innerHTML = '';
+
+  const plansAffiches = sceneFocus ? RESULTAT : RESULTAT.slice(0, montre);
+  const d = RESULTAT.reduce((s, p) => s + p.duree, 0);
+  $('#compte').innerHTML = '<b>' + RESULTAT.length + '</b> plans · ' +
+    (d / 60).toFixed(1).replace('.', ',') + ' min' +
+    (!sceneFocus && RESULTAT.length > montre ? ' · ' + montre + ' affichés' : '');
+  if (!RESULTAT.length){
+    g.innerHTML = htmlEtatVide('plan');
+    $('#plus').hidden = true;
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+  plansAffiches.forEach((p, i) => {
+    const id = p.film + '#' + p.n;
+    const dejaPris = pris.has(id);
+    const el = document.createElement('div');
+    el.className = 'plan' + (p.machine ? ' m' : '') +
+      (p.certitude === 'douteux' ? ' doute' : '') +
+      (dejaPris ? ' pris' : '');
+    el.tabIndex = 0;
+    el.dataset.indexPlan = i;
+    el.innerHTML =
+      '<div class="cadre">' +
+        '<img class="principal" loading="lazy" decoding="async" src="' + p.vignette + '" alt="' +
+          p.titre + ', plan ' + p.n + '">' +
+        '<video class="animvideo" muted playsinline loop preload="none" poster="' + p.vignette + '"></video>' +
+        '<span class="jauge"></span>' +
+      '</div>' +
+      '<div class="meta"><span class="tc">' + formaterTimecode(p.tc) + '</span><button class="bouton-panier" type="button"></button></div>' +
+      '<div class="film">' + p.titre + (p.annee ? ' · ' + p.annee : '') + '</div>';
+
+    brancherSurvolPlan(el, p);
+
+    const cadre = el.querySelector('.cadre');
+    const boutonPanier = el.querySelector('.bouton-panier');
+    etatBoutonPanier(boutonPanier, dejaPris, p);
+    boutonPanier.onclick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      basculer(id, el);
+    };
+    cadre.onclick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.shiftKey){
+        basculer(id, el);
+        return;
+      }
+      ouvrirLecteurPlan(p);
+    };
+
+    el.onclick = e => {
+      if (e.target.closest('.cadre')) return;
+      basculer(id, el);
+    };
+    el.onkeydown = e => {
+      if (e.key === 'Enter'){ ouvrirLecteurPlan(p); e.preventDefault(); }
+      if (e.key === ' ')    { ouvrirFiche(p);   e.preventDefault(); }
+    };
+    frag.appendChild(el);
+  });
+  g.appendChild(frag);
+  brancherPrechargementVoisinage(g);
+  $('#plus').hidden = !!sceneFocus || RESULTAT.length <= montre;
+}
+
+function basculer(id, el){
+  pris.has(id) ? pris.delete(id) : pris.add(id);
+  el.classList.toggle('pris');
+  etatBoutonPanier(el.querySelector('.bouton-panier'), pris.has(id));
+  majBanc();
+}
+
+function majBanc(){
+  $('#banc').classList.toggle('on', pris.size > 0);
+  $('#nsel').textContent = pris.size;
+  const d = INDEX.plans.filter(p => pris.has(p.film + '#' + p.n))
+                       .reduce((s, p) => s + p.duree, 0);
+  $('#dsel').textContent = d < 60 ? formaterSecondes(d, 1) : (d / 60).toFixed(1).replace('.', ',') + ' min';
+}
+
+/* ── Fiche ────────────────────────────────────────────── */
+function ouvrirFiche(p){
+  const film = INDEX.films.find(f => f.id === p.film) || {};
+  const l = (t, v) => (v && (!Array.isArray(v) || v.length))
+    ? '<div><i>' + t + '</i>' + (Array.isArray(v) ? v.join(', ') : v) + '</div>' : '';
+  const vues = (p.vignettes && p.vignettes.length ? p.vignettes : [p.vignette])
+    .map(v => '<img loading="lazy" decoding="async" src="' + v + '" alt="">').join('');
+  const couleurs = (p.couleurs || []).length
+    ? '<div class="bande">' + p.couleurs.map(c =>
+        '<span style="background:' + c + '"></span>').join('') + '</div>' : '';
+  const contexteUtilise = resumeContexteUtilise(p.contexte_film_utilise);
+  const sequenceAudio = resumeAudioGlobalPlan(p);
+
+  $('#fiche .carte').innerHTML =
+    '<div class="visuel">' +
+      (p.apercu ? '<img class="grand" loading="lazy" decoding="async" src="' + p.apercu + '" alt="">' : '') +
+      vues +
+    '</div>' +
+    '<div class="infos">' +
+      l('Film', p.titre) + l('Réalisation', p.realisateur) +
+      l('Sortie', film.date_sortie || p.annee) +
+      l('Photographie', film.directeur_photo) +
+      l('Scénario', film.scenaristes) +
+      l('Acteurs', film.acteurs) +
+      l('Production', film.producteurs) +
+      l('Décors', film.chef_decorateur) +
+      l('Montage', film.monteur) + l('Musique', film.musique) +
+      l('Musiques connues (sources publiques)', film.musiques_connues_texte) +
+      l('Costumes', film.costumes) + l('Effets spéciaux', film.effets_speciaux) +
+      l('Format', [film.format, film.ratio].filter(Boolean).join(' · ')) +
+      l('Timecode', formaterTimecode(p.tc)) + l('Durée', formaterSecondes(p.duree, 2)) +
+      l('Scène', p.scene_titre) +
+      l('Type de scène', p.scene_type) +
+      l('Résumé de scène', p.scene_resume) +
+      l('Lieu de scène', p.scene_lieu) +
+      l('Temporalité de scène', p.scene_temporalite) +
+      l('Action dominante de scène', p.scene_action_principale) +
+      l('Ambiance de scène', p.scene_ambiance) +
+      l('Enjeu narratif', p.scene_enjeu_narratif) +
+      l('Contexte de scène', p.scene_contexte) +
+      l('Personnages de scène', p.scene_personnages_visibles) +
+      l('Objets de scène', p.scene_objets_significatifs) +
+      l('Motifs structurants de scène', p.scene_motifs_structurants) +
+      l('Confiance scène', [p.scene_confiance, p.scene_a_verifier ? 'à vérifier' : ''].filter(Boolean).join(' · ')) +
+      l('Contexte film utilisé', contexteUtilise) +
+      l('Échelle', p.echelle) + l('Angle', p.angle) +
+      l('Profondeur de champ', [p.profondeur_champ, p.details_profondeur_champ].filter(Boolean).join(' · ')) +
+      l('Composition du cadre', p.composition_cadre) +
+      l('Mouvement', p.mouvement) + l('Lumière', p.lumiere) + l('Lieu', p.lieu) +
+      l('Lieu et décors', p.lieu_decors) +
+      l('Palette colorimétrique', p.palette_colorimetrique) +
+      l('Lumière et étalonnage', p.lumiere_etalonnage) +
+      l('Direction de la lumière', p.direction_lumiere_principale) +
+      l('Matière et texture', p.matiere_texture) +
+      l('Mouvement caméra final', [p.mouvement_camera_final,
+        p.mouvement_camera_conflit ? 'conflit à vérifier' : '',
+        (p.mouvement_camera_sources || []).join(' + ')].filter(Boolean).join(' · ')) +
+      l('Mouvement caméra mesuré', [p.mouvement_camera, p.mouvement_direction,
+        p.mouvement_intensite, p.mouvement_confiance].filter(Boolean).join(' · ')) +
+      l('Classification vidéo', [p.mouvement_video_camera, p.mouvement_video_confiance,
+        p.mouvement_video_modele].filter(Boolean).join(' · ')) +
+      l('Note mouvement', p.mouvement_camera_notes) +
+      l('Présences', p.categories_presence) +
+      l('Personnes visibles', p.presence_personnes ? 'oui' : 'non') +
+      l('Nombre de personnes', Number.isFinite(Number(p.nombre_personnes)) ? String(p.nombre_personnes) : '') +
+      l('Genre perçu', p.genres_personnes) +
+      l('Âge perçu', p.ages_personnes) +
+      l('Personnages récurrents probables', p.personnages_recurrents_labels) +
+      l('Animal visible', p.animal_visible ? 'oui' : 'non') +
+      l('Animaux', p.animaux_visibles) +
+      l('Note présences', nettoyerNotePresences(p.presences_note)) +
+      l('Appareils', p.machine_types) + l('Rôle', p.machine_role) +
+      l('Affichage', p.interface) +
+      l('Texte visible', p.texte_visible ? 'oui' : 'non') +
+      l('Plan de générique', p.generique ? 'oui' : 'non') +
+      l('Types de texte visible', p.presence_texte_types) +
+      l('Rôle du texte', p.texte_role) +
+      l('Classification typographique', p.classification_typographique) +
+      l('Famille typographique', p.typographie_categorie) +
+      l('Sous-genres typographiques', p.typographie_styles) +
+      l('Composition graphique', p.composition_graphique) +
+      l('Note typographique', p.typographie_description) +
+      l('Passe typographique', p.typographie_modele) +
+      l('Personnages', p.personnages_sujets) +
+      l('Attitudes et expressions', p.attitudes_expressions) +
+      l('Objets clés', p.objets_cles) +
+      l('Personnes visibles', p.personnes_visibles) +
+      l('Texte du dialogue', p.dialogue_texte) +
+      l('Source audio', p.audio_source) +
+      l('Type de dialogue détecté', p.dialogue_types) +
+      l('Type de musique détecté', p.musique_types) +
+      l('Famille musicale', p.musique_familles) +
+      l('Sous-genres musicaux', p.musique_sous_genres) +
+      l('Design sonore', p.design_sonore_types) +
+      l('Séquence sonore globale', sequenceAudio) +
+      l('Titre du morceau', p.musique_titre) +
+      l('Artiste', p.musique_artiste) +
+      l('Auteur ou autrice', p.musique_auteur) +
+      l('Identification musicale', [p.musique_methode, p.musique_confiance,
+        p.musique_a_verifier ? 'à vérifier' : ''].filter(Boolean).join(' · ')) +
+      l('Note audio', p.audio_notes) +
+      l('Ambiance sonore', p.ambiance_types) +
+      l('Affinage IA', p.affinage_modele ?
+        [p.affinage_modele].concat(p.affinage_raisons || []).join(' · ') : '') +
+      l('Mots-clés', p.mots_cles) +
+    '</div>' +
+    (film.pitch ? '<p><b>Pitch.</b> ' + film.pitch + '</p>' : '') +
+    (!film.pitch && film.synopsis ? '<p><b>Synopsis.</b> ' + film.synopsis + '</p>' : '') +
+    (film.scenario ? '<p><b>Résumé du scénario.</b> ' + film.scenario + '</p>' : '') +
+    '<p>' + nettoyerDescriptionCatalogue(p.description, p.titre) + '</p>' + couleurs;
+  $('#fiche').classList.add('on');
+}
+$('#fiche').onclick = () => $('#fiche').classList.remove('on');
+$('#lecteur-plan').onclick = e => {
+  if (e.target.id === 'lecteur-plan') fermerLecteurPlan();
+};
+$('#fermer-lecteur').onclick = () => fermerLecteurPlan();
+$('#lecteur-plan-precedent').onclick = e => {
+  e.preventDefault();
+  e.stopPropagation();
+  const ouvrirSceneVolet = !!$('#lecteur-scene-volet')?.open;
+  const { precedent } = voisinageLecteurPlan(lecteurPlanCourant);
+  if (precedent) ouvrirLecteurPlan(precedent, { ouvrirSceneVolet });
+};
+$('#lecteur-plan-suivant').onclick = e => {
+  e.preventDefault();
+  e.stopPropagation();
+  const ouvrirSceneVolet = !!$('#lecteur-scene-volet')?.open;
+  const { suivant } = voisinageLecteurPlan(lecteurPlanCourant);
+  if (suivant) ouvrirLecteurPlan(suivant, { ouvrirSceneVolet });
+};
+$('#lecteur-scene-precedente').onclick = e => {
+  e.preventDefault();
+  e.stopPropagation();
+  const { precedente } = voisinageLecteurScene(lecteurPlanCourant);
+  if (precedente?.plans?.length) ouvrirLecteurPlan(precedente.plans[0], { ouvrirSceneVolet: true });
+};
+$('#lecteur-scene-suivante').onclick = e => {
+  e.preventDefault();
+  e.stopPropagation();
+  const { suivante } = voisinageLecteurScene(lecteurPlanCourant);
+  if (suivante?.plans?.length) ouvrirLecteurPlan(suivante.plans[0], { ouvrirSceneVolet: true });
+};
+addEventListener('keydown', e => {
+  if (e.key === 'Escape'){
+    if ($('#lecteur-plan').classList.contains('on')) fermerLecteurPlan();
+    else $('#fiche').classList.remove('on');
+  }
+});
+
+/* ── Commandes ────────────────────────────────────────── */
+let differe;
+const differer = () => { clearTimeout(differe); differe = setTimeout(appliquer, 180); };
+$('#recherche').oninput = differer;
+$('#recherche-libre').oninput = differer;
+$('#recherche-dialogues').oninput = differer;
+$('#an-de').oninput = differer;
+$('#an-a').oninput = differer;
+$('#tri').onchange = appliquer;
+function choisirVueCatalogue(mode){
+  sceneFocus = null;
+  $('#vue').value = mode;
+  $('#granularite').value = mode === 'plans' ? '2' : '0';
+  appliquer();
+}
+$('#vue-scenes').onclick = () => choisirVueCatalogue('scenes');
+$('#vue-plans').onclick = () => choisirVueCatalogue('plans');
+$('#vue').onchange = e => {
+  if (e.currentTarget.value === 'scenes' && Number($('#granularite').value) >= 2) $('#granularite').value = '0';
+  if (e.currentTarget.value === 'plans' && Number($('#granularite').value) < 2) $('#granularite').value = '2';
+  appliquer();
+};
+$('#granularite').oninput = e => {
+  $('#vue').value = Number(e.currentTarget.value) >= 2 ? 'plans' : 'scenes';
+  appliquer();
+};
+$('#scene-focus-fermer').onclick = e => {
+  e.preventDefault();
+  sceneFocus = null;
+  appliquer();
+};
+$('#sens').onclick = e => {
+  sens = -sens;
+  e.currentTarget.innerHTML = sens > 0 ? '&#8593;' : '&#8595;';
+  appliquer();
+};
+$('#taille').oninput = rendre;
+$('#plus').onclick = () => { montre += PAS; rendre(); };
+$('#vider').onclick = () => { pris.clear(); rendre(); majBanc(); };
+$('#tout').onclick = () => {
+  RESULTAT.forEach(p => pris.add(p.film + '#' + p.n));
+  rendre(); majBanc();
+};
+$('#raz').onclick = () => {
+  for (const c in choix) choix[c].clear();
+  $('#recherche').value = ''; $('#recherche-libre').value = ''; $('#recherche-dialogues').value = ''; $('#an-de').value = ''; $('#an-a').value = '';
+  sceneFocus = null;
+  document.querySelectorAll('#rail input[type=checkbox]')
+          .forEach(i => i.checked = false);
+  document.querySelectorAll('.mot.actif')
+          .forEach(b => b.classList.remove('actif'));
+  appliquer();
+};
+$('#exporter').onclick = () => {
+  if (!pris.size) return;
+  const bouton = $('#exporter');
+  const ancienTexte = bouton.textContent;
+  bouton.disabled = true;
+  bouton.textContent = 'Préparation du ZIP…';
+  fetch('http://127.0.0.1:8765/export-selection-zip', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({plans:[...pris]})
+  })
+    .then(async reponse => {
+      if (!reponse.ok){
+        let message = 'Export ZIP impossible.';
+        try {
+          const data = await reponse.json();
+          if (data?.message) message = data.message;
+        } catch {}
+        throw new Error(message);
+      }
+      const blob = await reponse.blob();
+      const disposition = reponse.headers.get('Content-Disposition') || '';
+      const match = disposition.match(/filename="([^"]+)"/i);
+      const nom = match?.[1] || 'selection-plans.zip';
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = nom;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    })
+    .catch(err => {
+      alert(err?.message || 'Export ZIP impossible.');
+    })
+    .finally(() => {
+      bouton.disabled = false;
+      bouton.textContent = ancienTexte;
+    });
+};
+</script>
+</body>
+</html>

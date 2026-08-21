@@ -1,0 +1,61 @@
+# Environnement local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Configuration personnelle / chemins locaux
+config.json
+*.local.json
+*.local.*
+.env
+.env.*
+
+# Données générées par les analyses
+analyse/
+archives/
+tmp/
+
+# Médias, vignettes, exports lourds
+*.mkv
+*.mp4
+*.mov
+*.avi
+*.webm
+*.wav
+*.aiff
+*.aif
+*.mp3
+*.flac
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.tif
+*.tiff
+*.heic
+*.heif
+*.zip
+
+# Logs et états runtime
+logs/
+*.log
+*.err.log
+controle_*.log
+site_films_*.log
+mlxvlm*.log
+
+# Fichiers personnels ou générés
+films_fiches.json
+com.etiennemineur.*.plist
+scripts/finaliser_installation_mlx.sh
+
+# Cache / outils
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+node_modules/
+dist/
+build/

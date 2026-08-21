@@ -1,0 +1,32 @@
+{
+  "dossier_films": "/chemin/vers/vos/films",
+  "dossier_photos": "/chemin/vers/vos/photos",
+  "modele_analyse": "",
+  "photos_modele_analyse": "",
+  "photos_contexte": "",
+  "photos_criteres": [
+    "sujets et objets visibles",
+    "composition et cadrage",
+    "lumière et couleur",
+    "lieu ou décor",
+    "personnes sans identification nominative",
+    "texte visible dans l’image",
+    "qualité technique",
+    "usage possible dans un catalogue"
+  ],
+  "films_contexte": "",
+  "films_criteres": [
+    "description factuelle du plan",
+    "décor et architecture visibles",
+    "objets, machines et interfaces",
+    "personnages, gestes et postures",
+    "cadrage, lumière et couleur",
+    "texte visible et typographie",
+    "prudence sur les éléments hors champ",
+    "vocabulaire utile pour le catalogue"
+  ],
+  "modeles_analyse_disponibles": {},
+  "modeles_analyse_films": {},
+  "options_analyse_films": {},
+  "analyse_toggle_on": false
+}

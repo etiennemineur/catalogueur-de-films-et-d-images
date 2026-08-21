@@ -1,0 +1,10 @@
+ollama
+pillow
+torch
+torchvision
+transformers
+safetensors
+huggingface-hub
+mlx-vlm
+pyacoustid
+musicbrainzngs

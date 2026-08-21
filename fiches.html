@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Fiches des films · Banc de plans</title>
+<style>
+:root{
+  --fond:#071325;
+  --fond-2:#0b1830;
+  --fond-3:#0e1f3f;
+  --carte:#101f3e;
+  --carte-2:#12264a;
+  --carte-3:#0d1b36;
+  --trait:rgba(90,128,214,.28);
+  --trait-fort:rgba(97,146,255,.48);
+  --texte:#edf3ff;
+  --muted:#9eb2d5;
+  --muted-2:#7f94bb;
+  --accent:#6d62ff;
+  --accent-2:#32d3ff;
+  --accent-3:#ffb443;
+  --ok:#6fe58a;
+  --warn:#ffb949;
+  --rose:#ff5dd3;
+  --ombre:0 18px 50px rgba(0,0,0,.38);
+  --mono:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(105,78,255,.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(50,211,255,.14), transparent 24%),
+    linear-gradient(180deg,#061121 0%,#08162b 38%,#07111f 100%);
+  color:var(--texte);
+  font:400 15px/1.55 var(--sans);
+}
+a{color:inherit}
+button,input,select{font:inherit}
+code,.mono{font-family:var(--mono)}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:220px;
+  padding:20px 18px;
+  border-right:1px solid rgba(93,122,184,.18);
+  background:linear-gradient(180deg,rgba(7,19,37,.96),rgba(8,21,43,.88));
+  backdrop-filter:blur(10px);
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.brand-mark{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,#ffb443,#ff5dd3 50%,#6d62ff);
+  box-shadow:0 10px 24px rgba(109,98,255,.34);
+  position:relative;
+}
+.brand-mark::after{
+  content:'✦';
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  color:#fff;font-size:20px;font-weight:700;
+}
+.brand-text b{display:block;font-size:15px;line-height:1.15}
+.brand-text span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.nav{display:grid;gap:10px}
+.nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  color:#d7e5ff;
+  text-decoration:none;
+  border:1px solid transparent;
+  transition:.15s ease;
+}
+.nav a:hover{background:rgba(19,37,72,.8);border-color:rgba(97,146,255,.25)}
+.nav a.actif{
+  background:linear-gradient(90deg,rgba(255,93,211,.22),rgba(109,98,255,.28) 38%,rgba(50,211,255,.18));
+  border-color:rgba(120,147,255,.55);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 12px 28px rgba(72,79,166,.28);
+}
+.nav-ico{width:22px;text-align:center;opacity:.92}
+.sidebar-card{
+  margin-top:auto;
+  padding:16px;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(17,32,63,.94),rgba(11,24,48,.94));
+  border:1px solid var(--trait);
+  box-shadow:var(--ombre);
+}
+.sidebar-card b{display:block;font-size:14px;margin-bottom:4px}
+.sidebar-card p{color:var(--muted);font-size:13px}
+.main{flex:1;min-width:0;padding:24px 26px 28px}
+.surface{
+  background:linear-gradient(180deg,rgba(7,20,42,.82),rgba(6,16,33,.72));
+  border:1px solid rgba(88,119,188,.18);
+  border-radius:28px;
+  padding:28px;
+  box-shadow:var(--ombre);
+}
+.topbar{display:flex;gap:18px;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+.hero h1{font-size:54px;line-height:1.02;font-weight:800;letter-spacing:-.045em;margin-bottom:10px}
+.hero p{max-width:720px;color:var(--muted);font-size:17px}
+.top-actions{display:grid;gap:14px;min-width:min(100%,420px)}
+.search-wrap,.toolbar-card{
+  background:linear-gradient(180deg,rgba(15,30,59,.92),rgba(10,22,44,.92));
+  border:1px solid var(--trait);
+  border-radius:18px;
+  box-shadow:var(--ombre);
+}
+.search-wrap{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.search-ico{font-size:18px;opacity:.92}
+.champ{
+  flex:1;
+  min-width:0;
+  background:transparent;
+  border:none;
+  color:var(--texte);
+  font-size:15px;
+  outline:none;
+}
+.champ::placeholder{color:var(--muted-2)}
+.kbd{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:36px;height:30px;padding:0 10px;
+  border-radius:10px;border:1px solid rgba(140,169,231,.16);
+  background:rgba(255,255,255,.04);color:var(--muted);
+  font:600 12px var(--mono);
+}
+.toolbar-card{display:flex;gap:14px;align-items:end;padding:16px}
+.controle{flex:1 1 0;min-width:0}
+.etiquette{display:block;margin-bottom:8px;color:var(--muted);font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.controle-ligne{display:flex;align-items:center;gap:12px}
+.curseur-colonnes{accent-color:var(--accent);width:100%}
+.valeur-colonnes{font:500 12px var(--mono);color:var(--texte);min-width:96px;text-align:right}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:11px 14px;border-radius:14px;
+  border:1px solid var(--trait-fort);
+  background:linear-gradient(180deg,rgba(18,38,74,.96),rgba(12,27,56,.96));
+  color:var(--texte);text-decoration:none;cursor:pointer;
+  font:600 14px var(--sans);
+  transition:.16s ease;
+}
+.btn:hover{border-color:#86a7ff;transform:translateY(-1px)}
+.btn.secondaire{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.btn.retour-accueil{align-self:flex-start}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.stat{
+  position:relative;
+  overflow:hidden;
+  padding:18px 18px 16px;
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(16,31,62,.96),rgba(11,24,49,.96));
+  border:1px solid var(--trait);
+  box-shadow:var(--ombre);
+}
+.stat::before{
+  content:'';
+  position:absolute;left:16px;top:16px;width:54px;height:54px;border-radius:16px;
+  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.16), transparent 60%),linear-gradient(135deg,rgba(109,98,255,.42),rgba(50,211,255,.14));
+  box-shadow:0 10px 22px rgba(51,76,170,.25);
+}
+.stat:nth-child(3)::before{background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), transparent 60%),linear-gradient(135deg,rgba(255,180,67,.48),rgba(255,93,211,.16))}
+.stat b{display:block;padding-left:72px;color:var(--muted);font:600 11px/1.1 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.stat .val{display:block;padding-left:72px;font-size:38px;line-height:1;font-weight:800;letter-spacing:-.03em}
+.stat small{display:block;padding-left:72px;color:var(--muted);font-size:13px;margin-top:8px}
+.page-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.panel{
+  background:linear-gradient(180deg,rgba(14,28,57,.98),rgba(10,22,45,.98));
+  border:1px solid var(--trait);
+  border-radius:24px;
+  box-shadow:var(--ombre);
+}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px 12px}
+.panel-head h2{font-size:28px;line-height:1.1;font-weight:750;letter-spacing:-.03em}
+.panel-head p{color:var(--muted);font-size:14px}
+.panel-body{padding:0 20px 20px}
+.liste{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.fiche{
+  background:linear-gradient(180deg,rgba(11,24,49,.98),rgba(9,20,40,.98));
+  border:1px solid rgba(89,121,193,.22);
+  border-radius:20px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 16px 36px rgba(0,0,0,.22);
+}
+.fiche:hover{border-color:rgba(115,153,255,.38);transform:translateY(-1px)}
+.apercu{display:grid;grid-template-columns:112px 1fr;gap:16px;padding:16px 16px 12px;align-items:start}
+.poster{width:112px;aspect-ratio:2/3;border-radius:16px;background:#09101f;border:1px solid rgba(93,123,185,.24);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 24px rgba(0,0,0,.24)}
+.poster-lien{display:block;text-decoration:none;color:inherit}
+.poster-lien:focus-visible{outline:1px solid #88a9ff;outline-offset:3px;border-radius:16px}
+.poster img{width:100%;height:100%;object-fit:cover;display:block;background:#08101e}
+.poster.vide{color:#8699bd;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:14px;text-align:center}
+.entete{min-width:0}
+.entete h2{font-size:26px;line-height:1.08;margin-bottom:6px;font-weight:760;letter-spacing:-.03em}
+.sous{font:500 12px var(--mono);color:var(--muted-2);margin-bottom:10px}
+.date{font-size:14px;color:#d7e6ff;margin-bottom:10px}
+.actions-inline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.lien-plans-inline,.lien-fiche-inline{
+  display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;
+  border-radius:12px;text-decoration:none;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.1);
+}
+.lien-plans-inline{background:linear-gradient(180deg,rgba(255,179,67,.18),rgba(255,179,67,.1));color:#ffd18a;border-color:rgba(255,179,67,.28)}
+.lien-fiche-inline{background:linear-gradient(180deg,rgba(109,98,255,.2),rgba(50,211,255,.08));color:#c8d8ff;border-color:rgba(109,98,255,.28)}
+.meta{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px}
+.tag{border:1px solid rgba(106,131,183,.24);border-radius:999px;padding:5px 9px;color:#cddaf3;font:500 11px var(--mono);background:rgba(255,255,255,.03)}
+.tag.ok{border-color:rgba(111,229,138,.3);color:#d9ffe2;background:rgba(79,170,99,.12)}
+.tag.warn{border-color:rgba(255,185,73,.32);color:#ffe5a7;background:rgba(255,185,73,.1)}
+.pitch{color:#d7e2f6;font-size:14px}
+.details{border-top:1px solid rgba(89,121,193,.16);background:rgba(4,11,24,.18)}
+.details summary{list-style:none;cursor:pointer;padding:14px 16px;color:#dfe9ff;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.details summary::-webkit-details-marker{display:none}
+.details summary::after{content:'+';font:700 22px/1 var(--sans);color:#8fb4ff}
+.details[open] summary::after{content:'−'}
+.details-body{padding:0 16px 18px}
+.grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:6px}
+.bloc{background:linear-gradient(180deg,rgba(13,28,55,.92),rgba(10,22,43,.92));border:1px solid rgba(90,123,192,.16);padding:12px;border-radius:16px}
+.bloc b{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#8ea5cc;margin-bottom:6px}
+.bloc span,.bloc div{color:#dfebff}
+.texte{margin-top:14px}
+.texte p,.dialog-film-texte p{color:#d9e5f7;margin-top:8px}
+.texte b,.dialog-film-texte b{color:#fff;font-weight:650}
+.sources{margin-top:14px}
+.sources summary{cursor:pointer;color:#c8d9ff}
+.sources a{color:#8fdcff;text-decoration:none;word-break:break-word}
+.sources a:hover{text-decoration:underline}
+.note{font-size:13px;color:var(--muted)}
+.vide{opacity:.7}
+.side-stack{display:grid;gap:18px}
+.side-panel{padding:18px}
+.side-panel h3{font-size:20px;line-height:1.15;margin-bottom:10px}
+.side-panel p{color:var(--muted);font-size:14px}
+.info-list{display:grid;gap:12px;margin-top:14px}
+.info-item{padding:12px 13px;border-radius:16px;border:1px solid rgba(89,121,193,.18);background:rgba(255,255,255,.03)}
+.info-item b{display:block;font-size:14px;margin-bottom:3px}
+.info-item span{display:block;color:var(--muted);font-size:13px}
+.dialog-film{border:none;padding:0;background:transparent;max-width:min(1180px,calc(100vw - 32px));width:100%;margin:auto}
+.dialog-film[open]{margin:auto}
+.dialog-film::backdrop{background:rgba(5,8,18,.78);backdrop-filter:blur(4px)}
+.dialog-film-contenu{background:linear-gradient(180deg,rgba(13,28,57,.99),rgba(9,21,41,.99));border:1px solid rgba(109,140,210,.24);border-radius:24px;overflow:hidden;box-shadow:0 28px 70px rgba(0,0,0,.48)}
+.dialog-film-entete{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px 22px;border-bottom:1px solid rgba(89,121,193,.16)}
+.dialog-film-entete h2{font-size:34px;line-height:1.05;letter-spacing:-.03em}
+.dialog-film-fermer{border:1px solid rgba(255,255,255,.1);color:var(--texte);background:rgba(255,255,255,.04);border-radius:14px;padding:10px 14px;cursor:pointer;font:600 12px var(--mono)}
+.dialog-film-fermer:hover{border-color:#8eb1ff}
+.dialog-film-corps{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:20px;padding:22px}
+.dialog-film-poster{width:100%;aspect-ratio:2/3;border-radius:20px;border:1px solid rgba(93,123,185,.24);background:#0a1122;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(0,0,0,.24)}
+.dialog-film-poster img{width:100%;height:100%;object-fit:cover;display:block;background:#0a1122}
+.dialog-film-poster.vide{color:#8699bd;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:14px;text-align:center}
+.dialog-film-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dialog-film-actions .btn{padding:10px 14px;font-size:13px}
+.liste[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.liste[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.liste[data-cols="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.liste[data-cols="5"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.liste[data-cols="6"]{grid-template-columns:repeat(6,minmax(0,1fr))}
+.liste[data-cols="4"] .apercu,.liste[data-cols="5"] .apercu,.liste[data-cols="6"] .apercu{grid-template-columns:1fr;gap:12px;padding:12px}
+.liste[data-cols="4"] .poster,.liste[data-cols="5"] .poster,.liste[data-cols="6"] .poster{width:100%;margin:0;aspect-ratio:2/3}
+.liste[data-cols="4"] .meta,.liste[data-cols="4"] .pitch,.liste[data-cols="4"] .details,.liste[data-cols="5"] .meta,.liste[data-cols="5"] .pitch,.liste[data-cols="5"] .details,.liste[data-cols="6"] .meta,.liste[data-cols="6"] .pitch,.liste[data-cols="6"] .details{display:none}
+.liste[data-cols="4"] .entete h2{font-size:18px}
+.liste[data-cols="5"] .entete h2,.liste[data-cols="6"] .entete h2{font-size:16px}
+.liste[data-cols="4"] .date,.liste[data-cols="5"] .date,.liste[data-cols="6"] .date{margin-bottom:8px;font-size:12px;color:var(--muted)}
+.liste[data-cols="4"] .actions-inline,.liste[data-cols="5"] .actions-inline,.liste[data-cols="6"] .actions-inline{margin-bottom:0}
+.liste[data-cols="4"] .lien-plans-inline,.liste[data-cols="4"] .lien-fiche-inline,.liste[data-cols="5"] .lien-plans-inline,.liste[data-cols="5"] .lien-fiche-inline,.liste[data-cols="6"] .lien-plans-inline,.liste[data-cols="6"] .lien-fiche-inline{min-height:32px;padding:7px 9px;font-size:10px}
+@media (max-width:1380px){
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .page-grid{grid-template-columns:1fr}
+  .side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:1100px){
+  .app{display:block}
+  .sidebar{width:auto;border-right:none;border-bottom:1px solid rgba(93,122,184,.18)}
+  .main{padding:18px}
+  .topbar{flex-direction:column}
+  .top-actions{min-width:0;width:100%}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .liste{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:780px){
+  .surface{padding:18px}
+  .hero h1{font-size:36px}
+  .stats{grid-template-columns:1fr}
+  .side-stack{grid-template-columns:1fr}
+  .liste{grid-template-columns:1fr!important}
+  .apercu{grid-template-columns:1fr}
+  .poster{width:min(220px,100%);margin:auto}
+  .dialog-film{max-width:calc(100vw - 18px)}
+  .dialog-film-corps{grid-template-columns:1fr}
+  .dialog-film-entete{flex-direction:column}
+  .dialog-film-entete h2{font-size:28px}
+}
+</style>
+<link rel="stylesheet" href="minimal-theme.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <b>Banc de plans</b>
+        <span>Fiches films locales</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="accueil.html"><span class="nav-ico">⌂</span><span>Tableau de bord</span></a>
+      <a href="fiches.html" class="actif"><span class="nav-ico">▣</span><span>Films</span></a>
+      <a href="photos.html"><span class="nav-ico">◫</span><span>Photos</span></a>
+      <a href="index.html"><span class="nav-ico">☰</span><span>Catalogue des plans</span></a>
+    </nav>
+    <div class="sidebar-card">
+      <b>Navigation rapide</b>
+      <p>Cliquez sur un poster pour ouvrir la fiche détaillée du film en pop-up, sans perdre la page courante.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="surface">
+      <section class="topbar">
+        <div class="hero">
+          <a class="btn secondaire retour-accueil" href="accueil.html">← Accueil</a>
+          <h1>Analyse films et photos</h1>
+          <p>Explorer les fiches des films, leurs posters, leurs métadonnées et leur détail complet dans une interface réorganisée, tout en gardant le contenu et les fonctions actuelles.</p>
+        </div>
+        <div class="top-actions">
+          <div class="search-wrap">
+            <span class="search-ico" aria-hidden="true">⌕</span>
+            <input id="recherche" class="champ" autocomplete="off" placeholder="Rechercher un film, un réalisateur, un synopsis…">
+            <span class="kbd">⌘K</span>
+          </div>
+          <div class="toolbar-card">
+            <div class="controle">
+              <label class="etiquette" for="colonnes">Colonnes</label>
+              <div class="controle-ligne">
+                <input id="colonnes" class="curseur-colonnes" type="range" min="2" max="6" value="3" title="Nombre de colonnes des fiches">
+                <span id="valeur-colonnes" class="valeur-colonnes">3 colonnes</span>
+              </div>
+            </div>
+            <a class="btn" href="index.html">Catalogue des plans</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="stat"><b>Fiches film</b><span class="val" id="nb-films">…</span><small>Nombre total de films présents</small></div>
+        <div class="stat"><b>Avec poster</b><span class="val" id="nb-posters">…</span><small>Affiches disponibles localement</small></div>
+        <div class="stat"><b>Avec pitch</b><span class="val" id="nb-pitch">…</span><small>Résumé court renseigné</small></div>
+        <div class="stat"><b>Résumé narratif</b><span class="val" id="nb-scenario">…</span><small>Fiches enrichies en détail</small></div>
+        <div class="stat"><b>Plans liés</b><span class="val" id="nb-plans">…</span><small>Plans associés dans le catalogue</small></div>
+      </section>
+
+      <section class="page-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Fiches des films</h2>
+              <p>Même contenu qu’avant, réorganisé dans une présentation de type tableau de bord.</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <section id="liste" class="liste" aria-live="polite"></section>
+          </div>
+        </div>
+
+        <aside class="side-stack">
+          <div class="panel side-panel">
+            <h3>Mode d’emploi</h3>
+            <p>Le poster ouvre un pop-up détaillé. Les boutons gardent l’accès au catalogue de plans et à la lecture du film.</p>
+            <div class="info-list">
+              <div class="info-item"><b>Poster</b><span>ouvre la fiche détaillée du film en pop-up</span></div>
+              <div class="info-item"><b>Voir les plans</b><span>ouvre le catalogue filtré sur le film</span></div>
+              <div class="info-item"><b>Voir le film</b><span>ouvre le film dans une nouvelle fenêtre</span></div>
+            </div>
+          </div>
+          <div class="panel side-panel">
+            <h3>Contenu conservé</h3>
+            <div class="info-list">
+              <div class="info-item"><b>Métadonnées</b><span>titre, date, acteurs, production, genres, langue, format</span></div>
+              <div class="info-item"><b>Textes</b><span>pitch, synopsis, résumé narratif, notes, sources</span></div>
+              <div class="info-item"><b>Fonctions</b><span>recherche, colonnes, ouverture ciblée, pop-up, liens plans</span></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </div>
+  </main>
+</div>
+
+<dialog id="dialog-film" class="dialog-film" aria-labelledby="dialog-film-titre">
+  <div class="dialog-film-contenu">
+    <div class="dialog-film-entete">
+      <div>
+        <p class="mono note" id="dialog-film-sous-titre">Fiche détaillée</p>
+        <h2 id="dialog-film-titre">Film</h2>
+      </div>
+      <button type="button" class="dialog-film-fermer" id="dialog-film-fermer">Fermer</button>
+    </div>
+    <div id="dialog-film-corps" class="dialog-film-corps"></div>
+  </div>
+</dialog>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+let FILMS = [];
+const CLE_COLONNES = 'fiches-colonnes';
+const h = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const liste = v => Array.isArray(v) ? v.filter(Boolean).join(', ') : (v || '');
+const court = (v, n=1200) => {
+  const s = String(v || '').trim();
+  return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s;
+};
+function dateLisible(f){
+  const date = String(f.date_sortie || '').trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(date)){
+    const [a,m,j] = date.split('-');
+    return `${j}/${m}/${a}`;
+  }
+  if(date) return date;
+  return f.annee ? String(f.annee) : 'date non renseignée';
+}
+function appliquerColonnes(){
+  const reglage = $('#colonnes');
+  const listeFiches = $('#liste');
+  const valeur = $('#valeur-colonnes');
+  if(!reglage || !listeFiches || !valeur) return;
+  const souhait = Math.max(2, Math.min(6, parseInt(reglage.value || '3', 10) || 3));
+  const effectives = window.innerWidth <= 780 ? 1 : souhait;
+  listeFiches.style.gridTemplateColumns = `repeat(${effectives}, minmax(0, 1fr))`;
+  listeFiches.dataset.cols = String(effectives);
+  valeur.textContent = souhait + (souhait > 1 ? ' colonnes' : ' colonne');
+  try{ localStorage.setItem(CLE_COLONNES, String(souhait)); }catch{}
+}
+function texteFilm(f){
+  return [f.titre, f.titre_original, f.realisateur, f.directeur_photo,
+    liste(f.scenaristes), liste(f.acteurs), liste(f.producteurs), liste(f.genres),
+    f.pitch, f.synopsis, f.scenario, liste(f.credits), f.pays, f.langue,
+    f.poster_legende, f.notes]
+    .join(' ').toLowerCase();
+}
+function ligne(t, v){
+  const s = liste(v);
+  return s ? `<div class="bloc"><b>${h(t)}</b><div>${h(s)}</div></div>` : '';
+}
+function sources(f){
+  const src = (f.sources || []).filter(Boolean).slice(0, 8);
+  if (!src.length) return '';
+  return '<details class="sources"><summary>Sources</summary>' +
+    src.map(s => /^https?:\/\//.test(s) ? `<div><a href="${h(s)}" target="_blank" rel="noreferrer">${h(s)}</a></div>` : `<div>${h(s)}</div>`).join('') +
+    '</details>';
+}
+function filmParId(id){
+  return FILMS.find(f => String(f.id || '') === String(id || '')) || null;
+}
+function dialogueFilm(f){
+  const titrePrincipal = f.titre_original || f.titre || f.id;
+  const titreSecondaire = f.titre && f.titre !== titrePrincipal ? f.titre : '';
+  const plans = Number(f.plans || 0);
+  const posterBloc = f.poster_url
+    ? `<div class="dialog-film-poster"><img loading="eager" decoding="async" referrerpolicy="no-referrer" src="${h(f.poster_url)}" alt="${h([f.titre || 'Poster', dateLisible(f)].filter(Boolean).join(' · '))}"></div>`
+    : '<div class="dialog-film-poster vide">poster indisponible</div>';
+  return `
+    <div>
+      ${posterBloc}
+      <div class="dialog-film-actions">
+        <a class="btn" href="index.html?film=${encodeURIComponent(f.id || '')}&vue=plans">Voir les plans</a>
+        <a class="btn secondaire lien-film-popup" data-film-popup="${h(f.id || '')}" href="film.html?film=${encodeURIComponent(f.id || '')}">Voir le film</a>
+      </div>
+    </div>
+    <div>
+      <div class="grille">
+        ${ligne('Titre original', titrePrincipal)}
+        ${ligne('Titre secondaire', titreSecondaire)}
+        ${ligne('Date de sortie', dateLisible(f))}
+        ${ligne('Réalisation', f.realisateur)}
+        ${ligne('Scénario', f.scenaristes)}
+        ${ligne('Acteurs', f.acteurs)}
+        ${ligne('Production', f.producteurs)}
+        ${ligne('Photographie', f.directeur_photo)}
+        ${ligne('Décors', f.chef_decorateur)}
+        ${ligne('Montage', f.monteur)}
+        ${ligne('Musique', f.musique)}
+        ${ligne('Costumes', f.costumes)}
+        ${ligne('Effets spéciaux', f.effets_speciaux)}
+        ${ligne('Sociétés de production', f.societes_production)}
+        ${ligne('Distribution', f.distributeurs)}
+        ${ligne('Pays', f.pays)}
+        ${ligne('Langue', f.langue)}
+        ${ligne('Genres', f.genres)}
+        ${ligne('Format', f.format)}
+        ${ligne('Ratio', f.ratio)}
+        ${ligne('Couleur', f.couleur)}
+        ${ligne('Poster', f.poster_fichier)}
+        ${ligne('Légende du poster', f.poster_legende)}
+      </div>
+      <div class="dialog-film-texte texte">
+        ${(f.pitch || f.synopsis) ? `<p><b>Pitch.</b> ${h(f.pitch || f.synopsis)}</p>` : '<p class="note">Pitch non encore renseigné.</p>'}
+        ${f.synopsis && f.synopsis !== f.pitch ? `<p><b>Synopsis.</b> ${h(f.synopsis)}</p>` : ''}
+        ${f.scenario ? `<p><b>Résumé narratif.</b> ${h(court(f.scenario, 2600))}</p>` : '<p class="note">Résumé narratif non encore renseigné.</p>'}
+        ${f.notes ? `<p><b>Notes.</b> ${h(f.notes)}</p>` : ''}
+        <p class="note">${plans} plan${plans > 1 ? 's' : ''} dans le catalogue.</p>
+      </div>
+      ${sources(f)}
+    </div>`;
+}
+function poster(f){
+  const href = `?film=${encodeURIComponent(f.id || '')}`;
+  const hrefPlans = `index.html?film=${encodeURIComponent(f.id || '')}&vue=plans`;
+  if(f.poster_url){
+    const alt = [f.titre || 'Poster', dateLisible(f)].filter(Boolean).join(' · ');
+    return `<a class="poster-lien" href="${href}" data-film-link="${h(f.id || '')}" data-film-plans-link="${h(hrefPlans)}" aria-label="Ouvrir la fiche de ${h(f.titre || f.titre_original || f.id || 'ce film')}"><div class="poster"><img loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" src="${h(f.poster_url)}" alt="${h(alt)}" onerror="this.parentNode.classList.add('vide');this.parentNode.parentNode.classList.add('vide');this.remove();this.parentNode.textContent='poster indisponible';"></div></a>`;
+  }
+  return `<a class="poster-lien" href="${href}" data-film-link="${h(f.id || '')}" data-film-plans-link="${h(hrefPlans)}" aria-label="Ouvrir la fiche de ${h(f.titre || f.titre_original || f.id || 'ce film')}"><div class="poster vide">poster indisponible</div></a>`;
+}
+function carte(f){
+  const titrePrincipal = f.titre_original || f.titre || f.id;
+  const titreSecondaire = f.titre && f.titre !== titrePrincipal ? f.titre : '';
+  const tags = [
+    f.annee ? `<span class="tag">${h(f.annee)}</span>` : '',
+    f.pays ? `<span class="tag">${h(f.pays)}</span>` : '',
+    f.langue ? `<span class="tag">${h(f.langue)}</span>` : '',
+    (f.genres || []).slice(0,3).map(g => `<span class="tag">${h(g)}</span>`).join(''),
+    f.poster_url ? '<span class="tag ok">poster</span>' : '<span class="tag warn">poster manquant</span>',
+    (f.pitch || f.synopsis) ? '<span class="tag ok">pitch</span>' : '<span class="tag warn">pitch manquant</span>',
+    f.scenario ? '<span class="tag ok">résumé narratif</span>' : '<span class="tag warn">résumé à compléter</span>'
+  ].join('');
+  const plans = Number(f.plans || 0);
+  return `<article class="fiche${f.scenario ? '' : ' vide'}" id="film-${h(f.id || '')}" data-film-id="${h(f.id || '')}">
+    <div class="apercu">
+      ${poster(f)}
+      <div class="entete">
+        <h2>${h(titrePrincipal)}</h2>
+        <div class="sous">${h(titreSecondaire)}</div>
+        <div class="date">${h(dateLisible(f))}</div>
+        <div class="actions-inline">
+          <a class="lien-plans-inline" href="index.html?film=${encodeURIComponent(f.id || '')}&vue=plans">Voir les plans</a>
+          <a class="lien-fiche-inline lien-film-popup" data-film-popup="${h(f.id || '')}" href="film.html?film=${encodeURIComponent(f.id || '')}">Voir le film</a>
+        </div>
+        <div class="meta">${tags}</div>
+        <div class="pitch">${h(court(f.pitch || f.synopsis || 'Pitch non encore renseigné.', 420))}</div>
+      </div>
+    </div>
+    <details class="details">
+      <summary>Fiche détaillée du film</summary>
+      <div class="details-body">
+        <div class="grille">
+          ${ligne('Titre original', titrePrincipal)}
+          ${ligne('Titre secondaire', titreSecondaire)}
+          ${ligne('Date de sortie', dateLisible(f))}
+          ${ligne('Réalisation', f.realisateur)}
+          ${ligne('Scénario', f.scenaristes)}
+          ${ligne('Acteurs', f.acteurs)}
+          ${ligne('Production', f.producteurs)}
+          ${ligne('Photographie', f.directeur_photo)}
+          ${ligne('Décors', f.chef_decorateur)}
+          ${ligne('Montage', f.monteur)}
+          ${ligne('Musique', f.musique)}
+          ${ligne('Costumes', f.costumes)}
+          ${ligne('Effets spéciaux', f.effets_speciaux)}
+          ${ligne('Sociétés de production', f.societes_production)}
+          ${ligne('Distribution', f.distributeurs)}
+          ${ligne('Pays', f.pays)}
+          ${ligne('Langue', f.langue)}
+          ${ligne('Genres', f.genres)}
+          ${ligne('Format', f.format)}
+          ${ligne('Ratio', f.ratio)}
+          ${ligne('Couleur', f.couleur)}
+          ${ligne('Poster', f.poster_fichier)}
+          ${ligne('Légende du poster', f.poster_legende)}
+        </div>
+        <div class="texte">
+          ${(f.pitch || f.synopsis) ? `<p><b>Pitch.</b> ${h(f.pitch || f.synopsis)}</p>` : '<p class="note">Pitch non encore renseigné.</p>'}
+          ${f.synopsis && f.synopsis !== f.pitch ? `<p><b>Synopsis.</b> ${h(f.synopsis)}</p>` : ''}
+          ${f.scenario ? `<p><b>Résumé narratif.</b> ${h(court(f.scenario, 2600))}</p>` : '<p class="note">Résumé narratif non encore renseigné.</p>'}
+          ${f.notes ? `<p><b>Notes.</b> ${h(f.notes)}</p>` : ''}
+          <p class="note">${plans} plan${plans > 1 ? 's' : ''} dans le catalogue.</p>
+        </div>
+        ${sources(f)}
+      </div>
+    </details>
+  </article>`;
+}
+function afficher(){
+  const q = $('#recherche').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const films = FILMS.filter(f => !q.length || q.every(m => f._texte.includes(m)));
+  $('#liste').innerHTML = films.map(carte).join('') || '<p class="note">Aucune fiche ne correspond à cette recherche.</p>';
+  appliquerColonnes();
+  activerLiensFiches();
+}
+function ouvrirFicheFilm(id, opts={}){
+  const cible = document.querySelector(`.fiche[data-film-id="${CSS.escape(id)}"]`);
+  if(!cible) return false;
+  const detail = cible.querySelector('.details');
+  if(detail) detail.open = true;
+  if(opts.scroll !== false) cible.scrollIntoView({behavior:'smooth', block:'start'});
+  try{ history.replaceState(null, '', `?film=${encodeURIComponent(id)}`); }catch{}
+  return true;
+}
+function urlLecteurFilm(id){
+  return `film.html?film=${encodeURIComponent(id || '')}`;
+}
+function ouvrirFenetreFilm(id){
+  const url = urlLecteurFilm(id);
+  const nom = `film-${String(id || 'lecteur').replace(/[^a-z0-9_-]+/gi, '-')}`;
+  const popup = window.open(url, nom, 'popup=yes,width=1480,height=920,resizable=yes,scrollbars=yes');
+  if (popup && typeof popup.focus === 'function') popup.focus();
+  return false;
+}
+function ouvrirDialogueFilm(id, opts={}){
+  const film = filmParId(id);
+  const dialog = $('#dialog-film');
+  if(!film || !dialog) return false;
+  $('#dialog-film-titre').textContent = film.titre_original || film.titre || film.id || 'Film';
+  $('#dialog-film-sous-titre').textContent = dateLisible(film);
+  $('#dialog-film-corps').innerHTML = dialogueFilm(film);
+  if(typeof dialog.showModal === 'function' && !dialog.open) dialog.showModal();
+  else dialog.setAttribute('open', 'open');
+  dialog.scrollTop = 0;
+  if(opts.ouvrirCarte !== false) ouvrirFicheFilm(id, {scroll: opts.scroll !== false});
+  if(opts.updateUrl !== false){
+    try{ history.replaceState(null, '', `?film=${encodeURIComponent(id)}`); }catch{}
+  }
+  return true;
+}
+function fermerDialogueFilm(){
+  const dialog = $('#dialog-film');
+  if(!dialog || !dialog.open) return;
+  dialog.close();
+  try{ history.replaceState(null, '', location.pathname); }catch{}
+}
+function activerLiensFiches(){
+  document.querySelectorAll('.poster-lien[data-film-link]').forEach(lien => {
+    lien.onclick = e => {
+      e.preventDefault();
+      ouvrirDialogueFilm(lien.dataset.filmLink, {scroll:false, ouvrirCarte:false, updateUrl:true});
+    };
+  });
+  document.querySelectorAll('.lien-film-popup[data-film-popup]').forEach(lien => {
+    lien.onclick = e => {
+      e.preventDefault();
+      ouvrirFenetreFilm(lien.dataset.filmPopup || '');
+    };
+  });
+  document.querySelectorAll('.lien-fiche-inline').forEach(lien => {
+    if (lien.classList.contains('lien-film-popup')) return;
+    lien.onclick = e => {
+      e.preventDefault();
+      const url = new URL(lien.href, location.href);
+      const film = url.searchParams.get('film');
+      if(film) ouvrirDialogueFilm(film, {scroll:false, ouvrirCarte:false, updateUrl:true});
+    };
+  });
+}
+function appliquerParametreFilm(){
+  const params = new URLSearchParams(location.search);
+  const film = params.get('film');
+  if(!film) return;
+  requestAnimationFrame(() => ouvrirDialogueFilm(film, {scroll:false, ouvrirCarte:false, updateUrl:false}));
+}
+try{
+  const memoColonnes = localStorage.getItem(CLE_COLONNES);
+  if(memoColonnes) $('#colonnes').value = memoColonnes;
+}catch{}
+fetch('films.json', {cache:'default'}).then(r => {
+  if (!r.ok) throw new Error('index absent');
+  return r.json();
+}).then(index => {
+  FILMS = (index.films || []).slice().sort((a,b) => (a.annee || 9999) - (b.annee || 9999) || String(a.titre || '').localeCompare(String(b.titre || ''), 'fr'));
+  FILMS.forEach(f => f._texte = texteFilm(f));
+  $('#nb-films').textContent = FILMS.length;
+  $('#nb-posters').textContent = FILMS.filter(f => f.poster_url).length;
+  $('#nb-pitch').textContent = FILMS.filter(f => f.pitch || f.synopsis).length;
+  $('#nb-scenario').textContent = FILMS.filter(f => f.scenario).length;
+  $('#nb-plans').textContent = (index.totaux && Number(index.totaux.plans || 0)) || FILMS.reduce((s,f) => s + Number(f.plans || 0), 0);
+  afficher();
+  appliquerParametreFilm();
+}).catch(() => {
+  $('#liste').innerHTML = '<p class="note">Impossible de lire films.json. Ouvrez cette page depuis le site local, pas directement depuis le Finder.</p>';
+});
+$('#recherche').oninput = afficher;
+$('#colonnes').oninput = appliquerColonnes;
+window.addEventListener('resize', appliquerColonnes);
+$('#dialog-film-fermer').onclick = fermerDialogueFilm;
+$('#dialog-film').addEventListener('click', e => {
+  const dialog = $('#dialog-film');
+  if(e.target === dialog) fermerDialogueFilm();
+});
+window.addEventListener('keydown', e => {
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    $('#recherche')?.focus();
+  }
+});
+</script>
+</body>
+</html>

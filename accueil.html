@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Accueil · Analyse films et photos</title>
+<link rel="stylesheet" href="minimal-theme.css">
+<style>
+:root{
+  --fond:#040b18;
+  --fond-2:#071529;
+  --fond-3:#0d2441;
+  --carte:#0d1f3e;
+  --carte2:#10284d;
+  --trait:rgba(93,133,214,.25);
+  --trait-fort:rgba(71,138,255,.58);
+  --texte:#f2f6ff;
+  --muted:#a3b4d3;
+  --muted-2:#7386aa;
+  --accent:#674cff;
+  --accent-2:#23cfff;
+  --ok:#78f083;
+  --warn:#ffb63f;
+  --info:#43c7ff;
+  --rose:#ff4fc8;
+  --orange:#ff8758;
+  --ombre:0 24px 70px rgba(0,0,0,.42);
+  --mono:"IBM Plex Mono","SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 11% 7%, rgba(103,76,255,.22), transparent 24%),
+    radial-gradient(circle at 87% 0%, rgba(35,207,255,.16), transparent 26%),
+    radial-gradient(circle at 92% 70%, rgba(255,79,200,.10), transparent 24%),
+    linear-gradient(180deg,#030916 0%,#061224 44%,#030b18 100%);
+  color:var(--texte);
+  font:400 15px/1.5 var(--sans);
+  font-feature-settings:"cv01","ss03";
+}
+a{color:inherit}
+button,select{font:inherit}
+code,.mono{font-family:var(--mono);font-size:12px}
+.app-shell{display:flex;min-height:100vh}
+.side-nav{
+  width:230px;
+  padding:22px 20px;
+  border-right:1px solid rgba(93,122,184,.22);
+  background:linear-gradient(180deg,rgba(6,17,34,.98),rgba(7,18,38,.92));
+  backdrop-filter:blur(16px);
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  box-shadow:16px 0 50px rgba(0,0,0,.22);
+}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.brand-mark{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,#ffbf3f,#ff4fc8 50%,#674cff);
+  box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 12px 28px rgba(103,76,255,.36);
+  position:relative;
+}
+.brand-mark::after{
+  content:'✦';
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  color:#fff;font-size:20px;font-weight:700;
+}
+.brand-text b{display:block;font-size:15px;line-height:1.15}
+.brand-text span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.nav{display:grid;gap:12px}
+.nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  color:#d7e5ff;
+  text-decoration:none;
+  border:1px solid transparent;
+  transition:.15s ease;
+}
+.nav a:hover{background:rgba(19,37,72,.8);border-color:rgba(97,146,255,.25)}
+.nav a.actif{
+  background:linear-gradient(90deg,rgba(255,79,200,.34),rgba(103,76,255,.54) 43%,rgba(35,207,255,.22));
+  border-color:rgba(82,150,255,.72);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 14px 32px rgba(72,79,166,.32);
+}
+.nav-ico{width:22px;text-align:center;opacity:.92}
+.side-card{
+  margin-top:auto;
+  padding:16px;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(17,32,72,.92),rgba(9,24,49,.96));
+  border:1px solid var(--trait);
+  box-shadow:var(--ombre);
+}
+.side-card::before{content:'';display:block;width:54px;height:54px;border-radius:50%;margin-bottom:12px;background:conic-gradient(var(--accent-2) 0 53%, rgba(103,76,255,.75) 53% 100%);box-shadow:inset 0 0 0 10px rgba(7,20,42,.95)}
+.side-card b{display:block;font-size:14px;margin-bottom:4px}
+.side-card p{color:var(--muted);font-size:13px}
+.page{flex:1;min-width:0;padding:22px 24px 24px}
+main{max-width:none;margin:0}
+.surface{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
+}
+.top{display:grid;grid-template-columns:minmax(0,1fr) minmax(480px,.92fr);gap:24px;align-items:start;margin-bottom:24px}
+.top-main{min-width:0;display:grid;gap:18px}
+.top-utility{min-width:0;display:grid;gap:14px;align-content:start}
+.hero .mono{display:block;margin-bottom:8px;color:var(--muted-2)}
+h1{font-size:42px;line-height:1.02;font-weight:820;letter-spacing:-.045em;margin-bottom:10px;text-shadow:0 10px 30px rgba(0,0,0,.28)}
+h2{font-size:20px;line-height:1.15;font-weight:760;letter-spacing:-.025em;margin-bottom:12px}
+p{color:var(--muted)}
+.hero > p{max-width:620px;color:var(--muted);font-size:15px}
+.top-tools{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px}
+.search-card,.modele-card{background:linear-gradient(180deg,rgba(15,30,59,.92),rgba(10,22,44,.92));border:1px solid var(--trait);border-radius:18px;box-shadow:var(--ombre)}
+.search-card{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.search-card input{flex:1;min-width:0;background:transparent;border:none;color:var(--texte);font-size:15px;outline:none}
+.search-card input::placeholder{color:var(--muted-2)}
+.search-ico{font-size:18px;opacity:.92}
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:30px;padding:0 10px;border-radius:10px;border:1px solid rgba(140,169,231,.16);background:rgba(255,255,255,.04);color:var(--muted);font:600 12px var(--mono)}
+.modele-card{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.modele-card label{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.modele-card .select-modele{flex:1;min-width:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;max-width:none}
+.source-card{display:grid;gap:12px;padding:16px;border-radius:20px;background:linear-gradient(180deg,rgba(15,30,59,.92),rgba(10,22,44,.92));border:1px solid var(--trait);box-shadow:var(--ombre)}
+.source-card h3{margin:0;font:700 14px var(--sans);color:var(--texte)}
+.source-card label{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.champ-ligne{display:flex;gap:8px;align-items:stretch}
+.champ-ligne .champ-source{flex:1;min-width:0;border:1px solid var(--trait);background:rgba(9,20,40,.92);color:var(--texte);border-radius:14px;padding:11px 12px;font:500 12px var(--mono);min-height:42px}
+.champ-ligne .champ-source:focus{outline:1px solid #86a7ff;outline-offset:2px}
+.btn-secondaire{white-space:nowrap}
+.source-note{color:var(--muted);font-size:13px;line-height:1.45}
+.source-grid{display:grid;grid-template-columns:minmax(300px,1.2fr) minmax(240px,.8fr);gap:14px}
+.film-contexte{width:100%;min-height:96px;border:1px solid var(--trait);background:rgba(9,20,40,.92);color:var(--texte);border-radius:14px;padding:12px 13px;font:500 14px/1.45 var(--sans);resize:vertical}
+.film-contexte:focus{outline:1px solid #86a7ff;outline-offset:2px}
+.criteres-panel{display:grid;gap:10px}
+.criteres-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+.critere-item{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:12px;border:1px solid rgba(117,146,214,.16);background:rgba(8,17,34,.42);color:var(--texte)}
+.critere-item input{margin-top:2px}
+.critere-item span{font-size:12px;line-height:1.35;color:var(--muted)}
+.source-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.reglages-compact{margin-top:0}
+.reglages-compact summary{padding:14px 16px}
+.reglages-compact .menu-titre strong{font-size:16px}
+.reglages-compact .menu-apercu{font-size:12px;max-width:48ch}
+.reglages-compact .menu-contenu{padding:0}
+.reglages-compact .source-card{border:none;box-shadow:none;background:transparent;padding:0}
+.hero-card{padding-right:4px}
+.hero-card .hero > p{max-width:58ch}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;padding:10px 12px;border-radius:12px;
+  border:1px solid var(--trait-fort);
+  background:linear-gradient(180deg,rgba(18,38,74,.96),rgba(12,27,56,.96));
+  color:var(--texte);text-decoration:none;cursor:pointer;
+  font:600 13px var(--sans);line-height:1.2;appearance:none;
+  transition:.16s ease;
+}
+.btn.fort,.btn.stop{background:linear-gradient(180deg,rgba(109,98,255,.24),rgba(18,38,74,.96))}
+.btn:hover{border-color:#86a7ff;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:1px solid #86a7ff;outline-offset:2px;box-shadow:0 0 0 2px rgba(134,167,255,.16)}
+.modeles-analyse{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;justify-content:flex-end;margin-top:8px}
+.modeles-analyse label,.film-actions label{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.select-modele,.select-analyse{
+  border:1px solid var(--trait);
+  background:rgba(9,20,40,.92);
+  color:var(--texte);
+  border-radius:14px;
+  padding:10px 12px;
+  font:500 12px var(--mono);
+  min-height:38px;
+}
+.select-analyse{min-width:156px}.select-modele{min-width:150px}
+.etat{
+  background:linear-gradient(180deg,rgba(14,28,57,.98),rgba(10,22,45,.98));
+  border:1px solid var(--trait);
+  border-radius:24px;
+  padding:22px;
+  margin:18px 0;
+  box-shadow:var(--ombre);
+}
+.ligne{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pastille{font:600 12px var(--mono);padding:7px 10px;border:1px solid rgba(106,131,183,.24);border-radius:999px;color:#cddaf3;background:rgba(255,255,255,.03)}
+.pastille.ok{color:#d9ffe2;border-color:rgba(111,229,138,.3);background:rgba(79,170,99,.12)}
+.pastille.warn{color:#ffe5a7;border-color:rgba(255,185,73,.32);background:rgba(255,185,73,.1)}
+.barre{height:12px;background:rgba(3,10,24,.95);border:1px solid rgba(90,128,214,.18);border-radius:20px;overflow:hidden;margin:14px 0 8px}
+.barre span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.barre.audio span{background:linear-gradient(90deg,var(--info),#79d7ff)}
+.barre.video span{background:linear-gradient(90deg,var(--warn),#ffd27c)}
+.menu-deroulant{
+  margin-top:14px;
+  border:1px solid var(--trait);
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(16,31,62,.96),rgba(10,22,45,.96));
+  overflow:hidden;
+  box-shadow:0 12px 28px rgba(0,0,0,.22);
+}
+.menu-deroulant summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:16px 18px}
+.menu-deroulant summary::-webkit-details-marker{display:none}
+.menu-deroulant summary:hover{background:rgba(255,255,255,.03)}
+.menu-deroulant summary:focus-visible{outline:1px solid #88a9ff;outline-offset:-1px}
+.menu-deroulant[open] summary{border-bottom:1px solid rgba(89,121,193,.16);background:rgba(255,255,255,.03)}
+.menu-deroulant .menu-titre{display:grid;gap:4px;min-width:0}
+.menu-deroulant .menu-titre strong{font-size:20px;font-weight:720;color:var(--texte)}
+.menu-deroulant .menu-apercu{font-size:13px;color:var(--muted)}
+.menu-deroulant .menu-chevron{display:inline-flex;align-items:center;justify-content:center;width:18px;color:var(--muted);font:700 14px var(--mono);transform:translateY(1px)}
+.menu-deroulant[open] .menu-chevron{transform:translateY(1px) rotate(90deg)}
+.menu-contenu{padding:18px}
+.sous-etat{margin-top:4px;padding-top:0;border-top:none}
+.outils-actifs{margin:14px 0 4px}
+.outil-actif-texte{color:#d5e3ff}
+.outil-actif-texte strong{color:var(--texte);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.ligne-outils{margin-top:10px}
+.outil{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(106,131,183,.22);border-radius:14px;background:rgba(255,255,255,.03);color:var(--muted);font:500 12px/1.35 var(--mono)}
+.outil small{font-size:11px;opacity:.92}
+.outil.actif{color:var(--texte);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.outil.image.actif{border-color:rgba(109,98,255,.55)}
+.outil.audio.actif{border-color:rgba(75,193,255,.55)}
+.outil.scenes.actif{border-color:rgba(111,229,138,.45)}
+.outil.musique.actif{border-color:rgba(255,93,211,.42)}
+.outil.mouvements.actif,.outil.mouvements-video.actif{border-color:rgba(255,185,73,.48)}
+.outil.affinage.actif{border-color:rgba(198,139,255,.45)}
+.outil.surveillance.actif{border-color:rgba(189,203,232,.35)}
+.grille{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.card{
+  position:relative;
+  display:grid;
+  grid-template-columns:64px minmax(0,1fr);
+  align-items:center;
+  column-gap:16px;
+  background:linear-gradient(135deg,rgba(17,35,75,.96),rgba(8,22,49,.98));
+  border:1px solid rgba(88,132,222,.28);
+  padding:20px;
+  border-radius:18px;
+  box-shadow:var(--ombre);
+  overflow:hidden;
+  min-height:124px;
+}
+.card::before{content:attr(data-ico);grid-row:1 / span 3;width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(103,76,255,.72),rgba(35,207,255,.18));box-shadow:0 12px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12);font-size:28px;line-height:1;color:#fff}
+.card.accent-orange::before{background:linear-gradient(135deg,rgba(255,135,88,.78),rgba(255,182,63,.18))}
+.card.accent-pink::before{background:linear-gradient(135deg,rgba(255,79,200,.78),rgba(103,76,255,.18))}
+.card b{display:block;padding-left:0;font:600 13px/1.15 var(--sans);letter-spacing:0;text-transform:none;color:var(--muted);margin-bottom:6px}
+.card small{display:block;padding-left:0;color:var(--muted);font-size:13px;line-height:1.35;margin-top:7px;max-width:28ch}
+.val{padding-left:0;font-size:30px;line-height:1.05;font-weight:800;letter-spacing:-.04em}
+.grille .indicateur-global{display:none}
+.val .indicateur-global{min-width:0}
+.pipeline-overview{display:grid;gap:10px;margin:0 0 14px}
+.pipeline-overview-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.pipeline-overview-head b{display:block;font:600 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pipeline-overview-head p{margin:0;color:var(--muted);font-size:12px;max-width:56ch;line-height:1.45}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;align-items:start}
+.main-column{display:grid;gap:20px}
+.side-column{display:grid;gap:20px}
+.sections{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.bloc{
+  background:linear-gradient(180deg,rgba(12,31,64,.94),rgba(7,22,45,.98));
+  border:1px solid rgba(88,132,222,.28);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:var(--ombre);
+}
+.bloc-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:14px}
+.bloc-head h2{margin:0}
+.bloc-head .progress-count{color:var(--muted);font:500 13px var(--sans)}
+.film-table-head{display:grid;grid-template-columns:56px minmax(0,1.7fr) minmax(120px,.9fr) minmax(170px,1fr) minmax(150px,.9fr) auto;gap:12px;align-items:center;padding:0 14px 8px;color:var(--muted);font:600 11px var(--mono);letter-spacing:.02em;border-bottom:1px solid rgba(89,121,193,.18);margin-bottom:4px}
+.film-table-head span:nth-child(1){grid-column:1 / span 2}
+.films{display:grid;gap:0}
+.film{padding:0;border:0;border-radius:0;background:transparent;overflow:hidden;border-bottom:1px solid rgba(89,121,193,.16)}
+.film:last-child{border-bottom:0}
+.film.en-cours{border-color:rgba(255,182,63,.46);box-shadow:inset 3px 0 0 rgba(255,182,63,.75)}
+.film-head{display:grid;grid-template-columns:56px minmax(0,1.7fr) minmax(120px,.9fr) minmax(170px,1fr) minmax(150px,.9fr) auto;gap:12px;align-items:center}
+.film-poster{width:56px;height:76px;border-radius:10px;border:1px solid rgba(93,123,185,.24);overflow:hidden;background:#09101f;display:flex;align-items:center;justify-content:center}
+.film-poster img{width:100%;height:100%;object-fit:cover;display:block}
+.film-poster.vide{color:#8699bd;font:600 9px var(--mono);letter-spacing:.05em;text-transform:uppercase;text-align:center;padding:6px}
+.film-principal{min-width:0}
+.film h3{font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:3px}
+.film-source{font:500 11px var(--mono);color:var(--muted)}
+.film-stat-label{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.pct{font:600 12px var(--mono);color:var(--texte)}
+.film-progress-cell{display:grid;gap:5px}
+.film-progress-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.film-progress-bar{height:8px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(90,128,214,.14)}
+.film-progress-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#74f08a,#3fd26b)}
+.film-progress-bar.active span{background:linear-gradient(90deg,#ffcc52,#ff9d32)}
+.film-status-badge{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:6px 10px;border-radius:10px;border:1px solid rgba(111,229,138,.24);background:rgba(79,170,99,.12);color:#d9ffe2;font:600 11px var(--mono);white-space:nowrap}
+.film-status-badge.active{border-color:rgba(255,185,73,.32);background:rgba(255,185,73,.12);color:#ffe5a7}
+.film-last{font-size:12px;color:var(--texte)}
+.film-accordion{display:block}
+.film-accordion summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;background:transparent}
+.film-accordion summary::-webkit-details-marker{display:none}
+.film-accordion summary:hover{background:rgba(255,255,255,.03)}
+.film-accordion summary:focus-visible{outline:1px solid #88a9ff;outline-offset:-1px}
+.film-accordion[open] summary{border-bottom:1px solid rgba(89,121,193,.16);background:rgba(255,255,255,.03)}
+.film-resume{display:grid;gap:6px;min-width:0;flex:1}
+.film-details{padding:16px}
+.film-summary-actions{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end}
+.btn-plans-inline{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.04);color:var(--texte);text-decoration:none;font:600 10px var(--mono);white-space:nowrap}
+.btn-plans-inline:hover{border-color:#86a7ff}
+.chevron-film{display:inline-flex;align-items:center;justify-content:center;width:18px;color:var(--muted);font:700 14px var(--mono);transform:translateY(1px)}
+.film-accordion[open] .chevron-film{transform:translateY(1px) rotate(90deg)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.message-controle-inline{min-height:20px;margin:0;color:var(--muted);font-size:13px}
+@media (max-width: 980px){.source-grid,.criteres-grid{grid-template-columns:1fr}}
+.temps-film{margin-top:6px}
+.progression-film{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.barre.mini{height:9px;margin-top:10px;position:relative;background:rgba(3,10,24,.95);border:1px solid rgba(90,128,214,.18)}
+.barre.mini.barre-double span{position:absolute;left:0;top:0;height:100%;width:0;border-radius:20px}
+.barre.mini.barre-double span.preparation{background:linear-gradient(90deg,var(--accent),var(--accent-2));opacity:.6}
+.barre.mini.barre-double span.analyse{background:linear-gradient(90deg,var(--ok),#b9dc8f);z-index:1}
+.mouvements-film{margin-top:12px;border:1px solid rgba(89,121,193,.16);background:rgba(255,255,255,.03);border-radius:16px;padding:12px}
+.mouvements-film b{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#d6e7ff;margin-bottom:5px}
+.mouvements-film p{font-size:12px;line-height:1.45;margin-top:4px;color:var(--muted)}
+.mouvements-film .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.mouvements-film .tag{display:inline-flex;border:1px solid rgba(106,131,183,.24);border-radius:99px;padding:4px 8px;color:#d7e7ff;font:500 11px var(--mono);background:rgba(255,255,255,.03)}
+.mouvements-film .tag.warn{border-color:rgba(255,185,73,.32);color:#ffe7ad;background:rgba(255,185,73,.1)}
+.ligne-active{display:inline-flex;align-items:center;gap:10px}
+.titre-ligne{display:inline-flex;align-items:center;gap:8px}
+.indicateur-global{display:inline-flex;align-items:center;justify-content:center;min-width:18px}
+.picto-rotation{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--accent);border-right-color:var(--accent-2);border-radius:50%;animation:rotation 1s linear infinite;vertical-align:middle;flex:0 0 auto}
+.picto-rotation.audio{border-top-color:var(--info);border-right-color:#9fc0ff}
+.picto-rotation.mouvement{border-top-color:var(--warn);border-right-color:#ffd27c}
+.picto-rotation.affinage{border-top-color:#c68bff;border-right-color:#e0c0ff}
+.etat-courant{margin-top:6px;color:#d5e3ff}
+.etat-courant .picto-rotation{width:12px;height:12px;border-width:2px}
+.film-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.film-actions.specifiques{border-top:1px solid rgba(89,121,193,.16);padding-top:10px}
+.film-actions .btn{padding:8px 10px;font-size:11px;min-height:36px}
+.film-actions .relance{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(106,131,183,.24);border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.03);color:var(--muted);font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.film-actions .relance input{accent-color:var(--accent)}
+.couches-film{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.couche{display:inline-flex;gap:5px;align-items:center;border:1px solid rgba(106,131,183,.24);border-radius:99px;padding:4px 8px;background:rgba(255,255,255,.03);color:#cfdcff;font:500 11px var(--mono)}
+.couche b{font:700 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.couche.ok{border-color:rgba(111,229,138,.3);color:#e9ffd6;background:rgba(79,170,99,.12)}
+.couche.warn{border-color:rgba(255,185,73,.32);color:#ffe7ad;background:rgba(255,185,73,.1)}
+#titre-audio .picto-rotation,#titre-etat .picto-rotation{margin-right:8px}
+.reste,.activite-list{display:grid;gap:10px;margin-top:14px}
+.reste div,.activite-item{padding:12px 13px;border-radius:16px;border:1px solid rgba(89,121,193,.18);background:rgba(255,255,255,.03);color:#dce8ff}
+.activite-item strong{display:block;color:var(--texte);font-size:14px;margin-bottom:4px}
+.activite-item .meta-activite{color:var(--muted);font-size:12px}
+.file-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 8px;border-radius:999px;background:rgba(109,98,255,.22);border:1px solid rgba(109,98,255,.35);color:#dfe6ff;font:600 11px var(--mono)}
+.pipeline-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.pipeline-overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.pipeline-overview-head b{display:block;font-size:18px;line-height:1.1;margin-bottom:4px}
+.pipeline-overview-head p{font-size:13px;max-width:64ch}
+.pipeline-live-status{display:grid;gap:6px;justify-items:end;text-align:right;min-width:220px}
+.pipeline-live-status strong{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--texte)}
+.pipeline-live-status .note-live{font-size:11px;color:var(--muted);line-height:1.35}
+.pastille-live{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(106,131,183,.24);background:rgba(255,255,255,.03);font:600 11px var(--mono);color:#d7e7ff}
+.pastille-live.actif{border-color:rgba(109,98,255,.35);background:rgba(109,98,255,.12)}
+.pastille-live.attente{border-color:rgba(255,185,73,.32);background:rgba(255,185,73,.1);color:#ffe7ad}
+.pastille-live.off{border-color:rgba(106,131,183,.18);background:rgba(255,255,255,.02);color:var(--muted)}
+.pipeline-tile{padding:12px 12px 11px;border-radius:16px;border:1px solid rgba(89,121,193,.16);background:rgba(255,255,255,.03);min-height:86px;display:grid;align-content:start;gap:6px}
+.pipeline-tile b{display:block;color:var(--texte);font-size:12px;line-height:1.15;margin:0}
+.pipeline-tile strong{display:block;color:var(--texte);font-size:20px;line-height:1.05;letter-spacing:-.02em}
+.pipeline-tile span{display:block;color:var(--muted);font-size:11px;line-height:1.35}
+.pipeline-tile.actif{border-color:rgba(109,98,255,.35);background:linear-gradient(180deg,rgba(91,89,205,.12),rgba(255,255,255,.03))}
+
+/* Réparation graphique référence dashboard v7 : cette section reprend la main sur minimal-theme.css. */
+.reference-dashboard-v7{background:radial-gradient(circle at 12% 6%,rgba(103,76,255,.24),transparent 26%),radial-gradient(circle at 86% 0%,rgba(35,207,255,.18),transparent 27%),linear-gradient(180deg,#030916 0%,#061224 46%,#030b18 100%)!important}
+.reference-dashboard-v7 .side-nav{width:230px!important;padding:22px 20px!important;background:linear-gradient(180deg,rgba(5,16,33,.98),rgba(7,18,38,.94))!important;border-right:1px solid rgba(93,122,184,.22)!important;box-shadow:16px 0 50px rgba(0,0,0,.22)!important}
+.reference-dashboard-v7 .brand-mark{width:42px!important;height:42px!important;border-radius:12px!important;background:linear-gradient(135deg,#ffbf3f,#ff4fc8 50%,#674cff)!important;box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 12px 28px rgba(103,76,255,.36)!important}
+.reference-dashboard-v7 .nav a.actif{background:linear-gradient(90deg,rgba(255,79,200,.34),rgba(103,76,255,.54) 43%,rgba(35,207,255,.22))!important;border-color:rgba(82,150,255,.72)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 14px 32px rgba(72,79,166,.32)!important}
+.reference-dashboard-v7 .page{padding:24px 26px 26px!important;background:transparent!important}
+.reference-dashboard-v7 .surface{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important}
+.reference-dashboard-v7 .top{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;margin-bottom:24px!important;box-shadow:none!important;backdrop-filter:none!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(480px,.92fr)!important;gap:24px!important}
+.reference-dashboard-v7 .top h1{font-size:42px!important;line-height:1.02!important;margin:4px 0 10px!important;letter-spacing:-.045em!important;text-shadow:0 10px 30px rgba(0,0,0,.28)!important}
+.reference-dashboard-v7 .search-card,.reference-dashboard-v7 .modele-card{background:linear-gradient(180deg,rgba(14,30,62,.92),rgba(8,22,45,.96))!important;border:1px solid rgba(78,126,214,.34)!important;border-radius:15px!important;box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)!important}
+.reference-dashboard-v7 .grille{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;margin:0 0 18px!important}
+.reference-dashboard-v7 .card{display:grid!important;grid-template-columns:64px minmax(0,1fr)!important;align-items:center!important;column-gap:16px!important;min-height:124px!important;padding:20px!important;border-radius:18px!important;background:linear-gradient(135deg,rgba(17,35,75,.96),rgba(8,22,49,.98))!important;border:1px solid rgba(88,132,222,.28)!important;box-shadow:0 24px 70px rgba(0,0,0,.42)!important}
+.reference-dashboard-v7 .card::before{content:attr(data-ico)!important;grid-row:1 / span 3!important;width:58px!important;height:58px!important;border-radius:15px!important;display:grid!important;place-items:center!important;background:linear-gradient(135deg,rgba(103,76,255,.72),rgba(35,207,255,.18))!important;box-shadow:0 12px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;font-size:28px!important;color:#fff!important}
+.reference-dashboard-v7 .card.accent-orange::before{background:linear-gradient(135deg,rgba(255,135,88,.78),rgba(255,182,63,.18))!important}
+.reference-dashboard-v7 .card.accent-pink::before{background:linear-gradient(135deg,rgba(255,79,200,.78),rgba(103,76,255,.18))!important}
+.reference-dashboard-v7 .card b{font:600 13px/1.15 var(--sans)!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important;margin-bottom:6px!important}
+.reference-dashboard-v7 .card .val{font-size:30px!important;line-height:1.05!important;font-weight:800!important;letter-spacing:-.04em!important}
+.reference-dashboard-v7 .dashboard-grid{grid-template-columns:minmax(0,1fr) 320px!important;gap:22px!important}
+.reference-dashboard-v7 .bloc,.reference-dashboard-v7 .pipeline-overview{background:linear-gradient(180deg,rgba(12,31,64,.94),rgba(7,22,45,.98))!important;border:1px solid rgba(88,132,222,.28)!important;border-radius:18px!important;padding:22px!important;box-shadow:0 24px 70px rgba(0,0,0,.42)!important}
+.reference-dashboard-v7 .bloc h2{font-size:20px!important;line-height:1.15!important;margin:0 0 12px!important;text-transform:none!important;letter-spacing:-.025em!important}
+.reference-dashboard-v7 .films-overview-progress{display:grid!important;gap:10px!important;margin:0 0 18px!important;padding-bottom:16px!important;border-bottom:1px solid rgba(89,121,193,.18)!important}
+.reference-dashboard-v7 .films-overview-meta{display:flex!important;justify-content:space-between!important;gap:16px!important;align-items:center!important;color:var(--muted)!important;font:500 13px var(--sans)!important}
+.reference-dashboard-v7 .films-overview-meta strong{color:var(--texte)!important;font:600 15px var(--sans)!important}
+.reference-dashboard-v7 .films-overview-bar{height:9px!important;border-radius:999px!important;background:rgba(58,90,142,.26)!important;overflow:hidden!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)!important}
+.reference-dashboard-v7 .films-overview-bar span{display:block!important;width:0;height:100%!important;border-radius:999px!important;background:linear-gradient(90deg,#674cff 0%,#23cfff 48%,#78f083 100%)!important}
+.reference-dashboard-v7 .film-table-head{display:grid!important;grid-template-columns:56px minmax(0,1.7fr) minmax(120px,.9fr) minmax(170px,1fr) minmax(150px,.9fr) auto!important;gap:12px!important;color:var(--muted)!important;border-bottom:1px solid rgba(89,121,193,.18)!important}
+.reference-dashboard-v7 .film{background:transparent!important;border:0!important;border-bottom:1px solid rgba(89,121,193,.16)!important;border-radius:0!important;box-shadow:none!important}
+.reference-dashboard-v7 .film-accordion summary{padding:10px 14px!important;background:transparent!important}
+.reference-dashboard-v7 .film-head .film-stat-label{display:none!important}
+.reference-dashboard-v7 .film-poster{width:56px!important;height:56px!important;border-radius:10px!important}
+.reference-dashboard-v7 .film-status-badge{border-radius:9px!important;min-height:28px!important;padding:6px 10px!important}
+.reference-dashboard-v7 .film-progress-bar{height:7px!important;background:rgba(255,255,255,.07)!important}
+.reference-dashboard-v7 .btn-plans-inline{min-height:28px!important;padding:6px 9px!important;border-radius:9px!important;background:rgba(255,255,255,.035)!important}
+.reference-dashboard-v7 .reste div,.reference-dashboard-v7 .activite-item{position:relative!important;padding:10px 0 10px 18px!important;border:0!important;border-bottom:1px solid rgba(89,121,193,.16)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.reference-dashboard-v7 .reste div::before,.reference-dashboard-v7 .activite-item::before{content:''!important;position:absolute!important;left:0!important;top:16px!important;width:8px!important;height:8px!important;border-radius:50%!important;background:var(--ok)!important;box-shadow:0 0 14px rgba(120,240,131,.44)!important}
+.reference-dashboard-v7 .reste div::before{background:var(--warn)!important;box-shadow:0 0 14px rgba(255,182,63,.38)!important}
+.reference-dashboard-v7 .pipeline-tile{border-radius:12px!important;background:linear-gradient(180deg,rgba(11,31,61,.78),rgba(7,22,45,.72))!important}
+@keyframes rotation{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media (max-width:1180px){
+  .app-shell{display:block}
+  .side-nav{width:auto;border-right:none;border-bottom:1px solid rgba(93,122,184,.18)}
+  .page{padding:18px}
+  .top{grid-template-columns:1fr}
+  .actions{max-width:none;justify-content:flex-start}
+  .sections,.dashboard-grid{grid-template-columns:1fr}
+  .grille{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pipeline-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pipeline-overview-head{flex-direction:column;align-items:flex-start}
+  .pipeline-live-status{justify-items:start;text-align:left;min-width:0}
+  .top-tools{grid-template-columns:1fr}
+  .film-head{grid-template-columns:56px minmax(0,1fr) minmax(130px,.9fr) minmax(160px,1fr);align-items:start}
+  .film-head > :nth-child(5){grid-column:2 / span 2}
+  .film-summary-actions{grid-column:4;align-self:start}
+}
+@media (max-width:780px){
+  .surface{padding:18px}
+  h1{font-size:38px}
+  .grille,.pipeline-strip{grid-template-columns:1fr}
+  .film-accordion summary{flex-direction:column}
+  .film-head{grid-template-columns:56px minmax(0,1fr)}
+  .film-head > :nth-child(3),.film-head > :nth-child(4),.film-head > :nth-child(5),.film-summary-actions{grid-column:2}
+  .film-summary-actions{justify-content:flex-start}
+}
+</style>
+</head>
+<body class="reference-dashboard-v7">
+<div class="app-shell">
+  <aside class="side-nav">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <b>Banc de plans</b>
+        <span>Accueil local</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="accueil.html" class="actif"><span class="nav-ico">⌂</span><span>Tableau de bord</span></a>
+      <a href="index.html"><span class="nav-ico">☰</span><span>Plans des films</span></a>
+      <a href="fiches.html"><span class="nav-ico">▣</span><span>Catalogue films</span></a>
+      <a href="photos.html"><span class="nav-ico">◫</span><span>Photos</span></a>
+    </nav>
+    <div class="side-card">
+      <b>Suivi du pipeline</b>
+      <p>Accueil réorganisé en style dashboard. Les mêmes données et actions restent disponibles, avec une hiérarchie visuelle plus nette.</p>
+    </div>
+  </aside>
+  <div class="page">
+    <main>
+      <div class="surface">
+        <section class="top">
+          <div class="top-main hero-card">
+            <div class="hero">
+              <p class="mono">Banc de plans · site local</p>
+              <h1>Analyse films et photos</h1>
+              <p>Analyser, comprendre et explorer vos films et images avec précision.</p>
+            </div>
+            <details class="menu-deroulant reglages-compact" id="menu-reglages-films">
+              <summary>
+                <span class="menu-titre">
+                  <strong id="titre-reglages-films">Réglages films</strong>
+                  <span class="menu-apercu">Dossier, contexte et critères. Replié par défaut pour garder l’accueil plus lisible.</span>
+                </span>
+                <span class="menu-chevron" aria-hidden="true">›</span>
+              </summary>
+              <div class="menu-contenu">
+                <section class="source-card" aria-labelledby="titre-reglages-films">
+                  <h3>Dossier, contexte et critères</h3>
+                  <div class="source-grid">
+                    <div>
+                      <label for="dossier-films">Dossier des films</label>
+                      <div class="champ-ligne">
+                        <input id="dossier-films" class="champ-source" placeholder="/chemin/vers/vos/films" autocomplete="off">
+                        <button class="btn btn-secondaire" id="btn-choisir-dossier-films" type="button">Choisir…</button>
+                      </div>
+                      <p class="source-note">Vous pouvez coller un chemin, ou ouvrir le sélecteur Finder pour choisir le dossier source des films sur votre disque.</p>
+                      <label for="films-contexte" style="margin-top:14px;display:block">Contexte général de ce lot de films</label>
+                      <textarea id="films-contexte" class="film-contexte" placeholder="Exemple : films de science-fiction, essais vidéo, archives pédagogiques, copies de travail, séquences avec interfaces, machines, cartons ou génériques…"></textarea>
+                    </div>
+                    <div class="criteres-panel">
+                      <label>Critères prioritaires</label>
+                      <div class="criteres-grid" id="films-criteres"></div>
+                    </div>
+                  </div>
+                  <div class="source-actions">
+                    <button class="btn btn-secondaire" id="btn-enregistrer-reglages-films" type="button">Enregistrer les réglages films</button>
+                  </div>
+                  <p class="message-controle-inline" id="message-reglages-films"></p>
+                </section>
+              </div>
+            </details>
+          </div>
+          <div class="top-utility">
+            <div class="top-tools">
+              <label class="search-card" for="recherche-films-accueil">
+                <span class="search-ico" aria-hidden="true">⌕</span>
+                <input id="recherche-films-accueil" autocomplete="off" placeholder="Rechercher un film, une analyse…">
+                <span class="kbd">⌘K</span>
+              </label>
+              <div class="modele-card">
+                <label for="modele-global">Modèle</label>
+                <select id="modele-global" class="select-modele">
+                  <option value="">Modèles locaux…</option>
+                </select>
+              </div>
+            </div>
+            <nav class="actions">
+              <button class="btn" id="btn-verifier">Vérifier / mettre à jour</button>
+              <button class="btn" id="btn-toggle-analyse" data-action="analyser" aria-live="polite">Lancer l’analyse</button>
+              <button class="btn" id="btn-affinage">Analyse fine IA</button>
+              <button class="btn" id="btn-musique">Analyse musique globale</button>
+              <button class="btn" id="btn-mouvements">Mesurer les mouvements caméra</button>
+              <button class="btn" id="btn-mouvements-video">Classer caméra VideoMAE</button>
+            </nav>
+          </div>
+        </section>
+
+        <section class="grille">
+          <div class="card" data-ico="▦">
+            <b>Films analysés</b>
+            <div class="val"><span id="indicateur-analyse" class="indicateur-global"></span><span id="nb-analyses">…</span></div>
+            <small>sur <span id="nb-source">…</span> au total</small>
+          </div>
+          <div class="card" data-ico="↗">
+            <b>Progression globale</b>
+            <div class="val"><span id="pct-global">…</span>%</div>
+            <small><span id="detail-progression-globale">lecture…</span></small>
+          </div>
+          <div class="card accent-orange" data-ico="▤">
+            <b>Plans détectés</b>
+            <div class="val"><span id="nb-plans-detectes">…</span></div>
+            <small>tous films confondus</small>
+          </div>
+          <div class="card accent-pink" data-ico="≋">
+            <b>Analyses actives</b>
+            <div class="val"><span id="nb-analyses-actives">…</span></div>
+            <small><span id="detail-analyses-actives">lecture…</span></small>
+          </div>
+        </section>
+
+        <section class="bloc pipeline-overview">
+          <div class="pipeline-overview-head">
+            <div>
+              <b>État du pipeline d’analyse</b>
+              <p>Vue d’ensemble des sous-systèmes, séparée des grands chiffres pour garder une lecture plus équilibrée.</p>
+            </div>
+            <div class="pipeline-live-status">
+              <strong><span class="pastille-live off" id="pipeline-live-badge">lecture</span><span id="pipeline-live-text">Lecture du pipeline…</span></strong>
+              <span class="note-live" id="pipeline-live-meta">Mise à jour automatique en attente.</span>
+            </div>
+          </div>
+          <div class="pipeline-strip">
+            <div class="pipeline-tile actif"><b>Image</b><strong id="pipeline-image">lecture…</strong><span id="pipeline-image-detail">lecture…</span></div>
+            <div class="pipeline-tile"><b>Audio</b><strong id="pipeline-audio">lecture…</strong><span id="pipeline-audio-detail">lecture…</span></div>
+            <div class="pipeline-tile"><b>Musique</b><strong id="pipeline-musique">lecture…</strong><span id="pipeline-musique-detail">lecture…</span></div>
+            <div class="pipeline-tile"><b>VideoMAE</b><strong id="pipeline-video">lecture…</strong><span id="pipeline-video-detail">lecture…</span></div>
+            <div class="pipeline-tile"><b>Photos</b><strong id="pipeline-photos">lecture…</strong><span id="pipeline-photos-detail">lecture…</span></div>
+          </div>
+        </section>
+
+        <section class="dashboard-grid">
+          <div class="main-column">
+            <div class="bloc">
+              <div class="bloc-head">
+                <h2>Progression des films</h2>
+                <span class="progress-count"><span id="films-progress-head-count">lecture…</span></span>
+              </div>
+              <div class="films-overview-progress" aria-label="Progression globale des films">
+                <div class="films-overview-meta">
+                  <span id="films-overview-label">Lecture de la progression…</span>
+                  <strong id="films-overview-percent">…%</strong>
+                </div>
+                <div class="films-overview-bar"><span id="barre-films-overview"></span></div>
+              </div>
+              <div class="film-table-head" aria-hidden="true">
+                <span>Titre du film</span>
+                <span>Statut</span>
+                <span>Progression</span>
+                <span>Dernière analyse</span>
+                <span></span>
+              </div>
+              <div id="films" class="films"></div>
+            </div>
+            <section class="sections">
+              <div class="bloc">
+                <h2>Informations détaillées</h2>
+                <div class="etat" style="display:none"><h2 id="titre-etat">Lecture de l’état…</h2><div class="barre"><span id="barre-globale"></span></div></div>
+                <details class="menu-deroulant" id="menu-films-infos">
+                  <summary>
+                    <span class="menu-titre">
+                      <strong>Informations sur les films</strong>
+                      <span class="menu-apercu" id="apercu-films">Lecture du résumé films…</span>
+                    </span>
+                    <span class="menu-chevron" aria-hidden="true">›</span>
+                  </summary>
+                  <div class="menu-contenu">
+                    <p id="resume-global">Connexion au serveur local.</p>
+                    <p class="note" id="details-analyse">Analyse image : lecture des réglages…</p>
+                    <div class="outils-actifs">
+                      <p class="note outil-actif-texte" id="outil-actif-texte">En ce moment : lecture de l’outil actif…</p>
+                      <div class="ligne ligne-outils" id="outils-actifs"></div>
+                    </div>
+                  </div>
+                </details>
+                <details class="menu-deroulant" id="menu-audio-infos">
+                  <summary>
+                    <span class="menu-titre">
+                      <strong id="titre-audio">Analyse sonore des films</strong>
+                      <span class="menu-apercu" id="apercu-audio">Lecture de l’avancement audio…</span>
+                    </span>
+                    <span class="menu-chevron" aria-hidden="true">›</span>
+                  </summary>
+                  <div class="menu-contenu sous-etat">
+                    <div class="barre audio"><span id="barre-audio"></span></div>
+                    <p class="note" id="resume-audio">Lecture de l’avancement audio…</p>
+                    <p class="mono" id="details-audio"></p>
+                    <p class="note" id="resume-musique">Lecture de l’avancement musique…</p>
+                    <p class="mono" id="details-musique"></p>
+                  </div>
+                </details>
+                <details class="menu-deroulant" id="menu-videomae-infos">
+                  <summary>
+                    <span class="menu-titre">
+                      <strong id="titre-mouvements-video">Classification VideoMAE</strong>
+                      <span class="menu-apercu" id="apercu-mouvements-video">Lecture de l’avancement VideoMAE…</span>
+                    </span>
+                    <span class="menu-chevron" aria-hidden="true">›</span>
+                  </summary>
+                  <div class="menu-contenu sous-etat">
+                    <div class="barre video"><span id="barre-mouvements-video"></span></div>
+                    <p class="note" id="resume-mouvements-video">Lecture de l’avancement VideoMAE…</p>
+                    <p class="mono" id="details-mouvements-video"></p>
+                  </div>
+                </details>
+                <div class="ligne">
+                  <span class="pastille" id="etat-analyse">analyse…</span>
+                  <span class="pastille" id="etat-surveillance">surveillance…</span>
+                  <span class="pastille" id="etat-audio">son/dialogues…</span>
+                  <span class="pastille" id="etat-musique">musique globale…</span>
+                  <span class="pastille" id="etat-scenes">scènes/séquences…</span>
+                  <span class="pastille" id="etat-affinage">analyse fine IA…</span>
+                  <span class="pastille" id="etat-mouvements">mouvements caméra…</span>
+                  <span class="pastille" id="etat-mouvements-video">VideoMAE…</span>
+                  <span class="pastille" id="etat-photos">photos…</span>
+                  <span class="pastille" id="etat-index">index…</span>
+                </div>
+                <p class="note" id="message-controle">Serveur de contrôle non interrogé.</p>
+              </div>
+            </section>
+          </div>
+          <aside class="side-column">
+            <div class="bloc">
+              <h2>File d’attente <span class="file-badge" id="file-attente-count">…</span></h2>
+              <p id="texte-restants">Lecture…</p>
+              <div id="films-restants" class="reste"></div>
+              <p class="note">Le serveur relance automatiquement les films absents ou incomplets sur les plans visibles du catalogue. Les plans déjà analysés sont ignorés.</p>
+            </div>
+            <div class="bloc">
+              <h2>Activité récente</h2>
+              <div id="activite-recente" class="activite-list"><div class="activite-item"><strong>Lecture…</strong><span class="meta-activite">activité en cours de chargement</span></div></div>
+            </div>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const API = 'http://127.0.0.1:8765';
+let dernierIndex = null;
+let erreursEtat = 0;
+let dernierEndpointEtat = null;
+let dossierFilmsInitialise = false;
+const CRITERES_FILMS_DEFAUT = [
+  'description factuelle du plan',
+  'décor et architecture visibles',
+  'objets, machines et interfaces',
+  'personnages, gestes et postures',
+  'cadrage, lumière et couleur',
+  'texte visible et typographie',
+  'prudence sur les éléments hors champ',
+  'vocabulaire utile pour le catalogue'
+];
+function echapperHtml(v){ return String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function messageReglagesFilms(texte){
+  const el = $('#message-reglages-films');
+  if (el) el.textContent = texte || '';
+}
+function listeCriteresFilms(){
+  return Array.from(document.querySelectorAll('#films-criteres input[type="checkbox"]:checked')).map(el => el.value);
+}
+function rendreCriteresFilms(selection){
+  const cible = $('#films-criteres');
+  if (!cible) return;
+  const actifs = new Set((selection && selection.length ? selection : CRITERES_FILMS_DEFAUT).map(v => String(v)));
+  cible.innerHTML = CRITERES_FILMS_DEFAUT.map((critere, idx) => `
+    <label class="critere-item">
+      <input type="checkbox" value="${echapperHtml(critere)}" ${actifs.has(critere) ? 'checked' : ''}>
+      <span>${echapperHtml(critere)}</span>
+    </label>
+  `).join('');
+}
+window.__filmsOuverts = new Set();
+window.__dernieresDemandesFilms = Object.create(null);
+window.__filmsMeta = Object.create(null);
+function pct(a,b){return b ? Math.round(a / b * 100) : 0}
+function pictoRotation(classe=''){return `<span class="picto-rotation ${classe}" aria-hidden="true"></span>`}
+function echapperHtml(texte){return String(texte ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function setPastille(id, texte, actif){const el=$(id); el.textContent=texte; el.classList.toggle('ok', !!actif); el.classList.toggle('warn', !actif)}
+function setTextIfExists(id, texte){const el=$(id); if (el) el.textContent=texte}
+function posterMetaFilm(f){return window.__filmsMeta[(f && f.id) || ''] || {}}
+function posterHtmlFilm(f){
+  const meta = posterMetaFilm(f);
+  const poster = meta.poster_url || f.poster_url || '';
+  if (poster) return `<div class="film-poster"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${echapperHtml(poster)}" alt="${echapperHtml(f.titre || f.id || 'film')}"></div>`;
+  return '<div class="film-poster vide">poster</div>';
+}
+function chargerMetaFilms(){
+  const urls = ['films.json', 'analyse/films.json'];
+  const tenter = i => {
+    if (i >= urls.length) return Promise.resolve({films:[]});
+    return fetch(urls[i] + '?maj=' + Date.now(), {cache:'no-store'})
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('absent')))
+      .catch(() => tenter(i + 1));
+  };
+  return tenter(0)
+    .then(data => {
+      const map = Object.create(null);
+      (data.films || []).forEach(f => { if (f && f.id) map[f.id] = f; });
+      window.__filmsMeta = map;
+      if (window.__dernierEtat) afficherFilmsProgression(window.__dernierEtat);
+      return map;
+    })
+    .catch(() => window.__filmsMeta || Object.create(null));
+}
+function memoriserAccordeonsOuverts(){
+  const ouverts = new Set();
+  document.querySelectorAll('.film-accordion[open]').forEach(el => {
+    const film = el.dataset.film || '';
+    if (film) ouverts.add(film);
+  });
+  window.__filmsOuverts = ouverts;
+}
+function actionControle(action, payload={}){
+  const dossierFilms = ($('#dossier-films') && $('#dossier-films').value.trim()) || '';
+  const filmsContexte = ($('#films-contexte') && $('#films-contexte').value.trim()) || '';
+  const filmsCriteres = listeCriteresFilms();
+  const payloadFinal = {...(payload || {})};
+  if (dossierFilms) payloadFinal.dossier_films = dossierFilms;
+  if (filmsContexte) payloadFinal.films_contexte = filmsContexte;
+  if (filmsCriteres.length) payloadFinal.films_criteres = filmsCriteres;
+  $('#message-controle').textContent = 'Demande envoyée…';
+  fetch(`${API}/${action}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payloadFinal)
+  }).then(r => r.json()).then(data => {
+    if (payloadFinal && payloadFinal.film){
+      window.__dernieresDemandesFilms[payloadFinal.film] = {
+        action,
+        payload:payloadFinal,
+        response:data,
+        horodatage:Date.now()
+      };
+    }
+    if (data && data.dossier_films && $('#dossier-films')) $('#dossier-films').value = data.dossier_films;
+    $('#message-controle').textContent = data.message || 'Action envoyée.';
+    setTimeout(chargerEtat, 250);
+  }).catch(() => {
+    $('#message-controle').textContent = window.__dernierEtat
+      ? 'Le serveur de contrôle ne répond plus momentanément. Nouvelle tentative automatique…'
+      : 'Serveur de contrôle absent. Double-cliquez sur lancer.command ou ouvrir_site.command.';
+    setTimeout(chargerEtat, 1200);
+  });
+}
+function choisirDossierFilms(){
+  const bouton = $('#btn-choisir-dossier-films');
+  const ancien = bouton.textContent;
+  bouton.disabled = true;
+  bouton.textContent = 'Ouverture…';
+  return fetch(`${API}/films-choisir-dossier`, {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'})
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.dossier_films && $('#dossier-films')) {
+        $('#dossier-films').value = data.dossier_films;
+        dossierFilmsInitialise = true;
+        return fetch(`${API}/films-config`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({dossier_films:data.dossier_films})})
+          .then(r => r.json())
+          .then(saved => {
+            $('#message-controle').textContent = saved.message || data.message || 'Choix du dossier films terminé.';
+            return saved;
+          });
+      }
+      $('#message-controle').textContent = (data && data.message) || 'Choix du dossier films terminé.';
+      return data;
+    })
+    .catch(() => { $('#message-controle').textContent = 'Impossible d’ouvrir le sélecteur de dossier films.'; })
+    .finally(() => {
+      bouton.disabled = false;
+      bouton.textContent = ancien;
+    });
+}
+function enregistrerDossierFilms(){
+  const champ = $('#dossier-films');
+  if (!champ) return Promise.resolve(null);
+  const dossier = champ.value.trim();
+  const contexte = ($('#films-contexte') && $('#films-contexte').value.trim()) || '';
+  const criteres = listeCriteresFilms();
+  if (!dossier && !contexte && !criteres.length) return Promise.resolve(null);
+  return fetch(`${API}/films-config`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dossier_films:dossier, films_contexte:contexte, films_criteres:criteres})
+  }).then(r => r.json()).then(data => {
+    if (data && data.dossier_films) champ.value = data.dossier_films;
+    if ($('#films-contexte') && data && typeof data.films_contexte === 'string') $('#films-contexte').value = data.films_contexte;
+    if (data && Array.isArray(data.films_criteres)) rendreCriteresFilms(data.films_criteres);
+    dossierFilmsInitialise = true;
+    const message = data.message || 'Réglages films enregistrés.';
+    $('#message-controle').textContent = message;
+    messageReglagesFilms(message);
+    return data;
+  }).catch(() => {
+    $('#message-controle').textContent = 'Impossible d’enregistrer le dossier films.';
+    messageReglagesFilms('Impossible d’enregistrer les réglages films.');
+    return null;
+  });
+}
+function modeleGlobal(){return ($('#modele-global') && $('#modele-global').value) || ''}
+function urlLecteurFilm(id){
+  return `film.html?film=${encodeURIComponent(id || '')}`;
+}
+function ouvrirFenetreFilm(id){
+  const url = urlLecteurFilm(id);
+  const nom = `film-${String(id || 'lecteur').replace(/[^a-z0-9_-]+/gi, '-')}`;
+  const popup = window.open(url, nom, 'popup=yes,width=1480,height=920,resizable=yes,scrollbars=yes');
+  if (popup && typeof popup.focus === 'function') popup.focus();
+  return false;
+}
+function activerLiensFilms(){
+  document.querySelectorAll('.lien-film-popup[data-film-popup]').forEach(lien => {
+    lien.onclick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      ouvrirFenetreFilm(lien.dataset.filmPopup || '');
+    };
+  });
+}
+function analysesFilm(data){
+  return data.analyses_film || {
+    plans:{label:'Plans image', modeles:[]},
+    scenes:{label:'Scènes / séquences', modeles:['local-scenes']},
+    dialogue:{label:'Dialogue', modeles:['local-dialogue']},
+    musique:{label:'Musique', modeles:[]},
+    mouvements:{label:'Mouvements caméra', modeles:['local-mecanique']},
+    'mouvements-video':{label:'Mouvements vidéo', modeles:[]},
+    affinage:{label:'Affinage IA', modeles:[]}
+  };
+}
+function libelleModele(valeur, data){
+  const modeles = data.modeles_analyse || {};
+  const video = data.modeles_mouvements_video || {};
+  const direct = Object.values(modeles).find(m => m && m.nom === valeur) || Object.values(video).find(m => m && m.nom === valeur);
+  if (direct) return direct.label || direct.nom;
+  const locaux = {
+    'local-scenes':'Local scènes',
+    'local-dialogue':'Local dialogue',
+    'local-mecanique':'Mesure mécanique',
+  };
+  return locaux[valeur] || valeur;
+}
+function modeleDefautEtape(etape, data, modeleFilmCourant){
+  if (etape === 'plans') return modeleFilmCourant || data.modele_analyse || modeleGlobal();
+  if (etape === 'musique') return data.modele_affinage || modeleGlobal();
+  if (etape === 'affinage') return data.modele_affinage || modeleGlobal();
+  if (etape === 'mouvements-video') return data.modele_mouvements_video || '';
+  if (etape === 'scenes') return 'local-scenes';
+  if (etape === 'dialogue') return 'local-dialogue';
+  if (etape === 'mouvements') return 'local-mecanique';
+  return modeleFilmCourant || data.modele_analyse || modeleGlobal();
+}
+function optionsModelesPourEtape(etape, data, courant){
+  const definition = analysesFilm(data)[etape] || analysesFilm(data).plans;
+  const modeles = definition.modeles || [];
+  if(!modeles.length)return '<option value="">Aucun modèle configuré</option>';
+  const valeur = modeles.includes(courant) ? courant : modeles[0];
+  return modeles.map(m => `<option value="${echapperHtml(m)}" ${m === valeur ? 'selected' : ''}>${echapperHtml(libelleModele(m, data))}</option>`).join('');
+}
+function optionsModelesGlobaux(data, courant){
+  const modeles = Object.values(data.modeles_analyse || {}).map(m => m && m.nom).filter(Boolean);
+  const liste = modeles.length ? modeles : [];
+  if(!liste.length)return '<option value="">Aucun modèle local détecté</option>';
+  const valeur = liste.includes(courant) ? courant : liste[0];
+  return liste.map(m => `<option value="${echapperHtml(m)}" ${m === valeur ? 'selected' : ''}>${echapperHtml(libelleModele(m, data))}</option>`).join('');
+}
+function rafraichirModeleGlobal(data){
+  const sel = $('#modele-global');
+  if (!sel) return;
+  const courant = data.modele_analyse || sel.value || '';
+  sel.innerHTML = optionsModelesGlobaux(data, courant);
+  sel.value = courant;
+}
+function htmlActionsFilm(f, data){
+  const filmId = f.id || '';
+  const analyses = analysesFilm(data);
+  const etape = 'plans';
+  const modele = modeleDefautEtape(etape, data, f.modele_analyse || data.modele_analyse);
+  const optionsAnalyses = Object.entries(analyses).map(([cle, info]) => `<option value="${echapperHtml(cle)}">${echapperHtml(info.label || cle)}</option>`).join('');
+  return `<div class="film-actions specifiques" data-film-actions="${echapperHtml(filmId)}">
+    <label for="analyse-${echapperHtml(filmId)}">Analyse</label>
+    <select id="analyse-${echapperHtml(filmId)}" class="select-analyse" data-film="${echapperHtml(filmId)}">${optionsAnalyses}</select>
+    <label for="modele-${echapperHtml(filmId)}">Modèle</label>
+    <select id="modele-${echapperHtml(filmId)}" class="select-modele" data-film="${echapperHtml(filmId)}">${optionsModelesPourEtape(etape, data, modele)}</select>
+    <label class="relance"><input type="checkbox" data-refaire-film="${echapperHtml(filmId)}"> refaire</label>
+    <button class="btn fort" data-action-film="etape" data-film="${echapperHtml(filmId)}">Lancer cette analyse</button>
+  </div>`;
+}
+function rafraichirModelesFilm(filmId){
+  const data = window.__dernierEtat || {};
+  const selectAnalyse = document.querySelector(`select.select-analyse[data-film="${CSS.escape(filmId)}"]`);
+  const selectModele = document.querySelector(`select.select-modele[data-film="${CSS.escape(filmId)}"]`);
+  if (!selectAnalyse || !selectModele) return;
+  const etape = selectAnalyse.value || 'plans';
+  const courantFilm = ((data.films_progression || []).find(f => f.id === filmId) || {}).modele_analyse || data.modele_analyse || modeleGlobal();
+  selectModele.innerHTML = optionsModelesPourEtape(etape, data, modeleDefautEtape(etape, data, courantFilm));
+}
+function modeleFilm(filmId){
+  const el = document.querySelector(`select.select-modele[data-film="${CSS.escape(filmId)}"]`);
+  return (el && el.value) || modeleGlobal();
+}
+function libelleEtapeAnalyse(cle){
+  const info = analysesFilm(window.__dernierEtat || {})[cle || 'plans'] || {};
+  return info.label || cle || 'analyse';
+}
+function noteDemandeFilm(f, data){
+  const info = (window.__dernieresDemandesFilms || {})[f.id || ''];
+  if (!info || !info.response) return '';
+  const rep = info.response || {};
+  const etape = libelleEtapeAnalyse((info.payload || {}).etape || 'plans');
+  const message = rep.message || '';
+  const classe = rep.status === 'started' || rep.status === 'up_to_date' ? 'ok' : 'warn';
+  let prefixe = 'Dernière demande';
+  if (rep.status === 'started') prefixe = `Demande acceptée (${etape})`;
+  else if (String(rep.status || '').startsWith('waiting_')) prefixe = `Demande reçue mais non lancée (${etape})`;
+  else if (rep.status === 'already_running') prefixe = `Demande non relancée (${etape})`;
+  else if (rep.status === 'up_to_date') prefixe = `${etape} déjà à jour`;
+  else if (rep.status) prefixe = `${etape} (${rep.status})`;
+  return `<p class="note etat-demande ${classe}"><b>${echapperHtml(prefixe)}</b>${message ? ` · ${echapperHtml(message)}` : ''}</p>`;
+}
+function noteCalculFilm(f, data){
+  const a = data.analyse_progression || {};
+  if (data.analyse_active && a.film === f.id){
+    const details = [a.modele || data.modele_analyse || '', a.source ? `source : ${a.source}` : ''].filter(Boolean).join(' · ');
+    return `<p class="note etat-courant"><span class="titre-ligne">${pictoRotation('')}Calcul en cours maintenant : découpage, vignettes et analyse image sur ce film</span>${details ? `<br><small>${echapperHtml(details)}</small>` : ''}</p>`;
+  }
+  if (data.scenes_active && !data.analyse_active) return `<p class="note etat-courant"><span class="titre-ligne">${pictoRotation('mouvement')}Calcul en cours maintenant : regroupement en scènes / séquences</span></p>`;
+  if (data.mouvements_active && (data.mouvements_progression || {}).film === f.id) return `<p class="note etat-courant"><span class="titre-ligne">${pictoRotation('mouvement')}Calcul en cours maintenant : mesure des mouvements caméra</span></p>`;
+  if (data.mouvements_video_active && (filmMouvementVideoActif(data) === f.id)) return `<p class="note etat-courant"><span class="titre-ligne">${pictoRotation('mouvement')}Calcul en cours maintenant : classification VideoMAE</span></p>`;
+  if (data.audio_active && (data.audio_progression || {}).film === f.id) return `<p class="note etat-courant"><span class="titre-ligne">${pictoRotation('audio')}Calcul en cours maintenant : son et dialogues</span></p>`;
+  return '';
+}
+function brancherActionsFilms(){
+  document.querySelectorAll('select.select-analyse').forEach(sel => {
+    if (sel.dataset.branche === '1') return;
+    sel.dataset.branche = '1';
+    sel.onchange = () => rafraichirModelesFilm(sel.dataset.film || '');
+  });
+  document.querySelectorAll('[data-action-film]').forEach(btn => {
+    if (btn.dataset.branche === '1') return;
+    btn.dataset.branche = '1';
+    btn.onclick = () => {
+      const film = btn.dataset.film || '';
+      const action = btn.dataset.actionFilm;
+      if (!film) return;
+      if (action === 'etape'){
+        const selectAnalyse = document.querySelector(`select.select-analyse[data-film="${CSS.escape(film)}"]`);
+        const refaire = document.querySelector(`input[data-refaire-film="${CSS.escape(film)}"]`);
+        actionControle('analyse-film-etape', {
+          film,
+          etape: (selectAnalyse && selectAnalyse.value) || 'plans',
+          modele: modeleFilm(film),
+          refaire: !!(refaire && refaire.checked)
+        });
+        return;
+      }
+      if (action === 'affinage'){
+        actionControle('affinage', {film, modele: modeleFilm(film)});
+        return;
+      }
+      actionControle('analyser-film', {
+        film,
+        modele: modeleFilm(film),
+        refaire: btn.dataset.refaire === '1'
+      });
+    };
+  });
+}
+function libelleTempsAnalyse(f){
+  if (f.temps_analyse_mesure && f.temps_analyse) return `temps d’analyse effectué : ${f.temps_analyse}`;
+  return 'temps d’analyse effectué : non mesuré';
+}
+function htmlCouchesFilm(f){
+  const total = Number(f.plans || 0);
+  const couche = (label, valeur, ok) => `<span class="couche ${ok ? 'ok' : 'warn'}"><b>${echapperHtml(label)}</b>${echapperHtml(valeur)}</span>`;
+  const plans = `${Number(f.plans_complets || 0)}/${total}`;
+  const scenes = `${Number(f.scenes || 0)} scène(s)`;
+  const dialogues = `${Number(f.dialogues_plans || 0)}/${total}`;
+  const musique = `${Number(f.musique_plans || 0)}/${total}${Number(f.musique_sequences || 0) ? ` · ${Number(f.musique_sequences || 0)} séq.` : ''}`;
+  const mouvements = `${Number(f.mouvements_camera_plans_mesures || 0)}/${total}`;
+  const video = `${Number(f.mouvements_video_plans_classes || 0)}/${total}`;
+  return `<div class="couches-film">
+    ${couche('plans', plans, total > 0 && Number(f.plans_complets || 0) >= total)}
+    ${couche('scènes', scenes, Number(f.scenes || 0) > 0)}
+    ${couche('dialogue', dialogues, total > 0 && Number(f.dialogues_plans || 0) > 0)}
+    ${couche('musique', musique, total > 0 && Number(f.musique_plans || 0) > 0)}
+    ${couche('mouv.', mouvements, total > 0 && Number(f.mouvements_camera_plans_mesures || 0) >= total)}
+    ${couche('VideoMAE', video, total > 0 && Number(f.mouvements_video_plans_classes || 0) > 0)}
+  </div>`;
+}
+function libelleTopMouvements(items){
+  return (items || []).slice(0, 4).map(item =>
+    `${echapperHtml(item.label || 'indéterminé')} ${Number(item.plans || 0)}`
+  ).join(' · ');
+}
+function htmlMouvementsFilm(f){
+  const total = Number(f.plans || 0);
+  const mesures = Number(f.mouvements_camera_plans_mesures || 0);
+  const pctMesures = Number(f.mouvements_camera_pourcentage || 0);
+  const classesVideo = Number(f.mouvements_video_plans_classes || 0);
+  const pctVideo = Number(f.mouvements_video_pourcentage || 0);
+  const topMesure = libelleTopMouvements(f.mouvements_camera_principaux);
+  const topVideo = libelleTopMouvements(f.mouvements_video_principaux);
+  const modelesVideo = (f.mouvements_video_modeles || []).map(echapperHtml).join(' · ');
+  const conflits = Number(f.mouvements_camera_conflits || 0);
+  const confiance = f.mouvements_camera_confiances || {};
+  const confianceTexte = ['sûr', 'probable', 'douteux']
+    .filter(cle => confiance[cle])
+    .map(cle => `${cle} ${confiance[cle]}`)
+    .join(' · ');
+  const tags = [];
+  if (topMesure) tags.push(`<span class="tag">dominantes : ${topMesure}</span>`);
+  if (confianceTexte) tags.push(`<span class="tag">confiance : ${echapperHtml(confianceTexte)}</span>`);
+  if (conflits) tags.push(`<span class="tag warn">${conflits} conflit(s) à vérifier</span>`);
+  return `
+    <div class="mouvements-film">
+      <b>Mouvements caméra</b>
+      <p>Analyse mécanique : ${mesures}/${total} plans mesurés · ${pctMesures}%${topMesure ? ` · ${topMesure}` : ''}</p>
+      <p>Classification vidéo : ${classesVideo}/${total} plans classés · ${pctVideo}%${topVideo ? ` · ${topVideo}` : ''}${modelesVideo ? ` · modèle ${modelesVideo}` : ''}</p>
+      ${tags.length ? `<div class="tags">${tags.join('')}</div>` : ''}
+    </div>`;
+}
+function filmAnalyseActif(data){
+  const direct = ((data.analyse_progression || {}).film || '').trim();
+  if (direct) return direct;
+  const films = (data.films_progression || []).filter(f => !f.termine);
+  films.sort((a,b) => String(b.analyse_derniere_mesure || '').localeCompare(String(a.analyse_derniere_mesure || '')) || (Number(b.temps_analyse_secondes || 0) - Number(a.temps_analyse_secondes || 0)) || (Number(b.pourcentage || 0) - Number(a.pourcentage || 0)));
+  return (films[0] && films[0].id) || '';
+}
+function filmMouvementVideoActif(data){
+  const direct = ((data.mouvements_video_progression || {}).film || '').trim();
+  if (direct) return direct;
+  const message = String(data.dernier_mouvements_video_message || '');
+  const match = message.match(/pour\s+([a-z0-9-]+)\s+depuis/i);
+  return match ? match[1] : '';
+}
+function modeleAnalyseActif(data){
+  const film = filmAnalyseActif(data);
+  const entree = (data.films_progression || []).find(f => f.id === film);
+  return (entree && entree.modele_analyse) || data.modele_analyse || '';
+}
+function classePictoEtape(data){
+  if (data.audio_active) return 'audio';
+  if (data.scenes_active) return 'mouvement';
+  if (data.mouvements_active || data.mouvements_video_active) return 'mouvement';
+  if (data.affinage_active) return 'affinage';
+  return '';
+}
+function outilActif(data){
+  const filmAnalyse = filmAnalyseActif(data);
+  if (data.analyse_active) return {cle:'image', label:'découpage et analyse image', detail:[filmAnalyse || 'film courant', modeleAnalyseActif(data)].filter(Boolean).join(' · ')};
+  if (data.audio_active) {
+    const a = data.audio_progression || {};
+    return {cle:'audio', label:'son et dialogues', detail:[a.film || 'film courant', a.source || 'indexation locale'].filter(Boolean).join(' · ')};
+  }
+  if (data.musique_active) {
+    const m = data.musique_progression || {};
+    return {cle:'musique', label:'musique globale', detail:[m.film || 'film courant', m.sequence || 'séquence en cours'].filter(Boolean).join(' · ')};
+  }
+  if (data.scenes_active) return {cle:'scenes', label:'scènes / séquences', detail:'regroupement local en cours'};
+  if (data.mouvements_active) {
+    const m = data.mouvements_progression || {};
+    return {cle:'mouvements', label:'mouvements caméra', detail:[m.film || 'film courant', (m.plans_total ? `${m.plans_mesures || 0}/${m.plans_total} plans` : 'mesure en cours')].filter(Boolean).join(' · ')};
+  }
+  if (data.mouvements_video_active) {
+    const m = data.mouvements_video_progression || {};
+    return {cle:'mouvements-video', label:'mouvements vidéo', detail:[m.film || 'film courant', data.modele_mouvements_video || 'VideoMAE'].filter(Boolean).join(' · ')};
+  }
+  if (data.affinage_active) return {cle:'affinage', label:'analyse fine IA', detail:data.modele_affinage || 'modèle local'};
+  if (data.surveillance) return {cle:'surveillance', label:'surveillance', detail:'aucun traitement lourd en cours'};
+  return {cle:'surveillance', label:'attente', detail:'aucun outil actif'};
+}
+function afficherOutilsActifs(data){
+  const actif = outilActif(data);
+  const outils = [
+    {cle:'image', label:'découpage + image', meta:modeleAnalyseActif(data)},
+    {cle:'audio', label:'son / dialogues', meta:'indexation locale'},
+    {cle:'musique', label:'musique globale', meta:'séquences'},
+    {cle:'scenes', label:'scènes / séquences', meta:'regroupement local'},
+    {cle:'mouvements', label:'mouvements caméra', meta:'mesure'},
+    {cle:'mouvements-video', label:'mouvements vidéo', meta:'VideoMAE'},
+    {cle:'affinage', label:'analyse fine', meta:data.modele_affinage || 'modèle local'},
+    {cle:'surveillance', label:'surveillance', meta:'veille locale'}
+  ];
+  $('#outil-actif-texte').innerHTML = `En ce moment : <strong>${echapperHtml(actif.label)}</strong>${actif.detail ? ` (${echapperHtml(actif.detail)})` : ''}.`;
+  $('#outils-actifs').innerHTML = outils.map(o => `<span class="outil ${o.cle} ${o.cle === actif.cle ? 'actif' : ''}"><span>${echapperHtml(o.label)}</span><small>${echapperHtml(o.meta)}</small></span>`).join('');
+}
+function afficherIndicateurAnalyse(data){
+  const classe = classePictoEtape(data);
+  $('#indicateur-analyse').innerHTML = data.analyse_active ? pictoRotation(classe) : '';
+  $('#titre-etat').innerHTML = `${data.analyse_active ? pictoRotation(classe) : ''}${$('#nb-analyses').textContent} films terminés sur ${$('#nb-source').textContent}`;
+  setTextIfExists('#apercu-films', $('#resume-global').textContent || 'Lecture du résumé films…');
+}
+function afficherProgressionAudio(data){
+  const a = data.audio_progression || {};
+  const courant = Number(a.courant || 0);
+  const total = Number(a.total || 0);
+  const pctAudio = Number(a.pourcentage || 0);
+  $('#barre-audio').style.width = pctAudio + '%';
+  if (data.audio_active && total > 0){
+    $('#titre-audio').innerHTML = `${pictoRotation('audio')}Analyse sonore des films en cours (${courant}/${total})`;
+    $('#resume-audio').textContent = `${pctAudio}% terminé. Film en cours : ${a.film || 'lecture du journal audio…'}.`;
+    setTextIfExists('#apercu-audio', `${pctAudio}% terminé · ${a.film || 'film en cours'}`);
+    $('#details-audio').textContent = [
+      a.source ? `source : ${a.source}` : '',
+      a.plans_dialogues ? `${a.plans_dialogues} plans avec dialogue sur ce film` : ''
+    ].filter(Boolean).join(' · ');
+    return;
+  }
+  if (!data.audio_active && total > 0){
+    $('#titre-audio').textContent = `Analyse sonore des films (${courant}/${total})`;
+    $('#resume-audio').textContent = a.termine ? 'Analyse sonore terminée pour cette passe.' : 'Dernière progression audio connue.';
+    setTextIfExists('#apercu-audio', a.termine ? `terminé (${courant}/${total})` : `dernière progression (${courant}/${total})`);
+    $('#details-audio').textContent = a.film ? `dernier film traité : ${a.film}` : '';
+    return;
+  }
+  $('#titre-audio').textContent = 'Analyse sonore des films';
+  $('#resume-audio').textContent = data.audio_active ? 'Analyse sonore active.' : 'Aucune analyse sonore en cours.';
+  setTextIfExists('#apercu-audio', data.audio_active ? 'analyse sonore active' : 'aucune analyse sonore en cours');
+  $('#details-audio').textContent = '';
+}
+function afficherProgressionMusique(data){
+  const m = data.musique_progression || {};
+  const courant = Number(m.courant || 0);
+  const total = Number(m.total || 0);
+  const pctMusique = Number(m.pourcentage || 0);
+  if (data.musique_active && total > 0){
+    $('#resume-musique').textContent = `${pctMusique}% terminé. Analyse musique globale en cours (${courant}/${total}).`;
+    $('#details-musique').textContent = [
+      m.film ? `film : ${m.film}` : '',
+      m.sequence ? `séquence : ${m.sequence}` : '',
+      m.plans ? `${m.plans} plans` : ''
+    ].filter(Boolean).join(' · ');
+    return;
+  }
+  if (!data.musique_active && total > 0){
+    $('#resume-musique').textContent = m.termine ? 'Analyse musique globale terminée pour cette passe.' : 'Dernière progression musique connue.';
+    $('#details-musique').textContent = [
+      m.film ? `dernier film : ${m.film}` : '',
+      m.sequence ? `séquence : ${m.sequence}` : ''
+    ].filter(Boolean).join(' · ');
+    return;
+  }
+  $('#resume-musique').textContent = data.musique_active ? 'Analyse musique globale active.' : 'Aucune analyse musique globale en cours.';
+  $('#details-musique').textContent = '';
+}
+function afficherProgressionMouvementsVideo(data){
+  const m = data.mouvements_video_progression || {};
+  const courant = Number(m.courant || 0);
+  const total = Number(m.total || 0);
+  const plansClasses = Number(m.plans_classes || 0);
+  const plansTotal = Number(m.plans_total || 0);
+  const pctVideo = Number(m.pourcentage || 0);
+  $('#barre-mouvements-video').style.width = pctVideo + '%';
+  if (data.mouvements_video_active && (plansTotal > 0 || total > 0 || m.film)){
+    $('#titre-mouvements-video').innerHTML = `${pictoRotation('mouvement')}Classification VideoMAE en cours${total > 0 ? ` (${courant}/${total})` : ''}`;
+    $('#resume-mouvements-video').textContent = `${pctVideo}% du film courant${m.film ? ` · film : ${m.film}` : ''}.`;
+    setTextIfExists('#apercu-mouvements-video', `${pctVideo}%${m.film ? ` · ${m.film}` : ''}`);
+    $('#details-mouvements-video').textContent = [
+      plansTotal > 0 ? `${plansClasses}/${plansTotal} plans classés` : '',
+      m.modele ? `modèle : ${m.modele}` : ''
+    ].filter(Boolean).join(' · ');
+    return;
+  }
+  if (!data.mouvements_video_active && (plansTotal > 0 || total > 0 || m.film)){
+    $('#titre-mouvements-video').textContent = `Classification VideoMAE${total > 0 ? ` (${courant}/${total})` : ''}`;
+    $('#resume-mouvements-video').textContent = m.termine ? 'Classification VideoMAE terminée pour cette passe.' : 'Dernière progression VideoMAE connue.';
+    setTextIfExists('#apercu-mouvements-video', m.termine ? `terminé${m.film ? ` · ${m.film}` : ''}` : `dernière progression${m.film ? ` · ${m.film}` : ''}`);
+    $('#details-mouvements-video').textContent = [
+      m.film ? `dernier film : ${m.film}` : '',
+      plansTotal > 0 ? `${plansClasses}/${plansTotal} plans classés` : '',
+      m.modele ? `modèle : ${m.modele}` : ''
+    ].filter(Boolean).join(' · ');
+    return;
+  }
+  $('#titre-mouvements-video').textContent = 'Classification VideoMAE';
+  $('#resume-mouvements-video').textContent = data.mouvements_video_active ? 'Classification VideoMAE active.' : 'Aucune classification VideoMAE en cours.';
+  setTextIfExists('#apercu-mouvements-video', data.mouvements_video_active ? 'classification active' : 'aucune classification en cours');
+  $('#details-mouvements-video').textContent = data.modele_mouvements_video ? `modèle : ${data.modele_mouvements_video}` : '';
+}
+function afficherFilmsProgression(data){
+  memoriserAccordeonsOuverts();
+  const films = data.films_progression || [];
+  const filtreAccueil = String((($('#recherche-films-accueil') || {}).value) || '').trim().toLowerCase();
+  const filmAnalyse = filmAnalyseActif(data);
+  const filmAudio = (data.audio_progression || {}).film || '';
+  const filmMouvement = (data.mouvements_progression || {}).film || '';
+  const filmMouvementVideo = filmMouvementVideoActif(data);
+  const analyseActive = !!data.analyse_active;
+  const audioActive = !!data.audio_active;
+  const mouvementsActifs = !!data.mouvements_active;
+  const mouvementsVideoActifs = !!data.mouvements_video_active;
+  const filmsFiltres = filtreAccueil
+    ? films.filter(f => `${f.titre || ''} ${f.source || ''} ${f.id || ''}`.toLowerCase().includes(filtreAccueil))
+    : films;
+  const incomplets = filmsFiltres.filter(f => !f.termine).sort((a,b) => b.pourcentage - a.pourcentage);
+  const termines = filmsFiltres.filter(f => f.termine).sort((a,b) => a.titre.localeCompare(b.titre,'fr'));
+  const liste = [...incomplets, ...termines].slice(0, 60);
+  setTextIfExists('#films-progress-head-count', `${termines.length + incomplets.length} film(s) listés · ${termines.length} à jour`);
+  $('#films').innerHTML = liste.map(f => {
+    const estAnalyse = analyseActive && f.id === filmAnalyse;
+    const estAudio = audioActive && f.id === filmAudio;
+    const estMouvement = mouvementsActifs && f.id === filmMouvement;
+    const estMouvementVideo = mouvementsVideoActifs && f.id === filmMouvementVideo;
+    const totalPlans = Number(f.plans || 0);
+    const plansPrepares = Number(f.plans_prepares || 0);
+    const plansComplets = Number(f.plans_complets || 0);
+    const pctPrep = Number(f.pourcentage_preparation || 0);
+    const pctAnalyse = Number(f.pourcentage || 0);
+    const ouvert = !!(window.__filmsOuverts && window.__filmsOuverts.has(f.id));
+    const lienPlans = `index.html?film=${encodeURIComponent(f.id || '')}&vue=plans`;
+    const lienFiche = `fiches.html?film=${encodeURIComponent(f.id || '')}`;
+    const lienFilm = `film.html?film=${encodeURIComponent(f.id || '')}`;
+    const statutTexte = estAnalyse ? 'Analyse active' : (f.termine ? 'Analyse terminée' : 'Analyse en cours');
+    const badgeClass = estAnalyse ? 'film-status-badge active' : 'film-status-badge';
+    const progressClass = estAnalyse ? 'film-progress-bar active' : 'film-progress-bar';
+    return `
+    <article class="film ${(estAnalyse || estAudio || estMouvement || estMouvementVideo) ? 'en-cours' : ''}">
+      <details class="film-accordion" data-film="${echapperHtml(f.id || '')}" ${ouvert ? 'open' : ''}>
+        <summary>
+          <div class="film-resume">
+            <div class="film-head">
+              ${posterHtmlFilm(f)}
+              <div class="film-principal">
+                <h3>${echapperHtml(f.titre || f.id)}</h3>
+                <p class="film-source">${echapperHtml(f.source || f.id)}</p>
+              </div>
+              <div>
+                <div class="film-stat-label">Statut</div>
+                <span class="${badgeClass}">${statutTexte}</span>
+              </div>
+              <div class="film-progress-cell">
+                <div class="film-progress-top"><span class="film-stat-label">Progression</span><span class="pct">${pctAnalyse}%</span></div>
+                <div class="${progressClass}"><span style="width:${pctAnalyse}%"></span></div>
+              </div>
+              <div>
+                <div class="film-stat-label">Dernière analyse</div>
+                <div class="film-last">${echapperHtml(f.analyse_derniere_mesure || '—')}</div>
+              </div>
+              <span class="film-summary-actions"><a class="btn-plans-inline" href="${lienPlans}" onclick="event.stopPropagation()">Voir les plans</a><a class="btn-plans-inline" href="${lienFiche}" onclick="event.stopPropagation()">Voir la fiche</a><a class="btn-plans-inline lien-film-popup" data-film-popup="${echapperHtml(f.id || '')}" href="${lienFilm}" onclick="event.stopPropagation()">Voir le film</a><span class="chevron-film" aria-hidden="true">›</span></span>
+            </div>
+          </div>
+        </summary>
+        <div class="film-details">
+          ${noteCalculFilm(f, data)}
+          ${noteDemandeFilm(f, data)}
+          <p class="note temps-film">${libelleTempsAnalyse(f)}</p>
+          <p class="note progression-film"><span>vignettes ${plansPrepares}/${totalPlans} · ${pctPrep}%</span><span>analyse ${plansComplets}/${totalPlans} · ${pctAnalyse}%</span><span>scènes ${Number(f.scenes || 0)} · personnages ${Number(f.personnages_recurrents || 0)}</span></p>
+          <div class="barre mini barre-double"><span class="preparation" style="width:${pctPrep}%"></span><span class="analyse" style="width:${pctAnalyse}%"></span></div>
+          ${htmlCouchesFilm(f)}
+          ${htmlMouvementsFilm(f)}
+          ${htmlActionsFilm(f, data)}
+        </div>
+      </details>
+    </article>`;
+  }).join('') || '<p>Aucun film analysé pour l’instant.</p>';
+  brancherActionsFilms();
+  activerLiensFilms();
+}
+function definirBoutonAnalyse(actif){
+  const btn = $('#btn-toggle-analyse');
+  if (!btn) return;
+  window.__toggleAnalyseOn = !!actif;
+  btn.dataset.action = actif ? 'arreter' : 'analyser';
+  btn.textContent = actif ? 'Arrêter l’analyse' : 'Lancer l’analyse';
+  btn.setAttribute('aria-label', actif ? 'Arrêter totalement l’analyse image en cours' : 'Lancer ou relancer l’analyse image');
+}
+function etatToggleAnalyse(data){
+  if (data && typeof data.analyse_toggle_on === 'boolean') return data.analyse_toggle_on;
+  if (typeof window.__toggleAnalyseOn === 'boolean') return window.__toggleAnalyseOn;
+  return !!(data && data.analyse_active);
+}
+function afficherRestants(data){
+  const filmActif = filmAnalyseActif(data);
+  const incomplets = (data.films_progression || [])
+    .filter(f => !f.termine)
+    .sort((a,b) => {
+      if (a.id === filmActif) return -1;
+      if (b.id === filmActif) return 1;
+      return (Number(b.pourcentage || 0) - Number(a.pourcentage || 0));
+    });
+  const absents = data.films_sans_analyse_details || (data.films_sans_analyse || []).map(n => ({nom:n, source:n, id:''}));
+  const total = incomplets.length + absents.length;
+  setTextIfExists('#file-attente-count', total);
+  if (!total){
+    $('#texte-restants').textContent = 'Aucun film restant détecté.';
+    $('#films-restants').innerHTML = '';
+    return;
+  }
+  $('#texte-restants').textContent = `${total} film(s) restent à terminer ou à lancer.`;
+  const nomsIncomplets = incomplets.map(f => echapperHtml(f.source || f.titre || f.id));
+  const nomsAbsents = absents.map(info => echapperHtml(info.nom || info.source || info.id || info));
+  $('#films-restants').innerHTML = [...nomsIncomplets, ...nomsAbsents].map(nom => `<div>${nom}</div>`).join('');
+}
+function afficherSyntheseDashboard(data, indexResume, source, analyses, partiels, absents, global){
+  setTextIfExists('#pct-global', global);
+  setTextIfExists('#detail-progression-globale', `${analyses}/${source} films à jour · ${Math.max(0, source - analyses)} restants`);
+  setTextIfExists('#films-overview-label', `${analyses}/${source} film(s) à jour sur les plans visibles`);
+  setTextIfExists('#films-overview-percent', `${global}%`);
+  const barreOverview = $('#barre-films-overview');
+  if (barreOverview) barreOverview.style.width = global + '%';
+  setTextIfExists('#nb-plans-detectes', indexResume.plans ?? 0);
+  const actifs = [data.analyse_active, data.audio_active, data.musique_active, data.scenes_active, data.affinage_active, data.mouvements_active, data.mouvements_video_active, data.photo_analyse_active].filter(Boolean).length;
+  setTextIfExists('#nb-analyses-actives', actifs);
+  const detailActifs = data.analyse_active ? 'analyse image en cours' : (data.audio_active ? 'audio en cours' : (data.mouvements_video_active ? 'VideoMAE en cours' : (actifs ? 'pipeline actif' : 'aucun traitement lourd')));
+  setTextIfExists('#detail-analyses-actives', detailActifs);
+  setTextIfExists('#pipeline-image', data.analyse_active ? 'Active' : 'Prête');
+  setTextIfExists('#pipeline-image-detail', data.analyse_active ? `${filmAnalyseActif(data) || 'film courant'} · ${modeleAnalyseActif(data)}` : `${analyses}/${source} films à jour`);
+  setTextIfExists('#pipeline-audio', data.audio_active ? 'Actif' : 'Prêt');
+  setTextIfExists('#pipeline-audio-detail', data.audio_active ? `${(data.audio_progression || {}).film || 'film courant'}` : `${partiels} films partiels`);
+  setTextIfExists('#pipeline-musique', data.musique_active ? 'Active' : 'En attente');
+  setTextIfExists('#pipeline-musique-detail', data.musique_active ? `${(data.musique_progression || {}).film || 'film courant'}` : `${absents} absents`);
+  setTextIfExists('#pipeline-video', data.mouvements_video_active ? 'Actif' : 'Prêt');
+  setTextIfExists('#pipeline-video-detail', data.mouvements_video_active ? `${filmMouvementVideoActif(data) || 'film courant'}` : `${indexResume.mouvements_camera_video ?? 0} plans classés`);
+  setTextIfExists('#pipeline-photos', data.photo_analyse_active ? 'Actives' : 'Prêtes');
+  setTextIfExists('#pipeline-photos-detail', data.photo_analyse_active ? 'analyse photo en cours' : `${data.photos_source ?? 0} source(s)`);
+  document.querySelectorAll('.pipeline-tile').forEach(el => el.classList.remove('actif'));
+  if (data.analyse_active) document.querySelector('#pipeline-image')?.closest('.pipeline-tile')?.classList.add('actif');
+  else if (data.audio_active) document.querySelector('#pipeline-audio')?.closest('.pipeline-tile')?.classList.add('actif');
+  else if (data.musique_active) document.querySelector('#pipeline-musique')?.closest('.pipeline-tile')?.classList.add('actif');
+  else if (data.mouvements_video_active) document.querySelector('#pipeline-video')?.closest('.pipeline-tile')?.classList.add('actif');
+  else if (data.photo_analyse_active) document.querySelector('#pipeline-photos')?.closest('.pipeline-tile')?.classList.add('actif');
+  const activites = [];
+  if (data.dernier_message) activites.push({titre:data.dernier_message, meta:'message de contrôle'});
+  if (data.dernier_audio_message) activites.push({titre:data.dernier_audio_message, meta:'audio'});
+  if (data.dernier_mouvements_video_message) activites.push({titre:data.dernier_mouvements_video_message, meta:'VideoMAE'});
+  const completes = (data.films_progression || []).filter(f => f.termine).sort((a,b) => String(b.analyse_derniere_mesure || '').localeCompare(String(a.analyse_derniere_mesure || ''))).slice(0,3);
+  completes.forEach(f => activites.push({titre:`${f.titre || f.id} terminé`, meta:f.analyse_derniere_mesure || 'analyse terminée'}));
+  const bloc = activites.slice(0,5).map(item => `<div class="activite-item"><strong>${echapperHtml(item.titre)}</strong><span class="meta-activite">${echapperHtml(item.meta)}</span></div>`).join('');
+  $('#activite-recente').innerHTML = bloc || '<div class="activite-item"><strong>Aucune activité récente</strong><span class="meta-activite">le pipeline est actuellement calme</span></div>';
+}
+function heureCourte(date){
+  try { return new Intl.DateTimeFormat('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'}).format(date); }
+  catch { return date.toLocaleTimeString('fr-FR'); }
+}
+function afficherEtatPipelineLive(data){
+  const badge = $('#pipeline-live-badge');
+  const texte = $('#pipeline-live-text');
+  const meta = $('#pipeline-live-meta');
+  if (!badge || !texte || !meta) return;
+  badge.className = 'pastille-live off';
+  const attente = !data.analyse_active && /en attente/i.test(data.dernier_message || '');
+  if (data.analyse_active){
+    badge.textContent = 'actif';
+    badge.classList.add('actif');
+    texte.textContent = `Analyse image en cours${filmAnalyseActif(data) ? ` · ${filmAnalyseActif(data)}` : ''}`;
+  } else if (data.audio_active || data.musique_active || data.mouvements_video_active || data.photo_analyse_active){
+    badge.textContent = 'actif';
+    badge.classList.add('actif');
+    texte.textContent = data.audio_active ? 'Analyse sonore en cours' : (data.musique_active ? 'Analyse musique en cours' : (data.mouvements_video_active ? 'Classification VideoMAE en cours' : 'Analyse photo en cours'));
+  } else if (attente){
+    badge.textContent = 'attente';
+    badge.classList.add('attente');
+    texte.textContent = 'Pipeline en attente';
+  } else {
+    badge.textContent = 'repos';
+    texte.textContent = 'Pipeline prêt';
+  }
+  const dernier = [data.dernier_message, data.dernier_audio_message, data.dernier_musique_message, data.dernier_mouvements_video_message, data.dernier_photos_message].find(Boolean) || 'Aucun message récent';
+  const cadence = data.analyse_active || data.audio_active || data.musique_active || data.mouvements_video_active || data.photo_analyse_active ? 'rafraîchissement rapide' : 'rafraîchissement standard';
+  meta.textContent = `${heureCourte(new Date())} · ${cadence} · ${dernier}`;
+}
+function chargerEtat(){
+  const urlRapide = `${API}/etat?rapide=1&maj=${Date.now()}`;
+  const urlComplet = `${API}/etat?maj=${Date.now()}`;
+  fetch(urlRapide, {cache:'no-store'}).then(r => r.json()).catch(() => fetch(urlComplet, {cache:'no-store'}).then(r => r.json())).then(data => {
+    erreursEtat = 0;
+    dernierEndpointEtat = data.etat_rapide ? `${API}/etat?rapide=1` : `${API}/etat`;
+    window.__dernierEtat = data;
+    if (data.index || data.index_resume) dernierIndex = data.index_resume || data.index;
+    const i = data.index_resume || data.index || dernierIndex || {};
+    rafraichirModeleGlobal(data);
+    const champDossierFilms = $('#dossier-films');
+    if (champDossierFilms && data.dossier_films && (!dossierFilmsInitialise || document.activeElement !== champDossierFilms)) {
+      champDossierFilms.value = data.dossier_films;
+      dossierFilmsInitialise = true;
+    }
+    const champContexteFilms = $('#films-contexte');
+    if (champContexteFilms && typeof data.films_contexte === 'string' && document.activeElement !== champContexteFilms) {
+      champContexteFilms.value = data.films_contexte;
+    }
+    if (Array.isArray(data.films_criteres)) rendreCriteresFilms(data.films_criteres);
+    const source = data.films_source || 0;
+    const filmsProgression = data.films_progression || [];
+    const termines = filmsProgression.filter(f => f.termine).length;
+    const incomplets = filmsProgression.filter(f => !f.termine).length;
+    const partiels = filmsProgression.filter(f => !f.termine && Number(f.plans_complets || 0) > 0).length;
+    const absents = (data.films_sans_analyse || []).length;
+    const restants = incomplets + absents;
+    const analyses = termines;
+    const global = pct(analyses, source);
+    setTextIfExists('#nb-source', source);
+    setTextIfExists('#nb-analyses', analyses);
+    setTextIfExists('#nb-restants', restants);
+    setTextIfExists('#nb-films', i.films ?? 0);
+    setTextIfExists('#nb-contextes-films', i.contextes_films ?? 0);
+    setTextIfExists('#nb-plans', i.plans ?? 0);
+    setTextIfExists('#nb-scenes', i.scenes ?? 0);
+    setTextIfExists('#nb-personnages-recurrents', i.personnages_recurrents ?? 0);
+    setTextIfExists('#nb-dialogues', i.dialogues ?? 0);
+    setTextIfExists('#nb-mouvements-camera', i.mouvements_camera ?? 0);
+    setTextIfExists('#nb-mouvements-video', i.mouvements_camera_video ?? 0);
+    setTextIfExists('#nb-photos-source', data.photos_source ?? 0);
+    setTextIfExists('#nb-photos-index', (data.photos_index || {}).photos ?? 0);
+    setTextIfExists('#nb-photos-restantes', (data.photos_sans_analyse || []).length);
+    $('#barre-globale').style.width = global + '%';
+    const analyseToggleOn = etatToggleAnalyse(data);
+    definirBoutonAnalyse(analyseToggleOn);
+    afficherIndicateurAnalyse(data);
+    $('#resume-global').textContent = data.etat_rapide
+      ? (data.analyse_active
+          ? `${analyses}/${source} film(s) à jour sur les plans visibles. ${partiels} film(s) partiellement analysé(s) et ${absents} absent(s). Analyse en cours détectée, état détaillé allégé pour garder un accueil réactif.`
+          : `${analyses}/${source} film(s) à jour sur les plans visibles. ${partiels} film(s) partiellement analysé(s) et ${absents} absent(s). État détaillé allégé pour garder un accueil réactif.`)
+      : (restants ? `${analyses}/${source} film(s) sont à jour sur les plans visibles. ${partiels} film(s) restent partiels et ${absents} absent(s).` : 'Tous les films du dossier sont à jour sur les plans visibles.');
+    const filmAnalyse = filmAnalyseActif(data);
+    const etapeActive = data.analyse_active ? `analyse image en cours sur ${filmAnalyse || 'le film courant'}` : (data.scenes_active ? 'scènes/séquences en cours' : (data.mouvements_active ? `mouvements caméra en cours sur ${(data.mouvements_progression || {}).film || 'le film courant'}` : (data.mouvements_video_active ? 'classification VideoMAE en cours' : (data.affinage_active ? 'analyse fine en cours' : 'aucune étape film active'))));
+    const mlx = data.mlx_vlm || {};
+    const mlxTexte = mlx.actif ? `MLX prêt · APC ${mlx.apc_enabled ? 'actif' : 'non confirmé'} · concurrence ${data.mlx_vlm_concurrence || 6}` : 'MLX non démarré';
+    const modeAnalyseTexte = analyseToggleOn ? 'bouton analyse sur ON' : 'bouton analyse sur OFF (aucune reprise sans clic sur « Lancer l’analyse »)';
+    const modeleActif = data.analyse_active ? modeleAnalyseActif(data) : (data.modele_analyse || 'modèle local');
+    const modeleGlobal = data.modele_analyse || 'modèle local';
+    const premierePasse = data.analyse_active && modeleActif !== modeleGlobal
+      ? `Première passe active : ${modeleActif} · défaut général : ${modeleGlobal}`
+      : `Première passe : ${modeleActif}`;
+    $('#details-analyse').textContent = data.etat_rapide
+      ? `${premierePasse} · ${modeAnalyseTexte} · étape active : ${etapeActive} · endpoint rapide /etat?rapide=1 utilisé pour éviter le blocage de l’accueil.`
+      : `${premierePasse} (modèles installés Ollama + options Apple MLX si configurées) · ${mlxTexte} · images ${data.largeur_analyse || 896} px · contexte film : nom du film + pitch + résumé de scénario · deuxième passe possible : affinage ${data.modele_affinage || 'modèle local'} ciblé par film · mouvements vidéo : ${data.modele_mouvements_video || 'VideoMAE'} · ${modeAnalyseTexte} · étape active : ${etapeActive}`;
+    afficherOutilsActifs(data);
+    afficherProgressionAudio(data);
+    afficherProgressionMusique(data);
+    afficherProgressionMouvementsVideo(data);
+    const analyseEnAttente = !data.analyse_active && /en attente/i.test(data.dernier_message || '');
+    const analyseDesactivee = !analyseToggleOn;
+    setPastille('#etat-analyse', data.analyse_active ? 'analyse active' : (analyseDesactivee ? 'analyse désactivée' : (analyseEnAttente ? 'analyse en attente' : 'analyse arrêtée')), data.analyse_active || analyseEnAttente);
+    setPastille('#etat-surveillance', data.surveillance ? 'surveillance active' : 'surveillance inactive', data.surveillance);
+    setPastille('#etat-audio', data.audio_active ? 'son/dialogues actifs' : 'son/dialogues en attente', data.audio_active || !data.analyse_active);
+    setPastille('#etat-musique', data.musique_active ? 'musique globale active' : 'musique globale prête', data.musique_active || (!data.analyse_active && !data.audio_active));
+    setPastille('#etat-scenes', data.scenes_active ? 'scènes/séquences actives' : 'scènes/séquences prêtes', !data.scenes_active && !data.analyse_active && !data.audio_active && !data.musique_active);
+    setPastille('#etat-affinage', data.affinage_active ? 'affinage actif' : 'affinage prêt', !data.affinage_active && !data.analyse_active && !data.audio_active && !data.mouvements_active && !data.mouvements_video_active);
+    setPastille('#etat-mouvements', data.mouvements_active ? 'mouvements actifs' : 'mouvements en attente', data.mouvements_active || !data.analyse_active);
+    setPastille('#etat-mouvements-video', data.mouvements_video_active ? 'VideoMAE actif' : 'VideoMAE pilote prêt', !data.mouvements_video_active && !data.analyse_active && !data.audio_active && !data.mouvements_active);
+    setPastille('#etat-photos', data.photo_analyse_active ? 'photos actives' : 'photos prêtes', !data.photo_analyse_active);
+    setPastille('#etat-index', i.genere ? `index ${i.genere}` : 'index absent', !!i.genere);
+    $('#message-controle').textContent = [data.dernier_message, data.dernier_index_message, data.dernier_audio_message, data.dernier_musique_message, data.dernier_scenes_message, data.dernier_affinage_message, data.dernier_mouvements_message, data.dernier_mouvements_video_message, data.dernier_photos_message].filter(Boolean).join(' · ');
+    afficherFilmsProgression(data);
+    afficherRestants(data);
+    afficherSyntheseDashboard(data, i, source, analyses, partiels, absents, global);
+    afficherEtatPipelineLive(data);
+    programmerRafraichissementEtat();
+  }).catch(() => {
+    erreursEtat += 1;
+    if (erreursEtat < 8){
+      $('#titre-etat').textContent = 'Démarrage du serveur local…';
+      $('#resume-global').textContent = 'La page attend que le serveur de contrôle réponde.';
+      $('#message-controle').textContent = `Tentative ${erreursEtat}/8 de lecture de ${dernierEndpointEtat}`;
+      setTimeout(chargerEtat, 1000);
+      return;
+    }
+    if (window.__dernierEtat){
+      $('#resume-global').textContent = 'Le serveur de contrôle ne répond plus momentanément. Nouvelle tentative automatique…';
+      $('#message-controle').textContent = `Dernier état conservé. Reconnexion en cours vers ${dernierEndpointEtat}`;
+      setTimeout(chargerEtat, 2000);
+      return;
+    }
+    $('#titre-etat').textContent = 'Serveur local absent';
+    $('#resume-global').textContent = 'Double-cliquez sur lancer.command ou ouvrir_site.command pour démarrer le site.';
+    $('#message-controle').textContent = `Impossible de lire ${dernierEndpointEtat}`;
+    const badge = $('#pipeline-live-badge');
+    if (badge) { badge.className = 'pastille-live off'; badge.textContent = 'hors ligne'; }
+    setTextIfExists('#pipeline-live-text', 'Serveur local indisponible');
+    setTextIfExists('#pipeline-live-meta', `Nouvelle tentative automatique vers ${dernierEndpointEtat}`);
+    programmerRafraichissementEtat();
+  });
+}
+$('#btn-verifier').onclick = () => actionControle('reindexer');
+$('#btn-toggle-analyse').onclick = () => {
+  const btn = $('#btn-toggle-analyse');
+  const action = (btn && btn.dataset.action) || 'analyser';
+  if (action === 'arreter'){
+    definirBoutonAnalyse(false);
+    actionControle('arreter');
+    return;
+  }
+  definirBoutonAnalyse(true);
+  actionControle('analyser', {modele: modeleGlobal()});
+};
+$('#btn-affinage').onclick = () => actionControle('affinage');
+$('#btn-musique').onclick = () => actionControle('musique');
+$('#btn-mouvements').onclick = () => actionControle('mouvements');
+$('#btn-mouvements-video').onclick = () => actionControle('mouvements-video');
+if ($('#btn-choisir-dossier-films')) $('#btn-choisir-dossier-films').onclick = choisirDossierFilms;
+if ($('#btn-enregistrer-reglages-films')) $('#btn-enregistrer-reglages-films').onclick = () => enregistrerDossierFilms();
+if ($('#dossier-films')) {
+  $('#dossier-films').addEventListener('change', () => { dossierFilmsInitialise = true; enregistrerDossierFilms(); });
+  $('#dossier-films').addEventListener('blur', () => { if ($('#dossier-films').value.trim()) { dossierFilmsInitialise = true; enregistrerDossierFilms(); } });
+}
+if ($('#films-contexte')) $('#films-contexte').addEventListener('blur', () => enregistrerDossierFilms());
+rendreCriteresFilms();
+document.addEventListener('change', e => {
+  if (e.target && e.target.matches && e.target.matches('#films-criteres input[type="checkbox"]')) {
+    enregistrerDossierFilms();
+  }
+});
+if ($('#recherche-films-accueil')) $('#recherche-films-accueil').oninput = () => { if (window.__dernierEtat) afficherFilmsProgression(window.__dernierEtat); };
+window.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    $('#recherche-films-accueil')?.focus();
+  }
+});
+chargerMetaFilms();
+chargerEtat();
+window.__etatTimer = null;
+function programmerRafraichissementEtat(){
+  if (window.__etatTimer) clearTimeout(window.__etatTimer);
+  const data = window.__dernierEtat || {};
+  const delai = (data.analyse_active || data.audio_active || data.musique_active || data.mouvements_video_active || data.photo_analyse_active) ? 5000 : 15000;
+  window.__etatTimer = setTimeout(() => {
+    chargerEtat();
+    programmerRafraichissementEtat();
+  }, delai);
+}
+programmerRafraichissementEtat();
+</script>
+</body>
+</html>
