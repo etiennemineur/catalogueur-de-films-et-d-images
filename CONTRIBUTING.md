@@ -1,18 +1,20 @@
 # Contribution
 
-Les contributions sont bienvenues.
+Les contributions au code sont bienvenues.
 
-Avant d’ouvrir une proposition :
+Merci de ne jamais partager ni ajouter de fichiers médias dans ce dépôt.
 
-1. Ne jamais ajouter de films, photos, vignettes, logs ou fichiers d’analyse générés.
-2. Ne jamais ajouter de configuration locale personnelle (`config.json`).
-3. Utiliser `config.example.json` pour documenter les options.
-4. Vérifier la syntaxe Python :
+Cela concerne notamment :
 
-```bash
-python -m py_compile *.py
-```
+- les vidéos (`.mp4`, `.mov`, `.mkv`, etc.) ;
+- les images (`.jpg`, `.jpeg`, `.png`, `.webp`, etc.) ;
+- les photos personnelles ;
+- les vignettes générées ;
+- les fichiers audio ;
+- les exports ou index d’analyse issus de vos propres médias.
 
-5. Tester localement les pages servies si vous modifiez l’interface.
+Le dépôt doit contenir uniquement les programmes, la documentation et les fichiers d’exemple nécessaires pour que chacun puisse installer l’outil et l’utiliser avec ses propres films, images et modèles IA locaux.
 
-Le projet est sous licence MIT : vos contributions seront publiées sous la même licence.
+Ne partagez pas non plus votre configuration personnelle (`config.json`). Utilisez `config.example.json` pour documenter les options.
+
+Le projet est sous licence MIT : vos contributions au code seront publiées sous la même licence.
