@@ -1,44 +1,44 @@
 # catalogueur de films et d‘images
 
-Outil local pour cataloguer des films et des images avec des modèles IA locaux, construire un catalogue visuel, rechercher dans les plans, consulter des fiches films et relancer des analyses ciblées.
+A local tool for cataloguing films and images with local AI models. It builds a visual catalogue, lets you search through film shots, browse film records, analyse photos, and rerun targeted analyses.
 
-Le projet est pensé pour un usage local : serveur web sur `localhost`, modèles via Ollama ou MLX, et dossiers de médias choisis sur le Mac.
+The project is designed for local use: a `localhost` web server, AI models through Ollama or MLX, and media folders selected on your Mac.
 
-## Plateforme testée
+## Tested platform
 
-Ce code a été testé sur un Mac M5 sous le système 26.6.2.
+This code has been tested on a Mac M5 running system 26.6.2.
 
-## Fonctionnalités
+## Features
 
-- Analyse de films en plans, scènes et fiches consultables localement.
-- Recherche dans un catalogue de plans avec filtres croisés.
-- Analyse de photos avec choix du modèle IA.
-- Relance d’une seule photo depuis son détail, avec choix du modèle.
-- Suivi de progression : analyse active, photo ou film courant, barre de progression.
-- Interface HTML locale, sans compte cloud requis.
+- Film analysis into shots, scenes, and locally browsable film records.
+- Search in a shot catalogue with crossed/intersection filters.
+- Photo analysis with user-selected local AI models.
+- Rerun analysis for a single photo from its detail view, with model selection.
+- Progress tracking: active analysis, current photo or film, progress bar.
+- Local HTML interface, with no cloud account required.
 
-## Licence
+## License
 
-Ce projet est publié sous **licence MIT** : usage, modification, redistribution et usage commercial autorisés, avec conservation de la notice de copyright et de licence.
+This project is released under the **MIT License**: use, modification, redistribution, and commercial use are allowed, provided that the copyright and license notice are kept.
 
-Voir [`LICENSE`](LICENSE).
+See [`LICENSE`](LICENSE).
 
-## Ce qui n’est pas inclus dans le dépôt
+## What is not included in this repository
 
-Le dépôt open source ne contient pas :
+The open-source repository does not contain:
 
-- les films ;
-- les photos personnelles ;
-- les vignettes générées ;
-- les index d’analyse ;
-- les fichiers audio temporaires ;
-- les logs ;
-- l’environnement virtuel Python ;
-- la configuration locale personnelle.
+- films;
+- personal photos;
+- generated thumbnails;
+- analysis indexes;
+- temporary audio files;
+- logs;
+- the Python virtual environment;
+- personal local configuration.
 
-Ces éléments sont volontairement exclus par `.gitignore`.
+These files are intentionally excluded by `.gitignore`.
 
-## Installation locale
+## Local installation
 
 ```bash
 python3 -m venv .venv
@@ -48,82 +48,84 @@ cp config.example.json config.json
 cp films_fiches.example.json films_fiches.json
 ```
 
-Éditez ensuite `config.json` pour indiquer vos dossiers locaux :
+Then edit `config.json` to set your local folders:
 
 ```json
 {
-  "dossier_films": "/chemin/vers/vos/films",
-  "dossier_photos": "/chemin/vers/vos/photos"
+  "dossier_films": "/path/to/your/films",
+  "dossier_photos": "/path/to/your/photos"
 }
 ```
 
-## Lancement
+The configuration keys are currently kept in French because the local application reads those exact names.
 
-Sur macOS, les lanceurs `.command` peuvent être utilisés depuis le Finder.
+## Launch
 
-En ligne de commande :
+On macOS, the `.command` launchers can be opened from the Finder.
+
+From the command line:
 
 ```bash
 . .venv/bin/activate
 python controle_analyse.py
 ```
 
-Puis ouvrez :
+Then open:
 
 ```text
 http://127.0.0.1:8002/accueil.html
 ```
 
-ou directement :
+or directly:
 
 ```text
 http://127.0.0.1:8002/index.html
 http://127.0.0.1:8002/photos.html
 ```
 
-## Modèles IA
+## AI models
 
-Le projet attend des modèles locaux, notamment via Ollama ou, si vous le configurez, via Apple MLX. Aucun modèle précis n’est imposé dans le dépôt public.
+The project expects local models, especially through Ollama or, if configured, Apple MLX. No specific model is imposed by the public repository.
 
-1. Installez ou lancez vos modèles locaux.
-2. Regardez les modèles Ollama disponibles :
+1. Install or start your local models.
+2. List the available Ollama models:
 
 ```bash
 ollama list
 ```
 
-3. Indiquez vos choix dans `config.json` ou choisissez-les dans l’interface :
+3. Set your choices in `config.json`, or choose them from the interface:
 
 ```json
 {
-  "modele_analyse": "votre-modele-vision:latest",
-  "photos_modele_analyse": "votre-modele-vision:latest",
+  "modele_analyse": "your-vision-model:latest",
+  "photos_modele_analyse": "your-vision-model:latest",
   "modeles_analyse_disponibles": {
-    "mon-modele": {
-      "nom": "votre-modele-vision:latest",
-      "label": "Ollama · mon modèle local",
+    "my-model": {
+      "nom": "your-vision-model:latest",
+      "label": "Ollama · my local model",
       "moteur": "ollama"
     }
   }
 }
 ```
 
-Vous pouvez aussi utiliser les variables d’environnement `BANC_MODELE_ANALYSE`, `BANC_MODELE_AFFINAGE`, `BANC_MODELE_PHOTOS`, `BANC_MODELE_MLX` si vous préférez ne pas modifier `config.json`.
+You can also use the environment variables `BANC_MODELE_ANALYSE`, `BANC_MODELE_AFFINAGE`, `BANC_MODELE_PHOTOS`, and `BANC_MODELE_MLX` if you prefer not to edit `config.json`.
 
-## Structure principale
+## Main structure
 
-- `controle_analyse.py` — serveur de contrôle local et endpoints.
-- `analyse_plans.py` — analyse visuelle des films.
-- `analyse_photos.py` — analyse et indexation des photos.
-- `catalogueur_utils.py` — utilitaires partagés entre scripts.
-- `scripts/verifier_depot.py` — vérification du dépôt public avant contribution.
-- `accueil.html` — tableau de bord local.
-- `index.html` — catalogue des plans de films.
-- `photos.html` — catalogue et analyse des photos.
-- `fiches.html` — fiches films.
-- `film.html` — lecteur film local.
-- `requirements.txt` — dépendances Python.
+- `controle_analyse.py` — local control server and endpoints.
+- `analyse_plans.py` — visual film analysis.
+- `analyse_photos.py` — photo analysis and indexing.
+- `catalogueur_utils.py` — shared utilities used by multiple scripts.
+- `scripts/verifier_depot.py` — public repository verification before contribution.
+- `accueil.html` — local dashboard.
+- `index.html` — film shot catalogue.
+- `photos.html` — photo catalogue and analysis.
+- `fiches.html` — film records.
+- `film.html` — local film player.
+- `requirements.txt` — Python dependencies.
 
-## Note légale sur les médias
+## Legal note about media files
 
-Le code est libre. Les médias analysés, images générées, captures, vignettes, transcriptions et index peuvent dépendre de droits tiers ou de données personnelles : ils ne sont pas inclus dans ce dépôt.
+The code is free. Analysed media, generated images, captures, thumbnails, transcriptions, and indexes may depend on third-party rights or personal data. They are not included in this repository.

@@ -1,28 +1,28 @@
-# Contribution
+# Contributing
 
-Les contributions au code sont bienvenues.
+Code contributions are welcome.
 
-Merci de ne jamais partager ni ajouter de fichiers médias dans ce dépôt.
+Please never share or add media files to this repository.
 
-Cela concerne notamment :
+This includes, for example:
 
-- les vidéos (`.mp4`, `.mov`, `.mkv`, etc.) ;
-- les images (`.jpg`, `.jpeg`, `.png`, `.webp`, etc.) ;
-- les photos personnelles ;
-- les vignettes générées ;
-- les fichiers audio ;
-- les exports ou index d’analyse issus de vos propres médias.
+- videos (`.mp4`, `.mov`, `.mkv`, etc.);
+- images (`.jpg`, `.jpeg`, `.png`, `.webp`, etc.);
+- personal photos;
+- generated thumbnails;
+- audio files;
+- exports or analysis indexes generated from your own media files.
 
-Le dépôt doit contenir uniquement les programmes, la documentation et les fichiers d’exemple nécessaires pour que chacun puisse installer l’outil et l’utiliser avec ses propres films, images et modèles IA locaux.
+The repository must contain only the programs, documentation, and example files required so that each person can install the tool and use it with their own films, images, and local AI models.
 
-Ne partagez pas non plus votre configuration personnelle (`config.json`). Utilisez `config.example.json` pour documenter les options.
+Do not share your personal local configuration either (`config.json`). Use `config.example.json` to document options.
 
-Avant de proposer une modification, lancez :
+Before proposing a change, run:
 
 ```bash
 python scripts/verifier_depot.py
 ```
 
-Cette commande vérifie notamment la syntaxe Python, les scripts JavaScript des pages HTML, et l’absence de médias ou de configuration personnelle suivis par Git.
+This command checks Python syntax, inline JavaScript in HTML pages, and the absence of media files or personal configuration tracked by Git.
 
-Le projet est sous licence MIT : vos contributions au code seront publiées sous la même licence.
+The project is licensed under the MIT License: your code contributions will be published under the same license.

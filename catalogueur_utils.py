@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Petits utilitaires partagés du catalogueur de films et d‘images.
+"""Small shared utilities for the “catalogueur de films et d‘images” project.
 
-Ce module ne lance aucun traitement lourd et ne dépend d’aucun service externe.
-Il regroupe seulement des helpers purs ou des lectures JSON tolérantes qui
-étaient dupliqués entre plusieurs scripts.
+This module does not start heavy processing and does not depend on any external
+service. It only groups pure helpers and tolerant JSON readers that used to be
+duplicated across several scripts.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from typing import Any
 
 
 def slugify(texte: Any, default: str = "item") -> str:
-    """Retourne un identifiant ASCII stable à partir d’un texte libre."""
+    """Return a stable ASCII identifier from free text."""
     normalise = unicodedata.normalize("NFKD", str(texte or ""))
     ascii_text = normalise.encode("ascii", "ignore").decode("ascii")
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text).strip("-").lower()
@@ -25,7 +25,7 @@ def slugify(texte: Any, default: str = "item") -> str:
 
 
 def lire_json_config(path: Path, default: dict | None = None) -> dict:
-    """Lit un JSON de configuration, avec retour sûr si le fichier manque."""
+    """Read a JSON configuration file, safely falling back if it is missing."""
     fallback = {} if default is None else dict(default)
     if not path.exists():
         return fallback
@@ -37,7 +37,7 @@ def lire_json_config(path: Path, default: dict | None = None) -> dict:
 
 
 def texte_court(valeur: Any, limite: int = 1000) -> str:
-    """Nettoie et tronque un texte sans couper brutalement le dernier mot."""
+    """Clean and shorten text without cutting the last word abruptly."""
     texte = re.sub(r"\s+", " ", str(valeur or "")).strip()
     if len(texte) <= limite:
         return texte
@@ -46,7 +46,7 @@ def texte_court(valeur: Any, limite: int = 1000) -> str:
 
 
 def charger_fiche_film(fichier_plans: Path, donnees: dict) -> dict:
-    """Fusionne la fiche embarquée et le fichier fiche.json voisin si présent."""
+    """Merge the embedded film record with a neighbouring fiche.json if present."""
     fiche = dict(donnees.get("fiche") or {})
     fichier_fiche = fichier_plans.with_name("fiche.json")
     if fichier_fiche.exists():
@@ -60,7 +60,7 @@ def charger_fiche_film(fichier_plans: Path, donnees: dict) -> dict:
 
 
 def chemins_images_plan(racine: Path, plan: dict, images: int) -> list[Path]:
-    """Retourne les images disponibles d’un plan, vignettes puis vignette principale."""
+    """Return available images for a shot: thumbnails first, then main thumbnail."""
     chemins: list[Path] = []
     for rel in (plan.get("vignettes") or [])[:images]:
         chemin = racine / rel

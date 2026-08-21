@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Vérifie que le dépôt public reste publiable et cohérent.
+"""Check that the public repository remains publishable and coherent.
 
-Contrôles effectués :
-- syntaxe Python des fichiers suivis ;
-- syntaxe des scripts JavaScript inline des pages HTML suivies ;
-- absence de médias, données générées, config personnelle et gros fichiers ;
-- absence de chemins locaux personnels et de valeurs ressemblant à des secrets.
+Checks performed:
+- Python syntax for tracked files;
+- inline JavaScript syntax in tracked HTML pages;
+- absence of media files, generated data, personal config and large files;
+- absence of personal local paths and values that look like secrets.
 """
 
 from __future__ import annotations
@@ -58,11 +58,11 @@ def check_public_files(files: list[str]) -> list[str]:
     for name in files:
         path = ROOT / name
         if name in FORBIDDEN_NAMES or any(name.startswith(prefix) for prefix in FORBIDDEN_PREFIXES):
-            errors.append(f"fichier interdit suivi par Git : {name}")
+            errors.append(f"forbidden file tracked by Git: {name}")
         if pathlib.Path(name).suffix.lower() in MEDIA_EXTENSIONS:
-            errors.append(f"média interdit suivi par Git : {name}")
+            errors.append(f"forbidden media file tracked by Git: {name}")
         if path.exists() and path.is_file() and path.stat().st_size > 1_000_000:
-            errors.append(f"fichier suivi trop lourd (>1 Mo) : {name}")
+            errors.append(f"tracked file is too large (>1 MB): {name}")
     return errors
 
 
@@ -78,9 +78,9 @@ def check_text_safety(files: list[str]) -> list[str]:
             continue
         for line_number, line in enumerate(text.splitlines(), 1):
             if SECRET_RE.search(line):
-                errors.append(f"valeur sensible possible : {name}:{line_number}")
+                errors.append(f"possible sensitive value: {name}:{line_number}")
             if PERSONAL_PATH_RE.search(line):
-                errors.append(f"chemin personnel possible : {name}:{line_number}")
+                errors.append(f"possible personal path: {name}:{line_number}")
     return errors
 
 
@@ -91,7 +91,7 @@ def check_python(files: list[str]) -> list[str]:
     result = run([sys.executable, "-m", "py_compile", *py_files])
     if result.returncode == 0:
         return []
-    return ["syntaxe Python invalide :\n" + (result.stdout + result.stderr)]
+    return ["invalid Python syntax:\n" + (result.stdout + result.stderr)]
 
 
 def check_inline_js(files: list[str]) -> list[str]:
@@ -113,7 +113,7 @@ def check_inline_js(files: list[str]) -> list[str]:
             finally:
                 tmp_path.unlink(missing_ok=True)
             if result.returncode != 0:
-                errors.append(f"JavaScript inline invalide : {name} script {index}\n{result.stderr}")
+                errors.append(f"invalid inline JavaScript: {name} script {index}\n{result.stderr}")
     return errors
 
 
