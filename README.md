@@ -1,6 +1,6 @@
-# Banc de plans — analyse locale de films et photos
+# catalogueur de films et d‘images
 
-Outil local pour analyser des films et des photos avec des modèles IA locaux, construire un catalogue visuel, rechercher dans les plans, consulter des fiches films et relancer des analyses ciblées.
+Outil local pour cataloguer des films et des images avec des modèles IA locaux, construire un catalogue visuel, rechercher dans les plans, consulter des fiches films et relancer des analyses ciblées.
 
 Le projet est pensé pour un usage local : serveur web sur `localhost`, modèles via Ollama ou MLX, et dossiers de médias choisis sur le Mac.
 

@@ -9,8 +9,8 @@ MODELE_AFFINAGE="${BANC_MODELE_AFFINAGE:-}"
 
 unset PYTHONPATH PYTHONHOME
 clear 2>/dev/null || true
-printf '\nAnalyse films et photos — lancement simple\n'
-printf '==============================================\n\n'
+printf '\ncatalogueur de films et d‘images — lancement simple\n'
+printf '========================================================\n\n'
 
 if [[ ! -x "$PY" ]]; then
   printf 'L’environnement Python est absent. Double-cliquez d’abord sur installer.command.\n'

@@ -5,8 +5,8 @@ cd "$(dirname "$0")"
 unset PYTHONPATH PYTHONHOME
 
 clear 2>/dev/null || true
-printf '\nBanc de plans — installation\n'
-printf '============================\n\n'
+printf '\ncatalogueur de films et d‘images — installation\n'
+printf '================================================\n\n'
 
 if ! command -v python3 >/dev/null 2>&1; then
   printf 'Python 3 est introuvable. Installez-le puis relancez ce fichier.\n'
