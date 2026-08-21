@@ -17,11 +17,12 @@ import os
 import re
 import sys
 import time
-import unicodedata
 from hashlib import sha1
 from pathlib import Path
 
 from PIL import ExifTags, Image, ImageOps
+
+from catalogueur_utils import lire_json_config, slugify, texte_court
 
 ROOT = Path(__file__).resolve().parent
 CONFIG = ROOT / "config.json"
@@ -57,25 +58,11 @@ CERTITUDES = ["élevée", "moyenne", "faible"]
 
 
 def slug(texte: str) -> str:
-    t = unicodedata.normalize("NFKD", texte).encode("ascii", "ignore").decode()
-    t = re.sub(r"[^a-zA-Z0-9]+", "-", t).strip("-").lower()
-    return t or "photo"
+    return slugify(texte, default="photo")
 
 
 def lire_config(path: Path = CONFIG) -> dict:
-    if not path.exists():
-        return {}
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-
-
-def texte_court(valeur, limite: int = 1000) -> str:
-    texte = re.sub(r"\s+", " ", str(valeur or "")).strip()
-    if len(texte) <= limite:
-        return texte
-    return texte[:limite].rsplit(" ", 1)[0].rstrip(" .,;:") + "…"
+    return lire_json_config(path)
 
 
 def criteres_depuis_config(config: dict, args) -> list[str]:

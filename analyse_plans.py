@@ -28,6 +28,7 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from catalogueur_utils import slugify, texte_court as texte_court_partage
 from moteur_vision import creer_moteur, interroger
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
@@ -431,10 +432,7 @@ def texte_court(valeur, limite: int = 900) -> str:
     """Texte compact pour ne pas saturer le contexte Ollama."""
     if isinstance(valeur, list):
         valeur = ", ".join(str(v) for v in valeur if v)
-    texte = re.sub(r"\s+", " ", str(valeur or "")).strip()
-    if len(texte) <= limite:
-        return texte
-    return texte[:limite].rsplit(" ", 1)[0].rstrip(" .,;:") + "…"
+    return texte_court_partage(valeur, limite=limite)
 
 
 def fiche_contexte_suffisant(fiche: dict) -> bool:
@@ -1068,9 +1066,7 @@ def schema_complet() -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def slug(texte: str) -> str:
-    t = unicodedata.normalize("NFKD", texte).encode("ascii", "ignore").decode()
-    t = re.sub(r"[^a-zA-Z0-9]+", "-", t).strip("-").lower()
-    return t or "film"
+    return slugify(texte, default="film")
 
 
 def tc(secondes: float) -> str:

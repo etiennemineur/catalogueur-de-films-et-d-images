@@ -34,6 +34,10 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from catalogueur_utils import (  # noqa: E402
+    charger_fiche_film,
+    chemins_images_plan,
+)
 from analyse_plans import (  # noqa: E402
     INTERFACES,
     MACHINES,
@@ -88,18 +92,6 @@ def score_doute(plan: dict) -> tuple[int, list[str]]:
     return score, raisons
 
 
-def charger_fiche_film(fichier_plans: Path, donnees: dict) -> dict:
-    """Lit la fiche associée au plans.json pour contextualiser l’analyse fine."""
-    fiche = dict(donnees.get("fiche") or {})
-    fichier_fiche = fichier_plans.with_name("fiche.json")
-    if fichier_fiche.exists():
-        try:
-            fiche.update(json.loads(fichier_fiche.read_text(encoding="utf-8")))
-        except Exception:
-            pass
-    return fiche
-
-
 def prompt_affinage(plan: dict, raisons: list[str], fiche: dict | None = None) -> str:
     a = plan.get("analyse") or {}
     ancienne = json.dumps(a, ensure_ascii=False, indent=1)
@@ -129,16 +121,7 @@ Réponds uniquement avec le même JSON structuré que le module global."""
 
 
 def chemins_images(racine: Path, plan: dict, images: int) -> list[Path]:
-    chemins = []
-    for rel in (plan.get("vignettes") or [])[:images]:
-        p = racine / rel
-        if p.exists():
-            chemins.append(p)
-    if not chemins and plan.get("vignette"):
-        p = racine / plan["vignette"]
-        if p.exists():
-            chemins.append(p)
-    return chemins
+    return chemins_images_plan(racine, plan, images)
 
 
 def fusionner_analyse(plan: dict, reponse: dict) -> None:

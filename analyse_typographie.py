@@ -31,6 +31,10 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from catalogueur_utils import (  # noqa: E402
+    charger_fiche_film,
+    chemins_images_plan,
+)
 from analyse_plans import (  # noqa: E402
     TEXTE_ROLES,
     TYPOGRAPHIES_CATEGORIES,
@@ -63,28 +67,8 @@ def normaliser(texte: str) -> str:
     return re.sub(r"\s+", " ", texte).strip().lower()
 
 
-def charger_fiche_film(fichier_plans: Path, donnees: dict) -> dict:
-    fiche = dict(donnees.get("fiche") or {})
-    fichier_fiche = fichier_plans.with_name("fiche.json")
-    if fichier_fiche.exists():
-        try:
-            fiche.update(json.loads(fichier_fiche.read_text(encoding="utf-8")))
-        except Exception:
-            pass
-    return fiche
-
-
 def chemins_images(racine: Path, plan: dict, images: int) -> list[Path]:
-    chemins = []
-    for rel in (plan.get("vignettes") or [])[:images]:
-        p = racine / rel
-        if p.exists():
-            chemins.append(p)
-    if not chemins and plan.get("vignette"):
-        p = racine / plan["vignette"]
-        if p.exists():
-            chemins.append(p)
-    return chemins
+    return chemins_images_plan(racine, plan, images)
 
 
 def texte_indice(plan: dict) -> tuple[int, list[str]]:

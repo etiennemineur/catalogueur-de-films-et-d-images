@@ -115,6 +115,8 @@ Vous pouvez aussi utiliser les variables d’environnement `BANC_MODELE_ANALYSE`
 - `controle_analyse.py` — serveur de contrôle local et endpoints.
 - `analyse_plans.py` — analyse visuelle des films.
 - `analyse_photos.py` — analyse et indexation des photos.
+- `catalogueur_utils.py` — utilitaires partagés entre scripts.
+- `scripts/verifier_depot.py` — vérification du dépôt public avant contribution.
 - `accueil.html` — tableau de bord local.
 - `index.html` — catalogue des plans de films.
 - `photos.html` — catalogue et analyse des photos.

@@ -20,12 +20,13 @@ import subprocess
 import tempfile
 import threading
 import time
-import unicodedata
 import urllib.request
 import zipfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
+
+from catalogueur_utils import lire_json_config, slugify
 
 ROOT = Path(__file__).resolve().parent
 PY = ROOT / ".venv" / "bin" / "python"
@@ -115,12 +116,7 @@ def env_nettoye() -> dict[str, str]:
 
 
 def lire_config() -> dict:
-    if not CONFIG.exists():
-        return {}
-    try:
-        return json.loads(CONFIG.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+    return lire_json_config(CONFIG)
 
 
 def ecrire_config(data: dict) -> None:
@@ -144,6 +140,23 @@ def analyse_toggle_active() -> bool:
     return bool(etat.get("analyse_toggle_on", True))
 
 
+def normaliser_modele_configure(cle: str | None, info) -> tuple[str, dict[str, str]] | None:
+    """Normalise une entrée de modèle venue de config.json."""
+    if isinstance(info, dict):
+        nom = str(info.get("nom") or info.get("model") or "").strip()
+        label = str(info.get("label") or nom).strip()
+        moteur = str(info.get("moteur") or info.get("backend") or "").strip().lower()
+    else:
+        nom = str(info or "").strip()
+        label = nom
+        moteur = ""
+    if not nom:
+        return None
+    if moteur not in {"mlx", "ollama"}:
+        moteur = "mlx" if nom.startswith("mlx-") or nom.startswith("mlx-community/") else "ollama"
+    return slug(str(cle or nom)), {"nom": nom, "label": label or nom, "moteur": moteur}
+
+
 def modeles_analyse_disponibles() -> dict[str, dict[str, str]]:
     """Modèles vision proposés dans l’interface.
 
@@ -154,33 +167,16 @@ def modeles_analyse_disponibles() -> dict[str, dict[str, str]]:
     modeles = {cle: dict(info) for cle, info in MODELES_ANALYSE.items()}
     extras = lire_config().get("modeles_analyse_disponibles")
     if isinstance(extras, dict):
-        for cle, info in extras.items():
-            if isinstance(info, dict):
-                nom = str(info.get("nom") or info.get("model") or "").strip()
-                label = str(info.get("label") or nom).strip()
-                moteur = str(info.get("moteur") or info.get("backend") or "").strip().lower()
-            else:
-                nom = str(info or "").strip()
-                label = nom
-                moteur = ""
-            if nom:
-                if moteur not in {"mlx", "ollama"}:
-                    moteur = "mlx" if nom.startswith("mlx-") or nom.startswith("mlx-community/") else "ollama"
-                modeles[slug(str(cle or nom))] = {"nom": nom, "label": label or nom, "moteur": moteur}
+        items = extras.items()
     elif isinstance(extras, list):
-        for item in extras:
-            if isinstance(item, dict):
-                nom = str(item.get("nom") or item.get("model") or "").strip()
-                label = str(item.get("label") or nom).strip()
-                moteur = str(item.get("moteur") or item.get("backend") or "").strip().lower()
-            else:
-                nom = str(item or "").strip()
-                label = nom
-                moteur = ""
-            if nom:
-                if moteur not in {"mlx", "ollama"}:
-                    moteur = "mlx" if nom.startswith("mlx-") or nom.startswith("mlx-community/") else "ollama"
-                modeles[slug(nom)] = {"nom": nom, "label": label or nom, "moteur": moteur}
+        items = ((None, item) for item in extras)
+    else:
+        items = ()
+    for cle, info in items:
+        modele = normaliser_modele_configure(cle, info)
+        if modele:
+            identifiant, donnees = modele
+            modeles[identifiant] = donnees
     installes = modeles_ollama_installes()
     for nom in sorted(installes):
         modeles.setdefault(slug(nom), {"nom": nom, "label": f"Ollama · {nom}", "moteur": "ollama"})
@@ -672,9 +668,7 @@ def compter_photos_source() -> int:
 
 
 def slug(texte: str) -> str:
-    t = unicodedata.normalize("NFKD", texte).encode("ascii", "ignore").decode()
-    t = re.sub(r"[^a-zA-Z0-9]+", "-", t).strip("-").lower()
-    return t or "film"
+    return slugify(texte, default="film")
 
 
 def pitch_fiche_suspect(fiche: dict) -> bool:

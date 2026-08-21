@@ -17,4 +17,12 @@ Le dépôt doit contenir uniquement les programmes, la documentation et les fich
 
 Ne partagez pas non plus votre configuration personnelle (`config.json`). Utilisez `config.example.json` pour documenter les options.
 
+Avant de proposer une modification, lancez :
+
+```bash
+python scripts/verifier_depot.py
+```
+
+Cette commande vérifie notamment la syntaxe Python, les scripts JavaScript des pages HTML, et l’absence de médias ou de configuration personnelle suivis par Git.
+
 Le projet est sous licence MIT : vos contributions au code seront publiées sous la même licence.
