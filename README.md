@@ -4,6 +4,10 @@ Outil local pour cataloguer des films et des images avec des modèles IA locaux,
 
 Le projet est pensé pour un usage local : serveur web sur `localhost`, modèles via Ollama ou MLX, et dossiers de médias choisis sur le Mac.
 
+## Plateforme testée
+
+Ce code a été testé sur un Mac M5 sous le système 26.6.2.
+
 ## Fonctionnalités
 
 - Analyse de films en plans, scènes et fiches consultables localement.
