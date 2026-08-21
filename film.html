@@ -55,7 +55,7 @@ function chargerFilm(){
     return;
   }
   majLiens(filmId);
-  const src = `${API}/film-video?film=${encodeURIComponent(filmId)}`;
+  const src = `${API}/film-video?film=${encodeURIComponent(filmId)}&stream=1`;
   const video = $('#video');
   video.src = src;
   fetch('films.json', {cache:'default'}).then(r => r.ok ? r.json() : {films:[]}).then(data => {

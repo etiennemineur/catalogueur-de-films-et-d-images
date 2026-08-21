@@ -2861,6 +2861,46 @@ class ControleHandler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError):
             return
 
+    def _stream_film_mp4(self, source: Path) -> None:
+        """Stream a browser-readable fragmented MP4 without waiting for a full transcode."""
+        cmd = [
+            "ffmpeg", "-hide_banner", "-loglevel", "error",
+            "-i", str(source),
+            "-map", "0:v:0", "-map", "0:a?",
+            "-sn", "-dn",
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "160k",
+            "-movflags", "frag_keyframe+empty_moov+default_base_moof",
+            "-f", "mp4", "pipe:1",
+        ]
+        proc: subprocess.Popen[bytes] | None = None
+        try:
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            self.send_response(200)
+            self.send_header("Content-Type", "video/mp4")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type, Range")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            assert proc.stdout is not None
+            while True:
+                bloc = proc.stdout.read(1024 * 512)
+                if not bloc:
+                    break
+                self.wfile.write(bloc)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+        finally:
+            if proc and proc.poll() is None:
+                proc.terminate()
+                try:
+                    proc.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+
     def do_OPTIONS(self) -> None:
         self._headers(204)
 
@@ -2988,8 +3028,20 @@ class ControleHandler(BaseHTTPRequestHandler):
         if chemin == "/film-video":
             query = parse_qs(parsed.query)
             film_id = (query.get("film") or [""])[0].strip()
+            mode_stream = (query.get("stream") or [""])[0].strip().lower() in {"1", "true", "oui", "yes"}
             if not film_id:
                 self._json({"ok": False, "message": "Paramètre film requis."}, 400)
+                return
+            if mode_stream:
+                try:
+                    source = video_source_par_id(film_id)
+                except FileNotFoundError as exc:
+                    self._json({"ok": False, "message": str(exc)}, 404)
+                    return
+                try:
+                    self._stream_film_mp4(source)
+                except Exception as exc:
+                    self._json({"ok": False, "message": str(exc)}, 500)
                 return
             try:
                 fichier, content_type = video_lecteur_par_id(film_id)

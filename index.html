@@ -2156,8 +2156,8 @@ function rendre(){
     };
 
     el.onclick = e => {
-      if (e.target.closest('.cadre')) return;
-      basculer(id, el);
+      if (e.target.closest('.cadre') || e.target.closest('.bouton-panier')) return;
+      ouvrirLecteurPlan(p);
     };
     el.onkeydown = e => {
       if (e.key === 'Enter'){ ouvrirLecteurPlan(p); e.preventDefault(); }
