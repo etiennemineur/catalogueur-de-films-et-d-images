@@ -15,4 +15,4 @@ python -m py_compile *.py
 
 5. Tester localement les pages servies si vous modifiez l’interface.
 
-Le projet est sous The Unlicense : vos contributions seront publiées sous la même licence.
+Le projet est sous licence MIT : vos contributions seront publiées sous la même licence.

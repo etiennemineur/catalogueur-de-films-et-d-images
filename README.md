@@ -15,7 +15,7 @@ Le projet est pensé pour un usage local : serveur web sur `localhost`, modèles
 
 ## Licence
 
-Ce projet est publié sous **The Unlicense** : domaine public autant que possible, sans restriction d’usage, modification, redistribution ou usage commercial.
+Ce projet est publié sous **licence MIT** : usage, modification, redistribution et usage commercial autorisés, avec conservation de la notice de copyright et de licence.
 
 Voir [`LICENSE`](LICENSE).
 
